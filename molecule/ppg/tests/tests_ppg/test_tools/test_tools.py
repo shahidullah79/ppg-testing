@@ -127,13 +127,12 @@ def pgbackrest_full_backup(host):
 @pytest.mark.usefixtures("configure_postgres_pgbackrest")
 @pytest.fixture()
 def pgbackrest_delete_data(host):
-    os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", 'rhel']:
-        data_dir = "/var/lib/pgsql/{}/data/*".format(MAJOR_VER)
-        service_name = "postgresql-{}".format(MAJOR_VER)
-    else:
-        data_dir = "/var/lib/postgresql/{}/main/*".format(MAJOR_VER)
-        service_name = "postgresql"
+    dist = host.system_info.distribution
+    data_dir = f"/var/lib/postgresql/{MAJOR_VER}/main/*"
+    service_name = "postgresql"
+    if dist.lower() in ["redhat", "centos", 'rhel']:
+        data_dir = f"/var/lib/pgsql/{MAJOR_VER}/data/*"
+        service_name = "postgresql-{MAJOR_VER}"
     with host.sudo("root"):
         stop_postgresql = 'systemctl stop {}'.format(service_name)
         s = host.run(stop_postgresql)
@@ -155,28 +154,24 @@ def pgbackrest_restore(pgbackrest_delete_data, host):
 
 @pytest.fixture()
 def pgrepack(host):
-    os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", 'rhel']:
-        cmd = "/usr/pgsql-{}/bin/pg_repack ".format(MAJOR_VER)
-    else:
-        # TODO need to be in PATH?
-        cmd = "/usr/lib/postgresql/{}/bin/pg_repack".format(MAJOR_VER)
+    dist = host.system_info.distribution
+    cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack"
+    if dist.lower() in ["redhat", "centos", 'rhel']:
+        cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack "
     return host.check_output(cmd)
 
 
 @pytest.fixture()
 def pg_repack_functional(host):
-    os = host.system_info.distribution
+    dist = host.system_info.distribution
     with host.sudo("postgres"):
         pgbench = "pgbench -i -s 1"
         assert host.run(pgbench).rc == 0
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
-        if os.lower() in ["redhat", "centos", 'rhel']:
-            cmd = "/usr/pgsql-{}/bin/pg_repack -t pgbench_accounts -j 4".format(MAJOR_VER)
-        else:
-            # TODO need to be in PATH?
-            cmd = "/usr/lib/postgresql/{}/bin/pg_repack -t pgbench_accounts -j 4".format(MAJOR_VER)
+        cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack -t pgbench_accounts -j 4"
+        if dist.lower() in ["redhat", "centos", 'rhel']:
+            cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack -t pgbench_accounts -j 4"
         pg_repack_result = host.run(cmd)
     yield pg_repack_result
 
@@ -188,10 +183,10 @@ def pg_repack_dry_run(host, operating_system):
         assert host.run(pgbench).rc == 0
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
+        cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack --dry-run -d postgres"
         if operating_system.lower() in ["redhat", "centos", 'rhel']:
-            cmd = "/usr/pgsql-{}/bin/pg_repack --dry-run -d postgres".format(MAJOR_VER)
-        else:
-            cmd = "/usr/lib/postgresql/{}/bin/pg_repack --dry-run -d postgres".format(MAJOR_VER)
+            cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack --dry-run -d postgres"
+
         pg_repack_result = host.run(cmd)
     yield pg_repack_result
 
@@ -199,10 +194,10 @@ def pg_repack_dry_run(host, operating_system):
 @pytest.fixture()
 def pg_repack_client_version(host, operating_system):
     with host.sudo("postgres"):
+        cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack --version"
         if operating_system.lower() in ["redhat", "centos", 'rhel']:
-            return host.run("/usr/pgsql-{}/bin/pg_repack --version".format(MAJOR_VER))
-        elif operating_system.lower() in ["debian", "ubuntu"]:
-            return host.run("/usr/lib/postgresql/{}/bin/pg_repack --version".format(MAJOR_VER))
+            cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack --version"
+        return host.run(cmd)
 
 
 @pytest.fixture()
@@ -213,10 +208,10 @@ def patroni(host):
 @pytest.fixture()
 def patroni_version(host):
     os_dist = host.system_info.distribution
+    cmd = "patroni --version"
     if os_dist in ["redhat", "centos", 'rhel']:
-        return host.run("/opt/patroni/bin/patroni --version")
-    else:
-        return host.run("patroni --version")
+        cmd = "/opt/patroni/bin/patroni --version"
+    return host.run(cmd)
 
 
 def test_pgaudit_package(host):

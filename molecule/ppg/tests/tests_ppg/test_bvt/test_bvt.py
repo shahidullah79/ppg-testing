@@ -15,6 +15,9 @@ EXTENSIONS = pg_versions['extensions']
 LANGUAGES = pg_versions['languages']
 DEB_FILES = pg_versions['deb_files']
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", 'ppg-12.2', 'ppg-12.3', "ppg-12.4", "ppg-13.0"]
+BINARIES = ['clusterdb', 'createdb', 'createuser', 'dropdb', 'dropuser',
+            'pg_basebackup', 'pg_config', 'pg_dump', 'pg_dumpall', 'pg_isready', 'pg_receivewal',
+            'pg_recvlogical', 'pg_restore', 'pg_verifybackup', 'psql', 'reindexdb' 'vacuumdb']
 
 
 @pytest.fixture()
@@ -37,11 +40,11 @@ def start_stop_postgresql(host):
 
 @pytest.fixture()
 def postgresql_binary(host):
-    os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", 'rhel']:
-        return host.file("/usr/pgsql-{}/bin/postgres".format(MAJOR_VER))
-    elif os in ["debian", "ubuntu"]:
-        return host.file("/usr/lib/postgresql/{}/bin/postgres".format(MAJOR_VER))
+    dist = host.system_info.distribution
+    pg_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/postgres"
+    if dist.lower() in ["redhat", "centos", 'rhel']:
+        pg_bin = f"/usr/pgsql-{MAJOR_VER}/bin/postgres"
+    return host.file(pg_bin)
 
 
 @pytest.fixture()
@@ -145,12 +148,12 @@ def test_postgresql_version(host):
 
 def test_postgresql_is_running_and_enabled(host):
     os = host.system_info.distribution
+    service_name = "postgresql"
     if os.lower() in ["redhat", "centos", 'rhel']:
-        postgresql = host.service("postgresql-{}".format(MAJOR_VER))
-    else:
-        postgresql = host.service("postgresql")
-    assert postgresql.is_running
-    assert postgresql.is_enabled
+        service_name = f"postgresql-{MAJOR_VER}"
+    service = host.service(service_name)
+    assert service.is_running
+    assert service.is_enabled
 
 
 def test_postgres_unit_file(postgres_unit_file):
@@ -160,6 +163,17 @@ def test_postgres_unit_file(postgres_unit_file):
 def test_postgres_binary(postgresql_binary):
     assert postgresql_binary.exists
     assert postgresql_binary.user == "root"
+
+
+@pytest.mark.parametrize("binary", BINARIES)
+def test_binaries(host, binary):
+    dist = host.system_info.distribution
+    bin_path = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
+    if dist.lower() in ["redhat", "centos", 'rhel']:
+        bin_path = ""
+    bin_full_path = os.path.join(bin_path, binary)
+    binary_file = host.file(bin_full_path)
+    assert binary_file.exists
 
 
 def test_pg_config_server_version(host):

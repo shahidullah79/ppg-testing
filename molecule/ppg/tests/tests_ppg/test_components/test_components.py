@@ -12,31 +12,6 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 PACKAGES = ["libecpg-compat3",  "libecpg-dev", 'libecpg6', "libpgtypes3", "libpq-dev",  "libpq5"]
 pg_versions = get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
 
-# @pytest.fixture()
-# def fdw_extension(host):
-#     with host.sudo("postgres"):
-#         install_extension = host.run("psql -c 'CREATE EXTENSION \"postgres_fdw\";'")
-#         try:
-#             assert install_extension.rc == 0
-#             assert install_extension.stdout.strip("\n") == "CREATE EXTENSION"
-#         except AssertionError:
-#             pytest.fail("Return code {}. Stderror: {}. Stdout {}".format(install_extension.rc,
-#                                                                          install_extension.stderr,
-#                                                                          install_extension.stdout))
-#
-#         try:
-#             extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $1}'")
-#             assert extensions.rc == 0
-#             assert "postgres_fdw" in set(extensions.stdout.split())
-#         except AssertionError:
-#             pytest.fail("Return code {}. Stderror: {}. Stdout {}").format(extensions.rc, extensions.stderr,
-#                                                                           extensions.stdout)
-#
-#
-# @pytest.fixture()
-# def fdw_functional(host):
-#     pass
-
 
 @pytest.fixture()
 def perl_function(host):
@@ -114,7 +89,6 @@ def test_deb_package_is_installed(host, package):
     if os.lower() in ["redhat", "centos", 'rhel']:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(package)
-    print()
     assert pkg.is_installed
     assert pkg.version in pg_versions['deb_pkg_ver'],\
         f"Expected version {pg_versions['deb_pkg_ver']}. Actual version {pkg.version}"
