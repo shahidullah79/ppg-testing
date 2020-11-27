@@ -170,7 +170,7 @@ def test_binaries(host, binary):
     dist = host.system_info.distribution
     bin_path = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
     if dist.lower() in ["redhat", "centos", 'rhel']:
-        bin_path = f"/usr/pgsql-{MAJOR_VER}/bin/postgres"
+        bin_path = f"/usr/pgsql-{MAJOR_VER}/bin/"
     bin_full_path = os.path.join(bin_path, binary)
     binary_file = host.file(bin_full_path)
     assert binary_file.exists
