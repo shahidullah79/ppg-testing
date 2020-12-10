@@ -242,6 +242,11 @@ def get_pg11_versions(distros, packages, distro_type):
         "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "11"),
         "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "11"),
         "extensions": get_extensions_ppg11(distro_type),
+        "binaries": ['clusterdb', 'createdb', 'createuser', 'dropdb',
+                     'dropuser', 'pg_basebackup', 'pg_config', 'pg_dump',
+                     'pg_dumpall', 'pg_isready', 'pg_receivewal',
+                     'pg_recvlogical', 'pg_restore', 'psql', 'reindexdb',
+                     'vacuumdb'],
         "languages": LANGUAGES
                         }
     ppg_11_versions.update({"deb_pkg_ver": fill_package_versions(packages=packages,
@@ -260,6 +265,10 @@ def get_pg12_versions(distros, packages, distro_type):
                        "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "12"),
                        "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "12"),
                        "extensions": get_extensions_ppg12(distro_type),
+                       "binaries": ['clusterdb', 'createdb', 'createuser', 'dropdb', 'dropuser',
+                                    'pg_basebackup', 'pg_config', 'pg_dump', 'pg_dumpall',
+                                    'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                                    'pg_restore', 'psql', 'reindexdb', 'vacuumdb'],
                        "languages": LANGUAGES}
 
     ppg_12_versions.update({"deb_pkg_ver": fill_package_versions(packages=packages,
@@ -278,6 +287,12 @@ def get_pg13_versions(distros, packages, distro_type):
                        "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "13"),
                        "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "13"),
                        "extensions": get_extensions_ppg12(distro_type),
+                       "binaries": ['clusterdb', 'createdb', 'createuser',
+                                    'dropdb', 'dropuser', 'pg_basebackup',
+                                    'pg_config', 'pg_dump', 'pg_dumpall',
+                                    'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                                    'pg_restore', 'pg_verifybackup', 'psql',
+                                    'reindexdb', 'vacuumdb'],
                        "languages": LANGUAGES}
 
     ppg_13_versions.update({"deb_pkg_ver": fill_package_versions(packages=packages,

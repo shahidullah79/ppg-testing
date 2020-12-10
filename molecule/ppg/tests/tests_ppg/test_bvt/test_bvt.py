@@ -15,9 +15,7 @@ EXTENSIONS = pg_versions['extensions']
 LANGUAGES = pg_versions['languages']
 DEB_FILES = pg_versions['deb_files']
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", 'ppg-12.2', 'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-13.0", "ppg-13.1"]
-BINARIES = ['clusterdb', 'createdb', 'createuser', 'dropdb', 'dropuser',
-            'pg_basebackup', 'pg_config', 'pg_dump', 'pg_dumpall', 'pg_isready', 'pg_receivewal',
-            'pg_recvlogical', 'pg_restore', 'pg_verifybackup', 'psql', 'reindexdb', 'vacuumdb']
+BINARIES = pg_versions['binaries']
 
 
 @pytest.fixture()
