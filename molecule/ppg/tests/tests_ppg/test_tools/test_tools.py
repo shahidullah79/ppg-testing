@@ -304,10 +304,6 @@ def test_pgbackrest_package(host):
             docs_pkg = host.package(doc_pkgn)
             assert docs_pkg.is_installed
             assert pg_versions['pgbackrest']['version'] in docs_pkg.version
-            dbg_pkg = "percona-pgbackrest-dbgsym"
-            dbg = host.package(dbg_pkg)
-            assert dbg.is_installed
-            assert pg_versions['pgbackrest']['version'] in dbg.version
         if pkgn == "":
             pytest.fail("Unsupported operating system")
         pkg = host.package(pkgn)

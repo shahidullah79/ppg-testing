@@ -48,7 +48,6 @@
       packages:
         - pgbackrest
         - percona-pgbackrest-doc
-        - percona-pgbackrest-dbgsym
     when: ansible_os_family == "Debian"
 
   - name: Install pgbackrest RHEL
