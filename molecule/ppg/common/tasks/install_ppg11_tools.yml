@@ -6,7 +6,6 @@
     vars:
       packages:
         - percona-postgresql-11-pgaudit
-        - percona-postgresql-11-pgaudit-dbgsym
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit RHEL
