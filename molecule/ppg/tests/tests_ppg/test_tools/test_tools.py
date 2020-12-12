@@ -299,7 +299,7 @@ def test_pgbackrest_package(host):
         if os.lower() in ["redhat", "centos", 'rhel']:
             pkgn = "percona-pgbackrest"
         elif os in ["debian", "ubuntu"]:
-            pkgn = "percona-pgbackrest"
+            pkgn = "pgbackrest"
             doc_pkgn = "percona-pgbackrest-doc"
             docs_pkg = host.package(doc_pkgn)
             assert docs_pkg.is_installed
