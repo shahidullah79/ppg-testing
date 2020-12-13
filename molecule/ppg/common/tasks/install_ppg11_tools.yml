@@ -143,3 +143,10 @@
       name: percona-patroni
       state: latest
       update_cache: yes
+
+  - name: Get root filesystem
+    shell: systemctl status postgresql
+    register: pg_status
+    when: ansible_os_family == "Debian"
+
+  - debug: msg="{{pg_status.stdout}}"
