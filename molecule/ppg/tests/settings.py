@@ -28,7 +28,7 @@ def get_settings(distro_type):
                           "pgrepack": pgrepack['ppg-11.10'],
                           "pgrepack_package_rpm": 'percona-pg_repack11',
                           "pgrepack_package_deb": "percona-postgresql-11-repack",
-                          "libpq": "Version of libpq: 110009",
+                          "libpq": "Version of libpq: 110010",
                           "deb_provides": ppg_versions["ppg-11.10"]['deb_provides'],
                           "rpm7_provides": ppg_versions["ppg-11.10"]['rpm7_provides'],
                           'rpm_provides': ppg_versions["ppg-11.10"]['rpm_provides'],
@@ -39,7 +39,7 @@ def get_settings(distro_type):
                           "extensions": ppg_versions["ppg-11.10"]['extensions'],
                           "languages": ppg_versions["ppg-11.10"]['languages'],
                           "binaries": ppg_versions["ppg-11.10"]['binaries']
-                            },
+                          },
             "ppg-11.9": {"version": "11.9",
                          "deb_pkg_ver": ppg_versions["ppg-11.9"]['deb_pkg_ver'],
                          "deb_packages": ppg_versions["ppg-11.9"]['deb_packages'],
