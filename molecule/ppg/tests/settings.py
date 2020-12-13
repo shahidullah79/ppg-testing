@@ -37,7 +37,8 @@ def get_settings(distro_type):
                           "rhel_files": ppg_versions["ppg-11.10"]['rhel_files'],
                           "deb_files": ppg_versions["ppg-11.10"]['deb_files'],
                           "extensions": ppg_versions["ppg-11.10"]['extensions'],
-                          "languages": ppg_versions["ppg-11.10"]['languages']
+                          "languages": ppg_versions["ppg-11.10"]['languages'],
+                          "binaries": ppg_versions["ppg-11.10"]['binaries']
                             },
             "ppg-11.9": {"version": "11.9",
                          "deb_pkg_ver": ppg_versions["ppg-11.9"]['deb_pkg_ver'],
