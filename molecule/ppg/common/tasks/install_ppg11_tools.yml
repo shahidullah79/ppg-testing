@@ -45,7 +45,7 @@
       state: latest
     vars:
       packages:
-        - pgbackrest
+        - percona-pgbackrest
         - percona-pgbackrest-doc
     when: ansible_os_family == "Debian"
 
