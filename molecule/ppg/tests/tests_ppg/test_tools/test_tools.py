@@ -302,6 +302,10 @@ def test_pgbackrest_package(host):
             pkgn = "percona-pgbackrest"
             doc_pkgn = "percona-pgbackrest-doc"
             docs_pkg = host.package(doc_pkgn)
+            dbg_pkg = "percona-pgbackrest-dbgsym"
+            dbg = host.package(dbg_pkg)
+            assert dbg.is_installed
+            assert pg_versions['pgbackrest']['version'] in dbg.version
             assert docs_pkg.is_installed
             assert pg_versions['pgbackrest']['version'] in docs_pkg.version
         if pkgn == "":
