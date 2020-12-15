@@ -202,7 +202,8 @@ DEB11_EXTENSIONS = ['pageinspect',
                     'hstore_plpython3u',
                     'adminpack',
                     'autoinc',
-                    'plperl'
+                    'plperl',
+                    'pg_stat_monitor'
                     ]
 
 RPM11_EXTENSIONS = ['fuzzystrmatch',
@@ -257,7 +258,8 @@ RPM11_EXTENSIONS = ['fuzzystrmatch',
                     'unaccent',
                     'uuid-ossp',
                     'plpython2u',
-                    'plpythonu'
+                    'plpythonu',
+                    'pg_stat_monitor'
                     ]
 
 
