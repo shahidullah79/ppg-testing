@@ -231,7 +231,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-12.5"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-12.5"]['deb_files'],
                          "extensions": ppg_versions["ppg-12.5"]['extensions'],
-                         "languages": ppg_versions["ppg-12.5"]['languages']
+                         "languages": ppg_versions["ppg-12.5"]['languages'] ,
+                         "binaries": ppg_versions["ppg-12.5"]['binaries']
                          },
             "ppg-13.0": {"version": "13.0",
                          "deb_pkg_ver": ppg_versions["ppg-13.0"]['deb_pkg_ver'],
@@ -276,6 +277,7 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-13.1"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-13.1"]['deb_files'],
                          "extensions": ppg_versions["ppg-13.1"]['extensions'],
-                         "languages": ppg_versions["ppg-13.1"]['languages']
+                         "languages": ppg_versions["ppg-13.1"]['languages'],
+                         "binaries": ppg_versions["ppg-13.1"]['binaries']
             }
     }
