@@ -21,5 +21,7 @@ pgbackrest = {"ppg-11.5": {"version": "2.16",
               "ppg-13.0": {"version": "2.30",
                            "binary_version": "pgBackRest 2.30"},
               "ppg-13.1": {"version": "2.30",
-                           "binary_version": "pgBackRest 2.30"}
+                           "binary_version": "pgBackRest 2.30"},
+              "ppg-13.2": {"version": "2.32",
+                           "binary_version": "pgBackRest 2.32"}
               }

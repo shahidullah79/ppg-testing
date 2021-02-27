@@ -61,7 +61,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-11.9"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-11.9"]['deb_files'],
                          "extensions": ppg_versions["ppg-11.9"]['extensions'],
-                         "languages": ppg_versions["ppg-11.9"]['languages']
+                         "languages": ppg_versions["ppg-11.9"]['languages'],
+                         "binaries": ppg_versions["ppg-11.9"]['binaries']
                          },
             "ppg-11.8": {"version": "11.8",
                          "deb_pkg_ver": ppg_versions["ppg-11.8"]['deb_pkg_ver'],
@@ -84,7 +85,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-11.8"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-11.8"]['deb_files'],
                          "extensions": ppg_versions["ppg-11.8"]['extensions'],
-                         "languages": ppg_versions["ppg-11.8"]['languages']
+                         "languages": ppg_versions["ppg-11.8"]['languages'],
+                         "binaries": ppg_versions["ppg-11.8"]['binaries']
                          },
             "ppg-11.7": {"version": "11.7",
                          "deb_pkg_ver": ppg_versions["ppg-11.7"]['deb_pkg_ver'],
@@ -105,7 +107,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-11.7"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-11.7"]['deb_files'],
                          "extensions": ppg_versions["ppg-11.7"]['extensions'],
-                         "languages": ppg_versions["ppg-11.7"]['languages']
+                         "languages": ppg_versions["ppg-11.7"]['languages'],
+                         "binaries": ppg_versions["ppg-11.7"]['binaries']
                          },
             "ppg-11.6": {"version": "11.6",
                          "deb_pkg_ver": ppg_versions["ppg-11.6"]['deb_pkg_ver'],
@@ -126,7 +129,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-11.6"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-11.6"]['deb_files'],
                          "extensions": ppg_versions["ppg-11.6"]['extensions'],
-                         "languages": ppg_versions["ppg-11.6"]['languages']
+                         "languages": ppg_versions["ppg-11.6"]['languages'],
+                         "binaries": ppg_versions["ppg-11.6"]['binaries']
                          },
             "ppg-11.5": {"version": "11.5",
                          "deb_pkg_ver": ppg_versions["ppg-11.5"]['deb_pkg_ver'],
@@ -141,7 +145,8 @@ def get_settings(distro_type):
                          "pgbackrest": pgbackrest['ppg-11.5'],
                          "patroni": patroni['ppg-11.5'],
                          "pgrepack": pgrepack['ppg-11.5'],
-                         "libpq": "Version of libpq: 110005"
+                         "libpq": "Version of libpq: 110005",
+                         "binaries": ppg_versions["ppg-11.5"]['binaries']
                          },
             "ppg-12.2": {"version": "12.2",
                          "deb_pkg_ver": ppg_versions["ppg-12.2"]['deb_pkg_ver'],
@@ -162,7 +167,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-12.2"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-12.2"]['deb_files'],
                          "extensions": ppg_versions["ppg-12.2"]['extensions'],
-                         "languages": ppg_versions["ppg-12.2"]['languages']
+                         "languages": ppg_versions["ppg-12.2"]['languages'],
+                         "binaries": ppg_versions["ppg-12.2"]['binaries']
                          },
             "ppg-12.3": {"version": "12.3",
                          "deb_pkg_ver": ppg_versions["ppg-12.3"]['deb_pkg_ver'],
@@ -185,7 +191,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-12.3"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-12.3"]['deb_files'],
                          "extensions": ppg_versions["ppg-12.3"]['extensions'],
-                         "languages": ppg_versions["ppg-12.3"]['languages']
+                         "languages": ppg_versions["ppg-12.3"]['languages'],
+                         "binaries": ppg_versions["ppg-12.3"]['binaries']
                          },
             "ppg-12.4": {"version": "12.4",
                          "deb_pkg_ver": ppg_versions["ppg-12.4"]['deb_pkg_ver'],
@@ -208,7 +215,8 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-12.4"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-12.4"]['deb_files'],
                          "extensions": ppg_versions["ppg-12.4"]['extensions'],
-                         "languages": ppg_versions["ppg-12.4"]['languages']
+                         "languages": ppg_versions["ppg-12.4"]['languages'],
+                         "binaries": ppg_versions["ppg-12.4"]['binaries']
                          },
             "ppg-12.5": {"version": "12.5",
                          "deb_pkg_ver": ppg_versions["ppg-12.5"]['deb_pkg_ver'],
@@ -255,7 +263,9 @@ def get_settings(distro_type):
                          "rhel_files": ppg_versions["ppg-13.0"]['rhel_files'],
                          "deb_files": ppg_versions["ppg-13.0"]['deb_files'],
                          "extensions": ppg_versions["ppg-13.0"]['extensions'],
-                         "languages": ppg_versions["ppg-13.0"]['languages']},
+                         "languages": ppg_versions["ppg-13.0"]['languages'],
+                         "binaries": ppg_versions["ppg-13.0"]['binaries']
+                         },
             "ppg-13.1": {"version": "13.1",
                          "deb_pkg_ver": ppg_versions["ppg-13.1"]['deb_pkg_ver'],
                          "deb_packages": ppg_versions["ppg-13.1"]['deb_packages'],
@@ -279,5 +289,28 @@ def get_settings(distro_type):
                          "extensions": ppg_versions["ppg-13.1"]['extensions'],
                          "languages": ppg_versions["ppg-13.1"]['languages'],
                          "binaries": ppg_versions["ppg-13.1"]['binaries']
-            }
+            },
+            "ppg-13.2": {"version": "13.2",
+                         "deb_pkg_ver": ppg_versions["ppg-13.2"]['deb_pkg_ver'],
+                         "deb_packages": ppg_versions["ppg-13.2"]['deb_packages'],
+                         "percona-postgresql-common": '225',
+                         "percona-postgresql-client-common": "225",
+                         "libpq_version": "130002",
+                         "pgaudit": pgaudit['ppg-13.2'],
+                         "pgbackrest": pgbackrest['ppg-13.2'],
+                         "patroni": patroni['ppg-13.2'],
+                         "pgrepack": pgrepack['ppg-13.2'],
+                         "pgrepack_package_rpm": 'percona-pg_repack13',
+                         "pgrepack_package_deb": "percona-postgresql-13-repack",
+                         "libpq": "Version of libpq: 130002",
+                         "deb_provides": ppg_versions["ppg-13.2"]['deb_provides'],
+                         "rpm7_provides": ppg_versions["ppg-13.2"]['rpm7_provides'],
+                         'rpm_provides': ppg_versions["ppg-13.2"]['rpm_provides'],
+                         "rpm_packages": ppg_versions["ppg-13.2"]['rpm_packages'],
+                         "rpm7_packages": ppg_versions["ppg-13.2"]['rpm7_packages'],
+                         "rhel_files": ppg_versions["ppg-13.2"]['rhel_files'],
+                         "deb_files": ppg_versions["ppg-13.2"]['deb_files'],
+                         "extensions": ppg_versions["ppg-13.2"]['extensions'],
+                         "languages": ppg_versions["ppg-13.2"]['languages'],
+                         "binaries": ppg_versions["ppg-13.2"]['binaries']}
     }

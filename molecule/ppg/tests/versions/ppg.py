@@ -1,4 +1,4 @@
-from molecule.ppg.tests.versions.extensions import get_extensions_ppg11, get_extensions_ppg12
+from molecule.ppg.tests.versions.extensions import get_extensions_ppg11, get_extensions_ppg12, get_extensions_ppg13
 
 DISTROS = ['buster', 'stretch', 'bionic', 'focal']
 DEB116_PACKAGES_TEMPLATE = ["percona-postgresql-{}",
@@ -286,7 +286,7 @@ def get_pg13_versions(distros, packages, distro_type):
                        "rpm7_packages": fill_template_form(RPM7_PG13PACKAGES_TEMPLATE, "13"),
                        "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "13"),
                        "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "13"),
-                       "extensions": get_extensions_ppg12(distro_type),
+                       "extensions": get_extensions_ppg13(distro_type),
                        "binaries": ['clusterdb', 'createdb', 'createuser',
                                     'dropdb', 'dropuser', 'pg_basebackup',
                                     'pg_config', 'pg_dump', 'pg_dumpall',
@@ -329,5 +329,7 @@ def get_ppg_versions(distro_type):
             "ppg-13.0": get_pg13_versions(packages=["2:13-0.1", "13+221-1", '221-1'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.1": get_pg13_versions(packages=["2:13-1.1", "13+223-1", '223-1'],
+                                          distros=DISTROS, distro_type=distro_type),
+            "ppg-13.2": get_pg13_versions(packages=["2:13-2.2", "13+225-1", '225-1'],
                                           distros=DISTROS, distro_type=distro_type)
             }
