@@ -370,4 +370,4 @@ def test_patroni_version(patroni_version):
 
 def test_pg_stat_monitor_package_version(host):
     pg_stat = host.package("percona-pg-stat-monitor13")
-    assert pg_stat.version == pg_versions['pg_stat_monitor']
+    assert pg_stat.version in pg_versions['pg_stat_monitor']
