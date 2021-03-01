@@ -312,5 +312,6 @@ def get_settings(distro_type):
                          "deb_files": ppg_versions["ppg-13.2"]['deb_files'],
                          "extensions": ppg_versions["ppg-13.2"]['extensions'],
                          "languages": ppg_versions["ppg-13.2"]['languages'],
-                         "binaries": ppg_versions["ppg-13.2"]['binaries']}
+                         "binaries": ppg_versions["ppg-13.2"]['binaries'],
+                         "pg_stat_monitor": "0.6.0"}
     }
