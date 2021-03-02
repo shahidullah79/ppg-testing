@@ -1,7 +1,7 @@
 ---
 
 - name: Configure repository
-  include_tasks: ../../common/tasks/enable_repo.yml
+  include_tasks: ../../../../tasks/enable_repo.yml
 
 - name: install Percona Platform for PostgreSQL 13 packages
   include_tasks: ../../../../tasks/install_ppg13.yml
@@ -20,7 +20,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install PPG tools
-  include_tasks: ../../common/tasks/install_ppg13_tools.yml
+  include_tasks: ../../../../tasks/install_ppg13_tools.yml
 
 - name: Install GCC Deb
   apt:
@@ -37,7 +37,7 @@
 
 - name: Copy libpq source file
   copy:
-    src: ../../common/files/lib_version.c
+    src: ../../../../files/lib_version.c
     dest: /tmp/libpq_command_temp_dir
 
 - name: Delete dpkg-query for RHEL

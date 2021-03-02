@@ -1,7 +1,7 @@
 ---
 
 - name: Configure repository
-  include_tasks: ../../common/tasks/enable_repo.yml
+  include_tasks: ../../../../tasks/enable_repo.yml
 
 
 - name: install Percona Platform for PostgreSQL deb packages

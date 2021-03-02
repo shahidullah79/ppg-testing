@@ -1,6 +1,6 @@
 ---
 - name: Configure repository
-  include_tasks: ../../common/tasks/enable_repo.yml
+  include_tasks: ../../../../tasks/enable_repo.yml
 
 
 - name: DNF disable postgresql RHEL
@@ -12,7 +12,7 @@
   when: ansible_distribution == "RedHat"
 
 - name: Install vanila postgresql
-  include_tasks: ../../common/tasks/install_pg11.yml
+  include_tasks: ../../../../tasks/install_pg11.yml
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/postgresql-11-setup initdb
@@ -28,4 +28,4 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install ppg11 tools
-  include_tasks: ../../common/tasks/install_ppg11_tools.yml
+  include_tasks: ../../../../tasks/install_ppg11_tools.yml

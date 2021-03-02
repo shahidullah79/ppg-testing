@@ -189,7 +189,7 @@
 
     - name: Copy libpq source file
       copy:
-        src: ../../common/files/lib_version.c
+        src: ../../../../files/lib_version.c
         dest: /tmp/libpq12_command_temp_dir
 
     - name: Delete percona-pgaudit for PPG11 on RHEL
@@ -200,4 +200,4 @@
       when: ansible_os_family == "RedHat"
 
     - name: Install PPG tools
-      include_tasks: ../../common/tasks/install_ppg12_tools.yml
+      include_tasks: ../../../../tasks/install_ppg12_tools.yml
