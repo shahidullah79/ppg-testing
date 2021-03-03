@@ -189,7 +189,7 @@
 
     - name: Copy libpq source file
       copy:
-        src: ../../../../files/lib_version.c
+        src: ../../common/files/lib_version.c
         dest: /tmp/libpq12_command_temp_dir
 
     - name: Delete percona-pgaudit for PPG11 on RHEL
