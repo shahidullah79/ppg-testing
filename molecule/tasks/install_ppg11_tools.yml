@@ -6,6 +6,7 @@
     vars:
       packages:
         - percona-postgresql-11-pgaudit
+        - percona-postgresql-11-pgaudit-dbgsym
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit RHEL
@@ -151,7 +152,7 @@
     vars:
       packages:
         - percona-postgresql-11-repack
-#        - percona-postgresql-11-repack-dbgsym
+        - percona-postgresql-11-repack-dbgsym
     when: ansible_os_family == "Debian"
 
   - name: Install pgrepack RHEL
