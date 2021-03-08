@@ -45,7 +45,7 @@
       vars:
         packages:
           - percona-postgresql-12-repack
-          - percona-postgresql-12-repack-dbgsym
+#          - percona-postgresql-12-repack-dbgsym
       when: ansible_os_family == "Debian"
 
     - name: remove pgbackrest deb packages

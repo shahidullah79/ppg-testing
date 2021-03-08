@@ -28,7 +28,7 @@
           - percona-postgresql-pltcl-12-dbgsym
           - percona-postgresql-12-pgaudit
           - percona-postgresql-12-repack
-          - percona-postgresql-12-repack-dbgsym
+#          - percona-postgresql-12-repack-dbgsym
           - percona-pgbackrest
           - percona-pgbackrest-doc
           - percona-patroni

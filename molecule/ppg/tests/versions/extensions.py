@@ -257,8 +257,6 @@ RPM11_EXTENSIONS = ['fuzzystrmatch',
                     'tsm_system_time',
                     'unaccent',
                     'uuid-ossp',
-                    'plpython2u',
-                    'plpythonu',
                     'pg_stat_monitor'
                     ]
 

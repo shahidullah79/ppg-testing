@@ -223,10 +223,11 @@ def test_pgaudit_package(host):
             # pkgn = "percona-pgaudit14_12"
         elif os in ["debian", "ubuntu"]:
             pkgn = "percona-postgresql-{}-pgaudit".format(MAJOR_VER)
-            dbgsym_pkgn = "percona-postgresql-{}-pgaudit-dbgsym".format(MAJOR_VER)
-            dbgsym_pkg = host.package(dbgsym_pkgn)
-            assert dbgsym_pkg.is_installed
-            assert pg_versions['pgaudit']['version'] in dbgsym_pkg.version
+            if "12" not in MAJOR_VER:
+                dbgsym_pkgn = "percona-postgresql-{}-pgaudit-dbgsym".format(MAJOR_VER)
+                dbgsym_pkg = host.package(dbgsym_pkgn)
+                assert dbgsym_pkg.is_installed
+                assert pg_versions['pgaudit']['version'] in dbgsym_pkg.version
         if pkgn == "":
             pytest.fail("Unsupported operating system")
         pkg = host.package(pkgn)
@@ -247,8 +248,9 @@ def test_pgrepack_package(host):
             pkgn = pg_versions['pgrepack_package_rpm']
         elif os in ["debian", "ubuntu"]:
             pkgn = pg_versions['pgrepack_package_deb']
-            pkg_dbgsym = host.package("{}-dbgsym".format(pg_versions['pgrepack_package_deb']))
-            assert pkg_dbgsym.is_installed
+            if MAJOR_VER != "12":
+                pkg_dbgsym = host.package("{}-dbgsym".format(pg_versions['pgrepack_package_deb']))
+                assert pkg_dbgsym.is_installed
         if pkgn == "":
             pytest.fail("Unsupported operating system")
         pkg = host.package(pkgn)

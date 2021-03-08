@@ -68,6 +68,7 @@
       - percona-postgresql12-llvmjit
       - percona-postgresql12-plperl
       - percona-postgresql12-plpython
+      - percona-postgresql12-plpython3
       - percona-postgresql12-pltcl
       - percona-postgresql12-server
       - percona-postgresql12-test
@@ -97,6 +98,7 @@
         - percona-postgresql12-llvmjit
         - percona-postgresql12-plperl
         - percona-postgresql12-plpython
+        - percona-postgresql12-plpython3
         - percona-postgresql12-pltcl
         - percona-postgresql12-server
         - percona-postgresql12-test
