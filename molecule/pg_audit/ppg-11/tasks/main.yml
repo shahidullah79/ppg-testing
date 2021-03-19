@@ -47,6 +47,7 @@
     - readline-devel
     - gcc
     - gcc-c++
+    - git
 
 - name: Enable gcc 7
   shell: scl enable devtoolset-7 bash
@@ -56,11 +57,6 @@
   environment:
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   become_user: postgres
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
 
 - name: Enable gcc 7
   shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
