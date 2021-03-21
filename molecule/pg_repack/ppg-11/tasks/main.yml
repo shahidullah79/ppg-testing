@@ -94,7 +94,7 @@
 
 - name: Create a symbolic link
   ansible.builtin.file:
-    src: /usr/pgsql-13/bin/pg_repack
+    src: /usr/pgsql-11/bin/pg_repack
     dest: /usr/bin/pg_repack
     state: link
 
