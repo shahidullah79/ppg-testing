@@ -74,20 +74,20 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone pgaudit sources
+- name: Clone pg_repack sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/pg_audit
+    dest: /tmp/pg_repack
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
   become_user: postgres
 
-- name: Build pgaudit from sources
+- name: Build pg_repack from sources
   make:
     target: install
-    chdir: "/tmp/pg_audit"
+    chdir: "/tmp/pg_repack"
     params:
       USE_PGXS: 1
 
