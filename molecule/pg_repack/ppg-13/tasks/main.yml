@@ -100,8 +100,6 @@
   ansible.builtin.file:
     src: /usr/pgsql-13/bin/pg_repack
     dest: /usr/bin/pg_repack
-#    owner: foo
-#    group: foo
     state: link
 
 - name: Start Postgres RHEL

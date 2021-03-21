@@ -91,11 +91,11 @@
     params:
       USE_PGXS: 1
 
-- name: Restart Postgres RHEL
-  service:
-    name: postgresql-12
-    state: restarted
-  register: out
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /usr/pgsql-13/bin/pg_repack
+    dest: /usr/bin/pg_repack
+    state: link
 
 - name: Start Postgres RHEL
   service:
