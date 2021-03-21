@@ -96,12 +96,6 @@
     params:
       USE_PGXS: 1
 
-- name: Add extensions to postgresql.conf for RHEL
-  lineinfile:
-    path: /var/lib/pgsql/13/data/postgresql.conf
-    line: shared_preload_libraries = 'pgaudit'
-  when: ansible_os_family == "RedHat"
-
 - name: Restart Postgres RHEL
   service:
     name: postgresql-13
