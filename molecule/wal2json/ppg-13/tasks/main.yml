@@ -78,7 +78,7 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone pg_stat_monitor sources
+- name: Clone wal2json sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"

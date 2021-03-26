@@ -21,11 +21,9 @@ provisioner:
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
     converge: ../../playbooks/playbook.yml
-    verify: ../../playbooks/verify.yml
 verifier:
-#  name: ansible
   name: testinfra
-  directory: ../../tests/
+  directory: ../../../tests/
   options:
     verbose: true
     s: true

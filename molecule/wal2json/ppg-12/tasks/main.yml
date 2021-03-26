@@ -73,35 +73,41 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone pg_stat_monitor sources
+- name: Clone wal2json sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/pg_stat_monitor
+    dest: /tmp/wal2json
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
   become_user: postgres
 
-- name: Build pg_stat_monitor from sources
+- name: Build wal2json from sources
   make:
-    chdir: "/tmp/pg_stat_monitor"
-    params:
-      USE_PGXS: 1
+    chdir: "/tmp/wal2json"
 
-- name: Install pg_stat_monitor from sources
+
+- name: Install wal2json from sources
   make:
     target: install
-    chdir: "/tmp/pg_stat_monitor"
-    params:
-      USE_PGXS: 1
+    chdir: "/tmp/wal2json"
 
 
-- name: Add extensions to postgresql.conf for RHEL
+- name: Set wal level
   lineinfile:
     path: /var/lib/pgsql/12/data/postgresql.conf
-    line: shared_preload_libraries = 'pg_stat_monitor'
-  when: ansible_os_family == "RedHat"
+    line: wal_level = logical
+
+- name: Set wal senders
+  lineinfile:
+    path: /var/lib/pgsql/12/data/postgresql.conf
+    line: max_wal_senders = 10
+
+- name: Set replication slots
+  lineinfile:
+    path: /var/lib/pgsql/12/data/postgresql.conf
+    line: max_replication_slots = 10
 
 - name: Restart Postgres RHEL
   service:
