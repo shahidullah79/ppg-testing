@@ -1,4 +1,4 @@
-from molecule.ppg.tests.versions.extensions import get_extensions_ppg11, get_extensions_ppg12, get_extensions_ppg13
+from ppg.tests.versions import get_extensions_ppg11, get_extensions_ppg12, get_extensions_ppg13
 
 DISTROS = ['buster', 'stretch', 'bionic', 'focal']
 DEB116_PACKAGES_TEMPLATE = ["percona-postgresql-{}",

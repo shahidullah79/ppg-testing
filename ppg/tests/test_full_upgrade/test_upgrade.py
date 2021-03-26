@@ -3,7 +3,7 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
-from molecule.ppg.tests.settings import get_settings, MAJOR_VER
+from ppg.tests.settings import get_settings, MAJOR_VER
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
