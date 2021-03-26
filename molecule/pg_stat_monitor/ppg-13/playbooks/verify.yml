@@ -1,5 +1,5 @@
 ---
-- name: Run pg_repack tests
+- name: Run pg_stat_monitor tests
   hosts: all
   become: true
   become_method: sudo
