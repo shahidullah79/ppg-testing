@@ -1,0 +1,35 @@
+---
+- name: Run pg_repack tests
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: postgres
+  gather_facts: true
+  tasks:
+    - name: Test wal2json
+      make:
+        target: installcheck
+        chdir: "/tmp/wal2json"
+        params:
+          USE_PGXS: 1
+      ignore_errors: yes
+      register: installcheck
+
+    - debug: var=installcheck.stdout_lines
+
+    - debug: var=installcheck.rc
+
+    - shell: cat /tmp/wal2json/regression.diffs
+      register: cat
+
+    - name: Display tests diff
+      debug: var=cat.stdout_lines
+      when: installcheck.rc != 0
+      become: true
+      become_method: sudo
+      become_user: root
+
+    - name: Fail tests on error
+      fail:
+        msg: Tests failed
+      when: installcheck.rc != 0
