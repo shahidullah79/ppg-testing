@@ -75,27 +75,33 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone pgaudit sources
+- name: Clone set_user sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/pg_audit
+    dest: /tmp/set_user
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
   become_user: postgres
 
-- name: Build pgaudit from sources
+- name: Build set_user from sources
+  make:
+    chdir: "/tmp/set_user"
+    params:
+      USE_PGXS: 1
+
+- name: Install set_user from sources
   make:
     target: install
-    chdir: "/tmp/pg_audit"
+    chdir: "/tmp/set_user"
     params:
       USE_PGXS: 1
 
 - name: Add extensions to postgresql.conf for RHEL
   lineinfile:
     path: /var/lib/pgsql/11/data/postgresql.conf
-    line: shared_preload_libraries = 'pgaudit'
+    line: shared_preload_libraries = 'set_user'
   when: ansible_os_family == "RedHat"
 
 - name: Restart Postgres RHEL
