@@ -23,13 +23,13 @@ provisioner:
     converge: ../../playbooks/playbook.yml
     verify: ../../playbooks/verify.yml
 verifier:
-  name: ansible
+#  name: ansible
 #  name: testinfra
-#  directory: ../../../tests/tests_ppg
-#  options:
-#    verbose: true
-#    s: true
-#    junitxml: report.xml
+  directory: ../../tests/
+  options:
+    verbose: true
+    s: true
+    junitxml: report.xml
 scenario:
   destroy_sequence:
     - destroy
