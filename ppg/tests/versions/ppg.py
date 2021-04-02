@@ -1,4 +1,4 @@
-from .. import versions
+from .extensions import get_extensions_ppg11, get_extensions_ppg12, get_extensions_ppg13
 
 DISTROS = ['buster', 'stretch', 'bionic', 'focal']
 DEB116_PACKAGES_TEMPLATE = ["percona-postgresql-{}",
@@ -241,7 +241,7 @@ def get_pg11_versions(distros, packages, distro_type):
         "rpm7_packages": fill_template_form(RPM7_PACKAGES_TEMPLATE, "11"),
         "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "11"),
         "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "11"),
-        "extensions": versions.get_extensions_ppg11(distro_type),
+        "extensions": get_extensions_ppg11(distro_type),
         "binaries": ['clusterdb', 'createdb', 'createuser', 'dropdb',
                      'dropuser', 'pg_basebackup', 'pg_config', 'pg_dump',
                      'pg_dumpall', 'pg_isready', 'pg_receivewal',
@@ -264,7 +264,7 @@ def get_pg12_versions(distros, packages, distro_type):
                        "rpm7_packages": fill_template_form(RPM7_PACKAGES_TEMPLATE, "12"),
                        "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "12"),
                        "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "12"),
-                       "extensions": versions.get_extensions_ppg12(distro_type),
+                       "extensions": get_extensions_ppg12(distro_type),
                        "binaries": ['clusterdb', 'createdb', 'createuser', 'dropdb', 'dropuser',
                                     'pg_basebackup', 'pg_config', 'pg_dump', 'pg_dumpall',
                                     'pg_isready', 'pg_receivewal', 'pg_recvlogical',
@@ -286,7 +286,7 @@ def get_pg13_versions(distros, packages, distro_type):
                        "rpm7_packages": fill_template_form(RPM7_PG13PACKAGES_TEMPLATE, "13"),
                        "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "13"),
                        "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "13"),
-                       "extensions": versions.get_extensions_ppg13(distro_type),
+                       "extensions": get_extensions_ppg13(distro_type),
                        "binaries": ['clusterdb', 'createdb', 'createuser',
                                     'dropdb', 'dropuser', 'pg_basebackup',
                                     'pg_config', 'pg_dump', 'pg_dumpall',
