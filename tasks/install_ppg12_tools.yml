@@ -94,7 +94,7 @@
       state: restarted
     when: ansible_os_family == "RedHat"
 
-  - name: Retart Postgres Debian
+  - name: Restart Postgres Debian
     command: sudo systemctl restart postgresql
     environment:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -178,7 +178,7 @@
     when: ansible_os_family == "RedHat"
     register: out
 
-  - name: Retart Postgres Debian
+  - name: Restart Postgres Debian
     command: sudo systemctl restart postgresql
     environment:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
