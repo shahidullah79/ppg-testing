@@ -13,7 +13,7 @@ def test_pgaudit(host):
         if result.rc != 0:
             print(result.stderr)
             print(result.stdout)
-            print(host.file("/tmp/pg_audit/regression.diffs").content)
+            print(host.file("/tmp/pg_audit/regression.diffs").content_string)
             raise AssertionError
 
 
