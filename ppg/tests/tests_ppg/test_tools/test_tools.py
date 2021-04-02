@@ -3,12 +3,14 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
-from ppg.tests.settings import get_settings, MAJOR_VER
+from ... import settings
+# from ppg.tests.settings import get_settings, MAJOR_VER
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
-pg_versions = get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
+pg_versions = settings.get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
+MAJOR_VER = settings.MAJOR_VER
 
 
 @pytest.fixture(scope="module")
@@ -50,13 +52,13 @@ def pgaudit(host):
         result = host.run(create_table)
         assert result.rc == 0
         assert result.stdout.strip("\n") == "CREATE TABLE"
-        log_file = "/var/log/postgresql/postgresql-{}-main.log".format(MAJOR_VER)
+        log_file = "/var/log/postgresql/postgresql-{}-main.log".format(settings.MAJOR_VER)
         if ds.lower() in ["debian", "ubuntu"]:
-            log_file = "/var/log/postgresql/postgresql-{}-main.log".format(MAJOR_VER)
+            log_file = "/var/log/postgresql/postgresql-{}-main.log".format(settings.MAJOR_VER)
         elif ds.lower() in ["redhat", "centos", 'rhel']:
-            log_files = "ls /var/lib/pgsql/{}/data/log/".format(MAJOR_VER)
+            log_files = "ls /var/lib/pgsql/{}/data/log/".format(settings.MAJOR_VER)
             file_name = host.check_output(log_files).strip("\n")
-            log_file = "".join(["/var/lib/pgsql/{}/data/log/".format(MAJOR_VER), file_name])
+            log_file = "".join(["/var/lib/pgsql/{}/data/log/".format(settings.MAJOR_VER), file_name])
         file = host.file(log_file)
         file_content = file.content_string
     yield file_content

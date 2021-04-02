@@ -3,14 +3,15 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
-from ppg.tests.settings import get_settings, MAJOR_VER
+from ... import settings
+# from ppg.tests.settings import get_settings, MAJOR_VER
 
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
 PACKAGES = ["libecpg-compat3",  "libecpg-dev", 'libecpg6', "libpgtypes3", "libpq-dev",  "libpq5"]
-pg_versions = get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
+pg_versions = settings.get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
 
 
 @pytest.fixture()
@@ -78,7 +79,7 @@ def build_libpq_programm(host):
         return host.run(
             "export LIBPQ_DIR=/usr/pgsql-{}/  && export LIBRARY_PATH=/usr/pgsql-{}/lib/ &&"
             "gcc -o lib_version /tmp/libpq_command_temp_dir/lib_version.c -I{} -lpq -std=c99".format(
-                MAJOR_VER, MAJOR_VER, pg_include))
+                settings.MAJOR_VER, settings.MAJOR_VER, pg_include))
     return host.run(
         "gcc -o lib_version /tmp/libpq_command_temp_dir/lib_version.c -I{} -lpq -std=c99".format(pg_include))
 
