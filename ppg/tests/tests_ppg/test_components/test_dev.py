@@ -27,5 +27,5 @@ def test_pgrepack(host):
         if result.rc != 0:
             print(result.stderr)
             print(result.stdout)
-            print(host.file("/tmp/pg_repack/regression.diffs").content_string)
+            print(host.file("/tmp/pg_repack/regress/regression.diffs").content_string)
             raise AssertionError
