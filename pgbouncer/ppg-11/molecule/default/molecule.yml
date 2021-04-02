@@ -4,7 +4,7 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: pgaudit-centos7-${BUILD_NUMBER}
+  - name: pgbouncer-centos7-${BUILD_NUMBER}
     region: eu-central-1
     image: ami-095e1a4d3d632d215
     vpc_subnet_id: subnet-085deaca8c1c59a4f
@@ -23,7 +23,7 @@ provisioner:
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/
+  directory: ../../tests/
   options:
     verbose: true
     s: true

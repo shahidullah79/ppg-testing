@@ -4,11 +4,11 @@ import sys
 
 import testinfra.utils.ansible_runner
 
-from ppg.tests.settings import get_settings, MAJOR_VER
+from ... import settings
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
-pg_versions = get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
+pg_versions = settings.get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
 RHEL_FILES = pg_versions['rhel_files']
 RPM7_PACKAGES = pg_versions['rpm7_packages']
 RPM_PACKAGES = pg_versions['rpm_packages']
@@ -45,9 +45,9 @@ def start_stop_postgresql(host):
 @pytest.fixture()
 def postgresql_binary(host):
     dist = host.system_info.distribution
-    pg_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/postgres"
+    pg_bin = f"/usr/lib/postgresql/{settings.MAJOR_VER}/bin/postgres"
     if dist.lower() in ["redhat", "centos", 'rhel']:
-        pg_bin = f"/usr/pgsql-{MAJOR_VER}/bin/postgres"
+        pg_bin = f"/usr/pgsql-{settings.MAJOR_VER}/bin/postgres"
     return host.file(pg_bin)
 
 
@@ -134,27 +134,27 @@ def test_rpm7_package_is_installed(host, package):
 
 def test_postgresql_client_version(host):
     os = host.system_info.distribution
-    pkg = "percona-postgresql-{}".format(MAJOR_VER)
+    pkg = "percona-postgresql-{}".format(settings.MAJOR_VER)
     if os.lower() in ["redhat", "centos", 'rhel']:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(pkg)
-    assert MAJOR_VER in pkg.version
+    assert settings.MAJOR_VER in pkg.version
 
 
 def test_postgresql_version(host):
     os = host.system_info.distribution
-    pkg = "percona-postgresql-client-{}".format(MAJOR_VER)
+    pkg = "percona-postgresql-client-{}".format(settings.MAJOR_VER)
     if os.lower() in ["redhat", "centos", 'rhel']:
-        pkg = "percona-postgresql{}".format(MAJOR_VER)
+        pkg = "percona-postgresql{}".format(settings.MAJOR_VER)
     pkg = host.package(pkg)
-    assert MAJOR_VER in pkg.version, pkg.version
+    assert settings.MAJOR_VER in pkg.version, pkg.version
 
 
 def test_postgresql_is_running_and_enabled(host):
     os = host.system_info.distribution
     service_name = "postgresql"
     if os.lower() in ["redhat", "centos", 'rhel']:
-        service_name = f"postgresql-{MAJOR_VER}"
+        service_name = f"postgresql-{settings.MAJOR_VER}"
     service = host.service(service_name)
     assert service.is_running
     assert service.is_enabled
@@ -172,9 +172,9 @@ def test_postgres_binary(postgresql_binary):
 @pytest.mark.parametrize("binary", BINARIES)
 def test_binaries(host, binary):
     dist = host.system_info.distribution
-    bin_path = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
+    bin_path = f"/usr/lib/postgresql/{settings.MAJOR_VER}/bin/"
     if dist.lower() in ["redhat", "centos", 'rhel']:
-        bin_path = f"/usr/pgsql-{MAJOR_VER}/bin/"
+        bin_path = f"/usr/pgsql-{settings.MAJOR_VER}/bin/"
     bin_full_path = os.path.join(bin_path, binary)
     binary_file = host.file(bin_full_path)
     assert binary_file.exists
@@ -184,7 +184,7 @@ def test_pg_config_server_version(host):
     cmd = "pg_config --version"
     try:
         result = host.check_output(cmd)
-        assert MAJOR_VER in result, result.stdout
+        assert settings.MAJOR_VER in result, result.stdout
     except AssertionError:
         pytest.mark.xfail(reason="Maybe dev package not install")
 
@@ -197,7 +197,7 @@ def test_postgresql_query_version(postgresql_query_version):
 def test_postgres_client_version(host):
     cmd = "psql --version"
     result = host.check_output(cmd)
-    assert MAJOR_VER in result.strip("\n"), result.stdout
+    assert settings.MAJOR_VER in result.strip("\n"), result.stdout
 
 
 def test_start_stop_postgresql(start_stop_postgresql):
@@ -221,7 +221,7 @@ def test_extenstions_list(extension_list, host):
             if "python3" in extension:
                 pytest.skip("Skipping python3 extensions for Centos or RHEL")
             if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
-                             'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in MAJOR_VER:
+                             'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in settings.MAJOR_VER:
                 pytest.skip("Skipping extensions for Centos or RHEL")
         if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
             if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
@@ -237,7 +237,7 @@ def test_enable_extension(host, extension):
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
-                         'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in MAJOR_VER:
+                         'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in settings.MAJOR_VER:
             pytest.skip("Skipping extensions for Centos or RHEL")
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
@@ -261,7 +261,7 @@ def test_drop_extension(host, extension):
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
-                         'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in MAJOR_VER:
+                         'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in settings.MAJOR_VER:
             pytest.skip("Skipping extensions for Centos or RHEL")
 
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
@@ -321,7 +321,7 @@ def test_language(host, language):
         if ds.lower() in ["redhat", "centos", 'rhel']:
             if "python3" in language:
                 pytest.skip("Skipping python3 language for Centos or RHEL")
-        if ds.lower() in ['debian', 'ubuntu'] and language in ['plpythonu', "plpython2u"] or "13" in MAJOR_VER:
+        if ds.lower() in ['debian', 'ubuntu'] and language in ['plpythonu', "plpython2u"] or "13" in settings.MAJOR_VER:
             pytest.skip("Skipping python2 extensions for DEB based in 12.* and all centos 13")
         lang = host.run("psql -c 'CREATE LANGUAGE {};'".format(language))
         assert lang.rc == 0, lang.stderr
