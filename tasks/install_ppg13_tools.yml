@@ -171,6 +171,13 @@
       line: shared_preload_libraries = 'pg_stat_monitor, pgaudit'
     when: ansible_os_family == "RedHat"
 
+  - name: Clone pgaudit sources
+    git:
+      repo: https://github.com/pgaudit/pgaudit.git
+      version: REL_13_STABLE
+      dest: /tmp/pg_audit
+    become_user: postgres
+
 # Comment it enabled lines before with pg_stat
 #  - name: Add extensions to postgresql.conf for Debian
 #    lineinfile:
