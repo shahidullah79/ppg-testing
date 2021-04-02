@@ -23,6 +23,7 @@ def test_pgrepack(host):
         assert mkdir.rc == 0
         ts = host.run("psql -c \"create tablespace testts location '/var/lib/postgresql/testts'\"")
         assert ts.rc == 0
+        su = host.run("psql -c \"create user travis superuser\"")
         result = host.run("cd /tmp/pg_repack && make installcheck USE_PGXS=1")
         if result.rc != 0:
             print(result.stderr)
