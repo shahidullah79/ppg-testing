@@ -178,6 +178,12 @@
       dest: /tmp/pg_audit
     become_user: postgres
 
+  - name: Clone pg_repack sources
+    git:
+      repo: https://github.com/reorg/pg_repack.git
+      version: master
+      dest: /tmp/pg_repack
+    become_user: postgres
 # Comment it enabled lines before with pg_stat
 #  - name: Add extensions to postgresql.conf for Debian
 #    lineinfile:
