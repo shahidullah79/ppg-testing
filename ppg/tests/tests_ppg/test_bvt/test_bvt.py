@@ -1,5 +1,6 @@
 import os
 import pytest
+import sys
 
 import testinfra.utils.ansible_runner
 
@@ -17,6 +18,10 @@ DEB_FILES = pg_versions['deb_files']
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", 'ppg-12.2',
                   'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-13.0", "ppg-13.1"]
 BINARIES = pg_versions['binaries']
+
+
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '../../../')
 
 
 @pytest.fixture()

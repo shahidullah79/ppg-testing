@@ -1,10 +1,10 @@
 import os
 
-from ppg.tests.versions import patroni
-from ppg.tests.versions import pgbackrest
-from ppg.tests.versions import pgaudit
-from ppg.tests.versions import pgrepack
-from ppg.tests.versions import get_ppg_versions
+from ppg.tests.versions.patroni import patroni
+from ppg.tests.versions.pgbackrest import pgbackrest
+from ppg.tests.versions.pgaudit import pgaudit
+from ppg.tests.versions.pg_repack import pgrepack
+from ppg.tests.versions.ppg import get_ppg_versions
 
 MAJOR_VER = "12"
 if "11" in os.getenv("VERSION"):
