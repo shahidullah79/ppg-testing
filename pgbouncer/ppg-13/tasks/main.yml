@@ -47,6 +47,8 @@
     - readline-devel
     - gcc
     - gcc-c++
+    - libevent-devel
+    - pandoc
 
 - name: Enable gcc 7
   shell: scl enable devtoolset-7 bash
@@ -78,41 +80,39 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone wal2json sources
+- name: Clone pgbouncer sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/wal2json
+    dest: /tmp/pgbouncer
+    recursive: yes
+    update: yes
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
   become_user: postgres
 
-- name: Build wal2json from sources
+- name: Autogen pgbouncer
+  shell: ./autogen.sh
+  args:
+    chdir: /tmp/pgbouncer
+  become_user: postgres
+
+- name: Autogen pgbouncer
+  shell: ./configure --prefix=/usr/local
+  args:
+    chdir: /tmp/pgbouncer
+  become_user: postgres
+
+- name: Build pgbouncer from sources
   make:
-    chdir: "/tmp/wal2json"
+    chdir: "/tmp/pgbouncer"
 
-
-- name: Install wal2json from sources
+- name: Install pgbouncer from sources
   make:
     target: install
-    chdir: "/tmp/wal2json"
+    chdir: "/tmp/pgbouncer"
 
-
-- name: Set wal level
-  lineinfile:
-    path: /var/lib/pgsql/13/data/postgresql.conf
-    line: wal_level = logical
-
-- name: Set wal senders
-  lineinfile:
-    path: /var/lib/pgsql/13/data/postgresql.conf
-    line: max_wal_senders = 10
-
-- name: Set replication slots
-  lineinfile:
-    path: /var/lib/pgsql/13/data/postgresql.conf
-    line: max_replication_slots = 10
 
 - name: Restart Postgres RHEL
   service:
