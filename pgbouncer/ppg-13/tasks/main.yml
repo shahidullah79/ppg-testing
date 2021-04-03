@@ -49,7 +49,7 @@
     - gcc-c++
     - libevent-devel
     - pandoc
-    - libtoolize
+    - libtool
 
 - name: Enable gcc 7
   shell: scl enable devtoolset-7 bash
