@@ -76,16 +76,6 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone wal2json sources
-  git:
-    repo: "{{ repo }}"
-    version: "{{ version }}"
-    dest: /tmp/wal2json
-  vars:
-    repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
-    version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
-  become_user: postgres
-
 - name: Clone pgbouncer sources
   git:
     repo: "{{ repo }}"
