@@ -48,6 +48,7 @@
     - gcc
     - gcc-c++
     - git
+    - libevent-devel
     - pandoc
     - libtool
 
