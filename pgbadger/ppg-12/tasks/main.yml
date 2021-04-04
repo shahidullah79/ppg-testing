@@ -47,8 +47,9 @@
     - readline-devel
     - gcc
     - gcc-c++
-    - pandoc
-    - libtool
+    - perl-Pod-Checker
+    - perl-devel
+    - perl-JSON-XS.x86_64
 
 - name: Enable gcc 7
   shell: scl enable devtoolset-7 bash
@@ -75,57 +76,32 @@
 
 - debug: var=gcc.stdout_lines
 
-- name: Clone wal2json sources
+- name: Clone pgbadger sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/wal2json
+    dest: /tmp/pgbadger
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
   become_user: postgres
 
-- name: Clone pgbouncer sources
-  git:
-    repo: "{{ repo }}"
-    version: "{{ version }}"
-    dest: /tmp/pgbouncer
-    recursive: yes
-    update: yes
-  vars:
-    repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
-    version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
-  become_user: postgres
-
-- name: Autogen pgbouncer
-  shell: ./autogen.sh
+- name: Make perl for pgbadger
+  shell: perl Makefile.PL
   args:
-    chdir: /tmp/pgbouncer
-  become_user: postgres
+    chdir: /tmp/pgbadger
 
-- name: Configure pgbouncer
-  shell: ./configure --prefix=/usr/local
-  args:
-    chdir: /tmp/pgbouncer
-  become_user: postgres
-
-- name: Build pgbouncer from sources
+- name: Build pgbadger from sources
   make:
-    chdir: "/tmp/pgbouncer"
+    chdir: "/tmp/pgbadger"
 
-- name: Install pgbouncer from sources
+- name: Install pgbadger from sources
   make:
     target: install
-    chdir: "/tmp/pgbouncer"
+    chdir: "/tmp/pgbadger"
 
 - name: Restart Postgres RHEL
   service:
     name: postgresql-12
     state: restarted
   register: out
-
-- name: Start Postgres RHEL
-  service:
-    name: postgresql-12
-    state: started
-    enabled: yes
