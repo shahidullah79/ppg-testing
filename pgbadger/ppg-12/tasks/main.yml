@@ -50,6 +50,7 @@
     - perl-Pod-Checker
     - perl-devel
     - perl-JSON-XS.x86_64
+    - git
 
 - name: Enable gcc 7
   shell: scl enable devtoolset-7 bash
