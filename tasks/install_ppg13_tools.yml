@@ -174,21 +174,21 @@
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
-      version: REL_13_STABLE
+      version: 1.4.1Т
       dest: /tmp/pg_audit
     become_user: postgres
 
   - name: Clone pg_repack sources
     git:
       repo: https://github.com/reorg/pg_repack.git
-      version: master
+      version: ver_1.4.6
       dest: /tmp/pg_repack
     become_user: postgres
 
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: REL0_8_0_STABLE
+      version: REL0_8_1
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 # Comment it enabled lines before with pg_stat
