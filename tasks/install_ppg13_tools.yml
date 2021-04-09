@@ -171,6 +171,13 @@
       line: shared_preload_libraries = 'pg_stat_monitor, pgaudit'
     when: ansible_os_family == "RedHat"
 
+  - name: Install git
+    yum:
+      name: git-all
+    state: latest
+    update_cache: yes
+    when: ansible_os_family == "RedHat"
+  
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
