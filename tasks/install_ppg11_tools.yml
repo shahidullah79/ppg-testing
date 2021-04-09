@@ -176,24 +176,36 @@
   - debug: msg="{{pg_status.stdout}}"
     when: ansible_os_family == "Debian"
 
-
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
-      version: REL_13_STABLE
+      version: REL_11_STABLE
       dest: /tmp/pg_audit
     become_user: postgres
 
   - name: Clone pg_repack sources
     git:
       repo: https://github.com/reorg/pg_repack.git
-      version: master
+      version: ver_1.4.6
       dest: /tmp/pg_repack
     become_user: postgres
 
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: master
+      version: REL0_8_1
       dest: /tmp/pg_stat_monitor
     become_user: postgres
+
+  - name: Restart Postgres RHEL
+    service:
+      name: postgresql-11
+      state: restarted
+    when: ansible_os_family == "RedHat"
+    register: out
+
+  - name: Restart Postgres Debian
+    command: sudo systemctl restart postgresql
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "Debian"

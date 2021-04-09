@@ -174,7 +174,7 @@
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
-      version: REL_13_STABLE
+      version: REL_12_STABLE
       dest: /tmp/pg_audit
     become_user: postgres
 
@@ -188,7 +188,7 @@
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: master
+      version: REL0_8_1
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 
