@@ -174,7 +174,7 @@
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
-      version: 1.4.1Т
+      version: 1.5.0
       dest: /tmp/pg_audit
     become_user: postgres
 
