@@ -39,7 +39,7 @@ def get_settings(distro_type):
                           "extensions": ppg_versions["ppg-11.11"]['extensions'],
                           "languages": ppg_versions["ppg-11.11"]['languages'],
                           "binaries": ppg_versions["ppg-11.11"]['binaries'],
-                          "pg_stat_monitor": "0.6.0"
+                          "pg_stat_monitor": "0.8.1"
                           },
             "ppg-11.10": {"version": "11.10",
                           "deb_pkg_ver": ppg_versions["ppg-11.10"]['deb_pkg_ver'],
@@ -290,7 +290,7 @@ def get_settings(distro_type):
                          "extensions": ppg_versions["ppg-12.6"]['extensions'],
                          "languages": ppg_versions["ppg-12.6"]['languages'],
                          "binaries": ppg_versions["ppg-12.6"]['binaries'],
-                         "pg_stat_monitor": "0.6.0"
+                         "pg_stat_monitor": "0.8.1"
                          },
             "ppg-13.0": {"version": "13.0",
                          "deb_pkg_ver": ppg_versions["ppg-13.0"]['deb_pkg_ver'],
@@ -363,5 +363,5 @@ def get_settings(distro_type):
                          "extensions": ppg_versions["ppg-13.2"]['extensions'],
                          "languages": ppg_versions["ppg-13.2"]['languages'],
                          "binaries": ppg_versions["ppg-13.2"]['binaries'],
-                         "pg_stat_monitor": "0.6.0"}
+                         "pg_stat_monitor": "0.8.1"}
     }

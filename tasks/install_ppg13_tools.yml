@@ -184,6 +184,13 @@
       version: master
       dest: /tmp/pg_repack
     become_user: postgres
+
+  - name: Clone pg_stat_monitor sources
+    git:
+      repo: https://github.com/percona/pg_stat_monitor.git
+      version: master
+      dest: /tmp/pg_stat_monitor
+    become_user: postgres
 # Comment it enabled lines before with pg_stat
 #  - name: Add extensions to postgresql.conf for Debian
 #    lineinfile:
