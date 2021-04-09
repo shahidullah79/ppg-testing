@@ -188,7 +188,7 @@
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: master
+      version: REL0_8_0_STABLE
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 # Comment it enabled lines before with pg_stat
