@@ -192,6 +192,47 @@
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 
+  - name: Remove pg_hba.conf debian
+    file:
+      path: /var/lib/pgsql/12/data/pg_hba.conf
+      state: absent
+    when: ansible_os_family == "RedHat"
+
+
+  - name: Remove pg_hba.conf debian
+    file:
+      path: /etc/postgresql/12/main/pg_hba.conf
+      state: absent
+    when: ansible_os_family == "Debian"
+
+  - name: Edit pg_hba.conf RHEL
+    blockinfile:
+      path: /var/lib/pgsql/12/data/pg_hba.conf
+      create: yes
+      owner: postgres
+      block: |
+        local   all             all                                     trust
+        host    all             all             127.0.0.1/32            trust
+        host    all             all             ::1/128                 trust
+        local   replication     all                                     trust
+        host    replication     all             127.0.0.1/32            trust
+        host    replication     all             ::1/128                 trust
+    when: ansible_os_family == "RedHat"
+
+  - name: Edit pg_hba.conf Debian
+    blockinfile:
+      create: yes
+      owner: postgres
+      path: /etc/postgresql/12/main/pg_hba.conf
+      block: |
+        local   all             all                                     trust
+        host    all             all             127.0.0.1/32            trust
+        host    all             all             ::1/128                 trust
+        local   replication     all                                     trust
+        host    replication     all             127.0.0.1/32            trust
+        host    replication     all             ::1/128                 trust
+    when: ansible_os_family == "Debian"
+
   - name: Restart Postgres RHEL
     service:
       name: postgresql-12
