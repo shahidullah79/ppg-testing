@@ -209,6 +209,7 @@
   - name: Edit pg_hba.conf RHEL
     blockinfile:
       path: /var/lib/pgsql/13/data/pg_hba.conf
+      create: yes
       block: |
         local   all             all                                     trust
         host    all             all             127.0.0.1/32            trust
@@ -220,6 +221,7 @@
 
   - name: Edit pg_hba.conf Debian
     blockinfile:
+      create: yes
       path: /etc/postgresql/13/main/pg_hba.conf
       block: |
         local   all             all                                     trust
