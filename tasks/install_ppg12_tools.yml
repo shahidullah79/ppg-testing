@@ -372,6 +372,21 @@
         host    replication     all             ::1/128                 trust
     when: ansible_os_family == "Debian"
 
+#  - name: Set wal level
+#    lineinfile:
+#      path: /var/lib/pgsql/12/data/postgresql.conf
+#      line: wal_level = logical
+#
+#  - name: Set wal senders
+#    lineinfile:
+#      path: /var/lib/pgsql/12/data/postgresql.conf
+#      line: max_wal_senders = 10
+#
+#  - name: Set replication slots
+#    lineinfile:
+#      path: /var/lib/pgsql/12/data/postgresql.conf
+#      line: max_replication_slots = 10
+
   - name: Restart Postgres RHEL
     service:
       name: postgresql-12

@@ -381,15 +381,16 @@ def test_pg_stat_monitor_package_version(host):
     assert pg_versions['pg_stat_monitor'] in pg_stat.version
 
 
-@pytest.mark.parametrize("package", ['percona-pgbadger', 'percona-pgbouncer'])
+@pytest.mark.parametrize("package", ['pgbadger', 'pgbouncer'])
 def test_package_version(host, package):
-    pgbadger = host.package(package)
-    assert pg_versions[package]['version'] in pgbadger.version
+    package_name = "-".join(["percona", package])
+    package = host.package(package_name)
+    assert pg_versions[package]['version'] in package.version, package.version
 
 
 def test_wal2json_version(host):
     wal2json = host.package(f"percona-wal2json{MAJOR_VER}")
-    assert pg_versions["wal2json"]['version'] in wal2json.version
+    assert pg_versions["wal2json"]['version'] in wal2json.version, wal2json.version
 
 
 def test_set_user_version(host):
@@ -399,11 +400,11 @@ def test_set_user_version(host):
         set_user = host.package(f"percona-pgaudit{MAJOR_VER}-set-user")
     elif dist == "debian":
         set_user = host.package(f"percona-pgaudit{MAJOR_VER}_set_user")
-    assert pg_versions["set_user"]['version'] in set_user.version
+    assert pg_versions["set_user"]['version'] in set_user.version, set_user.version
 
 
 @pytest.mark.parametrize("binary", ['pgbadger', 'pgbouncer'])
 def test_binary_version(host, binary):
     result = host.run(f"{binary} --version")
     assert result.rc == 0, result.stderr
-    assert result.stdout.strip("\n") == pg_versions[binary]['binary_version'], result.stdout
+    assert pg_versions[binary]['binary_version'] in result.stdout.strip("\n"), result.stdout
