@@ -348,7 +348,7 @@
 
   - name: Clone wal2json sources
     git:
-      repo: https://github.com/eulerto/w
+      repo: https://github.com/eulerto/wal2json.git
       version: wal2json_2_3
       dest: /tmp/wal2json
     become_user: postgres
