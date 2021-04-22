@@ -92,12 +92,10 @@
   make:
     chdir: "/tmp/wal2json"
 
-
 - name: Install wal2json from sources
   make:
     target: install
     chdir: "/tmp/wal2json"
-
 
 - name: Set wal level
   lineinfile:

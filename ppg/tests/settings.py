@@ -1,10 +1,14 @@
 import os
 
 from .versions.patroni import patroni
+from .versions.pgbadger import pgbadger
+from .versions.pgbouncer import pgbouncer
 from .versions.pgbackrest import pgbackrest
 from .versions.pgaudit import pgaudit
 from .versions.pg_repack import pgrepack
 from .versions.ppg import get_ppg_versions
+from .versions.set_user import set_user
+from .versions.wal2json import wal2json
 
 MAJOR_VER = "12"
 if "11" in os.getenv("VERSION"):
@@ -275,6 +279,10 @@ def get_settings(distro_type):
                          "libpq_version": "120006",
                          "pgaudit": pgaudit['ppg-12.6'],
                          "pgbackrest": pgbackrest['ppg-12.6'],
+                         "pgbadger": pgbadger['12.6'],
+                         'pgbouncer': pgbouncer['12.6'],
+                         "wal2json": wal2json['12.6'],
+                         "set_user": set_user['12.6'],
                          "patroni": patroni['ppg-12.6'],
                          "pgrepack": pgrepack['ppg-12.6'],
                          "pgrepack_package_rpm": 'percona-pg_repack12',
@@ -350,6 +358,10 @@ def get_settings(distro_type):
                          "pgbackrest": pgbackrest['ppg-13.2'],
                          "patroni": patroni['ppg-13.2'],
                          "pgrepack": pgrepack['ppg-13.2'],
+                         "pgbadger": pgbadger['13.2'],
+                         'pgbouncer': pgbouncer['13.2'],
+                         "wal2json": wal2json['13.2'],
+                         "set_user": set_user['13.2'],
                          "pgrepack_package_rpm": 'percona-pg_repack13',
                          "pgrepack_package_deb": "percona-postgresql-13-repack",
                          "libpq": "Version of libpq: 130002",
