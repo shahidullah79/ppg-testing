@@ -35,6 +35,7 @@
         - perl-devel
         - perl-JSON-XS
         - libtool
+        - make
     when: ansible_os_family == "RedHat"
 
   - name: Install additional packages Debian
