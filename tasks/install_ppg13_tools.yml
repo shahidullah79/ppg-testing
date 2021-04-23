@@ -55,6 +55,7 @@
         - perl-Pod-Checker
         - perl-devel
         - perl-JSON-XS
+        - perl-Test-Simple
         - libtool
         - make
         - pandoc
