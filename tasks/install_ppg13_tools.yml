@@ -36,7 +36,27 @@
         - perl-JSON-XS
         - libtool
         - make
-    when: ansible_os_family == "RedHat"
+    when: ansible_os_family == "RedHat" ansible_distribution_major_version|int <= 7
+
+  - name: Install additional packages RPM
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      enablerepo: powertools
+      update_cache: yes
+    vars:
+      packages:
+        - openssl-devel
+        - readline-devel
+        - gcc
+        - gcc-c++
+        - libevent-devel
+        - perl-Pod-Checker
+        - perl-devel
+        - perl-JSON-XS
+        - libtool
+        - make
+    when: ansible_os_family == "RedHat" ansible_distribution_major_version|int == 8
 
   - name: Install additional packages Debian
     apt:
