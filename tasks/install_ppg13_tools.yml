@@ -34,7 +34,21 @@
         - perl-Pod-Checker
         - perl-devel
         - perl-JSON-XS.x86_64
+        - libtool
+        - pandoc
     when: ansible_os_family == "RedHat"
+
+  - name: Install additional packages Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - libtool
+        - libevent-devel
+        - pandoc
+    when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
     apt:
