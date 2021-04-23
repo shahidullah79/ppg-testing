@@ -50,6 +50,10 @@
         - pandoc
         - m4
         - automake
+        - pkg-config
+        - openssl-dev
+        - readline-dev
+        - build-essential
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
