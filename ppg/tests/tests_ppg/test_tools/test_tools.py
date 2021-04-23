@@ -390,7 +390,11 @@ def test_package_version(host, package):
 
 
 def test_wal2json_version(host):
-    wal2json = host.package(f"percona-wal2json{MAJOR_VER}")
+    dist = host.system_info.distribution
+    if dist.lower() in ["ubuntu", "debian"]:
+        wal2json = host.package(f"percona-postgresql-{MAJOR_VER}-wal2json")
+    else:
+        wal2json = host.package(f"percona-wal2json{MAJOR_VER}")
     assert wal2json.is_installed
     assert pg_versions["wal2json"]['version'] in wal2json.version, wal2json.version
 
@@ -407,6 +411,8 @@ def test_set_user_version(host):
 
 @pytest.mark.parametrize("binary", ['pgbadger', 'pgbouncer'])
 def test_binary_version(host, binary):
+    res = host.run(f"find / -name {binary}")
+    print(res.stdout)
     result = host.run(f"{binary} --version")
     assert result.rc == 0, result.stderr
     assert pg_versions[binary]['binary_version'] in result.stdout.strip("\n"), result.stdout
