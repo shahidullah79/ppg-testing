@@ -411,8 +411,6 @@ def test_set_user_version(host):
 
 @pytest.mark.parametrize("binary", ['pgbadger', 'pgbouncer'])
 def test_binary_version(host, binary):
-    res = host.run(f"find / -name {binary}")
-    print(res.stdout)
-    result = host.run(f"{binary} --version")
+    result = host.run(f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\" && {binary} --version")
     assert result.rc == 0, result.stderr
     assert pg_versions[binary]['binary_version'] in result.stdout.strip("\n"), result.stdout
