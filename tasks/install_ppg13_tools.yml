@@ -36,6 +36,7 @@
         - perl-JSON-XS
         - libtool
         - make
+        - pandoc
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
   - name: Install additional packages RPM
@@ -56,6 +57,7 @@
         - perl-JSON-XS
         - libtool
         - make
+        - pandoc
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8
 
   - name: Install additional packages Debian
@@ -71,9 +73,10 @@
         - m4
         - automake
         - pkg-config
-        - openssl-dev
+        - libssl-dev
         - readline-dev
         - build-essential
+        - pandoc
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
