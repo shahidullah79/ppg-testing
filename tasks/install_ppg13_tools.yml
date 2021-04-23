@@ -33,7 +33,7 @@
         - libevent-devel
         - perl-Pod-Checker
         - perl-devel
-        - perl-JSON
+        - perl-JSON-XS
         - libtool
     when: ansible_os_family == "RedHat"
 

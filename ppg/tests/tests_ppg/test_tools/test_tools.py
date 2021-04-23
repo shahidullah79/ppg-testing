@@ -397,10 +397,9 @@ def test_wal2json_version(host):
 
 def test_set_user_version(host):
     dist = host.system_info.distribution
-    set_user = ""
-    if dist.lower() in ["ubuntu", "redhat", "centos", 'rhel']:
+    if dist.lower() in ["ubuntu", "debian"]:
         set_user = host.package(f"percona-pgaudit{MAJOR_VER}-set-user")
-    elif dist == "debian":
+    else:
         set_user = host.package(f"percona-pgaudit{MAJOR_VER}_set_user")
     assert set_user.is_installed
     assert pg_versions["set_user"]['version'] in set_user.version, set_user.version
