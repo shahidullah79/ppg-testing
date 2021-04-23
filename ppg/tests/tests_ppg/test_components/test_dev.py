@@ -1,10 +1,12 @@
 import os
 
 import testinfra.utils.ansible_runner
+from ... import settings
 
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
+MAJOR_VER = settings.MAJOR_VER
 
 
 def test_pgaudit(host):
@@ -52,7 +54,7 @@ def test_pgbadger(host):
 
 def test_pgbouncer(host):
     with host.sudo("postgres"):
-        result = host.run('PATH="/usr/pgsql-13/bin/:$PATH" && cd /tmp/pgbouncer && make check')
+        result = host.run(f"PATH='/usr/pgsql-{MAJOR_VER}/bin/:$PATH'' && cd /tmp/pgbouncer && make check")
         print(result.stdout)
         if result.rc != 0:
             print(result.stderr)
