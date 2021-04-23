@@ -33,6 +33,13 @@
           - percona-pgbackrest-doc
           - percona-patroni
           - percona-patroni-dbgsym
+          - percona-pgbadger
+          - percona-pgbouncer
+          - percona-pgaudit13-set-user
+          - percona-pgaudit13-set-user-dbgsym
+          - percona-pgbouncer-dbgsym
+          - percona-postgresql-13-wal2json
+          - percona-postgresql-13-wal2json-dbgsym
       when: ansible_distribution == "Debian"
 
     - name: remove patroni ubuntu

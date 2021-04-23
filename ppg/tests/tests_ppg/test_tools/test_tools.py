@@ -384,12 +384,14 @@ def test_pg_stat_monitor_package_version(host):
 @pytest.mark.parametrize("package", ['pgbadger', 'pgbouncer'])
 def test_package_version(host, package):
     package_name = "-".join(["percona", package])
-    package = host.package(package_name)
-    assert pg_versions[package]['version'] in package.version, package.version
+    pkg = host.package(package_name)
+    assert pkg.installed
+    assert pg_versions[package]['version'] in pkg.version, pkg.version
 
 
 def test_wal2json_version(host):
     wal2json = host.package(f"percona-wal2json{MAJOR_VER}")
+    assert wal2json.installed
     assert pg_versions["wal2json"]['version'] in wal2json.version, wal2json.version
 
 
@@ -400,6 +402,7 @@ def test_set_user_version(host):
         set_user = host.package(f"percona-pgaudit{MAJOR_VER}-set-user")
     elif dist == "debian":
         set_user = host.package(f"percona-pgaudit{MAJOR_VER}_set_user")
+    assert set_user.installed
     assert pg_versions["set_user"]['version'] in set_user.version, set_user.version
 
 

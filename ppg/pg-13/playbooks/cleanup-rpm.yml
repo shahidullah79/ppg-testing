@@ -35,6 +35,10 @@
           - percona-postgresql13-pltcl-debuginfo
           - percona-postgresql13-server-debuginfo
           - percona-postgresql13-test-debuginfo
+          - percona-pgbadger
+          - percona-pgbouncer
+          - percona-pgaudit13_set_user
+          - percona-wal2json13
       when: ansible_os_family == "RedHat"
 
     - name: remove pgaudit rpm packages

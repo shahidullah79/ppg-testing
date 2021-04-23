@@ -59,9 +59,9 @@ def test_pgbouncer(host):
             raise AssertionError
 
 
-# def test_wal2json(host):
-#     with host.sudo("postgres"):
-#         result = host.run("cd /tmp/wal2json && make installcheck USE_PGXS=1")
-#         if result.rc != 0:
-#             print(host.file("/tmp/wal2json/regression.diffs").content)
-#             raise AssertionError
+def test_wal2json(host):
+    with host.sudo("postgres"):
+        result = host.run("cd /tmp/wal2json && make installcheck USE_PGXS=1")
+        if result.rc != 0:
+            print(host.file("/tmp/wal2json/regression.diffs").content)
+            raise AssertionError

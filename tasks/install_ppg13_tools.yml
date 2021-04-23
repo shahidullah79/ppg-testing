@@ -1,22 +1,22 @@
-  - name: Setup additional yum packages
-    yum:
-      name: "{{ packages }}"
-      update_cache: yes
-      state: present
-    vars:
-      packages:
-        - yum-utils
-        - centos-release-scl
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
-
-
-  - name: setup devtoolset-7-gcc
-    yum:
-      name: devtoolset-7-gcc*
-      update_cache: yes
-      enablerepo: centos-sclo-rh-testing
-      state: present
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
+#  - name: Setup additional yum packages
+#    yum:
+#      name: "{{ packages }}"
+#      update_cache: yes
+#      state: present
+#    vars:
+#      packages:
+#        - yum-utils
+#        - centos-release-scl
+#    when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
+#
+#
+#  - name: setup devtoolset-7-gcc
+#    yum:
+#      name: devtoolset-7-gcc*
+#      update_cache: yes
+#      enablerepo: centos-sclo-rh-testing
+#      state: present
+#    when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
 
   - name: Install additional packages RPM
@@ -26,16 +26,14 @@
       update_cache: yes
     vars:
       packages:
-      - openssl-devel
-      - llvm-toolset-7-clang
-      - llvm5.0
-      - llvm-toolset-7
-      - readline-devel
-      - gcc
-      - gcc-c++
-      - libevent-devel
-      - pandoc
-      - libtool
+        - openssl-devel
+        - readline-devel
+        - gcc
+        - gcc-c++
+        - libevent-devel
+        - perl-Pod-Checker
+        - perl-devel
+        - perl-JSON-XS.x86_64
     when: ansible_os_family == "RedHat"
 
   - name: Install pgaudit Debian
@@ -114,8 +112,8 @@
       block: |
         archive_mode = on
         archive_command = 'pgbackrest --stanza=testing archive-push %p'
-        max_wal_senders = 3
-        wal_level = replica
+        max_wal_senders = 10
+        wal_level = logical
     when: ansible_os_family == "Debian"
 
   - name: Configure backup config for RHEL
@@ -124,8 +122,8 @@
       block: |
         archive_mode = on
         archive_command = 'pgbackrest --stanza=testing archive-push %p'
-        max_wal_senders = 3
-        wal_level = replica
+        max_wal_senders = 10
+        wal_level = logical
     when: ansible_os_family == "RedHat"
 
 
@@ -230,6 +228,8 @@
       packages:
         - percona-pgaudit13-set-user
         - percona-pgaudit13-set-user-dbgsym
+    when: ansible_os_family == "Debian"
+
 
   - name: Install percona-pgbouncer RHEL
     yum:
@@ -247,6 +247,8 @@
       packages:
         - percona-pgbouncer
         - percona-pgbouncer-dbgsym
+    when: ansible_os_family == "Debian"
+
 
   - name: Install percona-wal2json13 RHEL
     yum:
@@ -264,6 +266,7 @@
       packages:
         - percona-postgresql-13-wal2json
         - percona-postgresql-13-wal2json-dbgsym
+    when: ansible_os_family == "Debian"
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
