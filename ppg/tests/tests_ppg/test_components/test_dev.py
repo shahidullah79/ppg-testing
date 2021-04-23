@@ -54,7 +54,8 @@ def test_pgbadger(host):
 
 def test_pgbouncer(host):
     with host.sudo("postgres"):
-        result = host.run(f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/sbin/:$PATH\" && cd /tmp/pgbouncer && make check")
+        result = host.run(
+            f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\" && cd /tmp/pgbouncer && make check")
         print(result.stdout)
         if result.rc != 0:
             print(result.stderr)
