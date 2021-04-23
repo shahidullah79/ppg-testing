@@ -33,9 +33,8 @@
         - libevent-devel
         - perl-Pod-Checker
         - perl-devel
-        - perl-JSON-XS.x86_64
+        - perl-JSON
         - libtool
-        - pandoc
     when: ansible_os_family == "RedHat"
 
   - name: Install additional packages Debian
@@ -46,7 +45,7 @@
     vars:
       packages:
         - libtool
-        - libevent-devel
+        - libevent-dev
         - pandoc
     when: ansible_os_family == "Debian"
 
