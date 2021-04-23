@@ -76,7 +76,7 @@
         archive_mode = on
         archive_command = 'pgbackrest --stanza=testing archive-push %p'
         max_wal_senders = 10
-        wal_level = logical
+        wal_level = replica
     when: ansible_os_family == "Debian"
 
   - name: Configure backup config for RHEL
@@ -86,7 +86,7 @@
         archive_mode = on
         archive_command = 'pgbackrest --stanza=testing archive-push %p'
         max_wal_senders = 10
-        wal_level = logical
+        wal_level = replica
     when: ansible_os_family == "RedHat"
 
 
