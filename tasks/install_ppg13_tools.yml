@@ -1,24 +1,4 @@
-#  - name: Setup additional yum packages
-#    yum:
-#      name: "{{ packages }}"
-#      update_cache: yes
-#      state: present
-#    vars:
-#      packages:
-#        - yum-utils
-#        - centos-release-scl
-#    when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
-#
-#
-#  - name: setup devtoolset-7-gcc
-#    yum:
-#      name: devtoolset-7-gcc*
-#      update_cache: yes
-#      enablerepo: centos-sclo-rh-testing
-#      state: present
-#    when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
-
-
+---
   - name: Install additional packages RPM
     yum:
       name: "{{ packages }}"
@@ -70,12 +50,11 @@
       packages:
         - libtool
         - libevent-dev
-        - pandoc
         - m4
         - automake
         - pkg-config
         - libssl-dev
-        - readline-dev
+        - libreadline-dev
         - build-essential
         - pandoc
     when: ansible_os_family == "Debian"
@@ -385,21 +364,6 @@
         host    replication     all             127.0.0.1/32            trust
         host    replication     all             ::1/128                 trust
     when: ansible_os_family == "Debian"
-
-#  - name: Set wal level
-#    lineinfile:
-#      path: /var/lib/pgsql/13/data/postgresql.conf
-#      line: wal_level = logical
-#
-#  - name: Set wal senders
-#    lineinfile:
-#      path: /var/lib/pgsql/13/data/postgresql.conf
-#      line: max_wal_senders = 10
-#
-#  - name: Set replication slots
-#    lineinfile:
-#      path: /var/lib/pgsql/13/data/postgresql.conf
-#      line: max_replication_slots = 10
 
   - name: Clone pgbadger sources
     git:
