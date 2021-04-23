@@ -48,6 +48,7 @@
         - libtool
         - libevent-dev
         - pandoc
+        - m4
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
