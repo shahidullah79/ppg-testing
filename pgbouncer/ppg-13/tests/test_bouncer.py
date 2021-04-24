@@ -8,7 +8,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_pgbouncer(host):
-    with host.sudo("postgres"):
+    with host.sudo():
         result = host.run('PATH="/usr/pgsql-13/bin/:$PATH" && cd /tmp/pgbouncer && make check')
         print(result.stdout)
         if result.rc != 0:
