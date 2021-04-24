@@ -76,7 +76,7 @@
         archive_mode = on
         archive_command = 'pgbackrest --stanza=testing archive-push %p'
         max_wal_senders = 3
-        wal_level = replica
+        wal_level = logical
     when: ansible_os_family == "Debian"
 
   - name: Configure backup config for RHEL
@@ -86,7 +86,7 @@
         archive_mode = on
         archive_command = 'pgbackrest --stanza=testing archive-push %p'
         max_wal_senders = 3
-        wal_level = replica
+        wal_level = logical
     when: ansible_os_family == "RedHat"
 
   - name: Restart Postgres RHEL
@@ -190,6 +190,8 @@
       packages:
         - percona-pgaudit12-set-user
         - percona-pgaudit12-set-user-dbgsym
+    when: ansible_os_family == "Debian"
+
 
   - name: Install percona-pgbouncer RHEL
     yum:
@@ -207,6 +209,7 @@
       packages:
         - percona-pgbouncer
         - percona-pgbouncer-dbgsym
+    when: ansible_os_family == "Debian"
 
   - name: Install percona-wal2json12 RHEL
     yum:
@@ -224,7 +227,7 @@
       packages:
         - percona-postgresql-12-wal2json
         - percona-postgresql-12-wal2json-dbgsym
-
+    when: ansible_os_family == "Debian"
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
@@ -335,20 +338,6 @@
         host    replication     all             ::1/128                 trust
     when: ansible_os_family == "Debian"
 
-#  - name: Set wal level
-#    lineinfile:
-#      path: /var/lib/pgsql/12/data/postgresql.conf
-#      line: wal_level = logical
-#
-#  - name: Set wal senders
-#    lineinfile:
-#      path: /var/lib/pgsql/12/data/postgresql.conf
-#      line: max_wal_senders = 10
-#
-#  - name: Set replication slots
-#    lineinfile:
-#      path: /var/lib/pgsql/12/data/postgresql.conf
-#      line: max_replication_slots = 10
 
   - name: Restart Postgres RHEL
     service:
