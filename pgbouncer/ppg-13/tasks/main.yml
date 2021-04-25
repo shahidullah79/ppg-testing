@@ -54,7 +54,7 @@
     - pkgconfig
 
 - name: add user to sudo group
-  shell: usermod -aG sudo postgres
+  shell: usermod -aG wheel postgres
   args:
     executable: /bin/bash
 
