@@ -110,6 +110,7 @@
           - openssl
           - make
           - pandoc
+          - pkgconfig
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
     - name: Install additional packages RPM
@@ -133,6 +134,7 @@
           - libtool
           - make
           - pandoc
+          - pkgconfig
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8
 
     - name: Install additional packages Debian
