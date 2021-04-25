@@ -53,6 +53,11 @@
     - openssl
     - pkgconfig
 
+- name: add user to sudo group
+  shell: usermod -aG sudo postgres
+    args:
+      executable: /bin/bash
+
 - name: Enable gcc 7
   shell: scl enable devtoolset-7 bash
 
