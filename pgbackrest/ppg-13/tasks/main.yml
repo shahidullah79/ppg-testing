@@ -1,0 +1,76 @@
+---
+
+- name: Configure repository
+  include_tasks: ../../../../tasks/enable_repo.yml
+
+- name: install additional packages for running tests with apt
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: latest
+  vars:
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - lsb-release
+      - libxml-checker-perl
+      - libyaml-perl
+      - texlive-latex-base
+      - texlive-latex-extra
+      - texlive-fonts-recommended
+  retries: 60
+  delay: 10
+  register: result
+  until: result is not failed
+  when: ansible_os_family == "Debian"
+
+- name: install Percona Platform for PostgreSQL deb packages
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: latest
+  vars:
+    packages:
+    - percona-postgresql
+    - percona-postgresql-13
+    - percona-postgresql-all
+    - percona-postgresql-client
+    - percona-postgresql-client-13
+    - percona-postgresql-client-common
+    - percona-postgresql-common
+    - percona-postgresql-contrib
+    - percona-postgresql-plperl-13
+    - percona-postgresql-plpython3-13
+    - percona-postgresql-pltcl-13
+    - percona-postgresql-server-dev-13
+    - percona-postgresql-server-dev-all
+  when: ansible_os_family == "Debian"
+
+
+- shell: gcc --version
+  register: gcc
+
+- debug: var=gcc.stdout_lines
+
+- shell: gcc --version
+  register: gcc
+
+- debug: var=gcc.stdout_lines
+
+- name: Clone pgbackrest sources
+  git:
+    repo: "{{ repo }}"
+    version: "{{ version }}"
+    dest: /tmp/pgbackrest
+  vars:
+    repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
+    version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
+  become_user: postgres
+
+
+- name: Restart Postgres RHEL
+  service:
+    name: postgresql
+    state: restarted
+  register: out

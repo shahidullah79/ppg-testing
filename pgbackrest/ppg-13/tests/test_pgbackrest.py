@@ -1,0 +1,18 @@
+import os
+
+import testinfra.utils.ansible_runner
+
+
+testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
+    os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
+
+
+def test_pgbadger(host):
+    with host.sudo():
+        result = host.run('cd /tmp/pgbackrest && test/test.pl --gen-check --pgsql-bin=/usr/lib/postgresql/13/bin --log-level-test-file=off --no-coverage-report --vm-host=none --vm-max=2 --vm=none --no-coverage')
+        print(result.stdout)
+        if result.rc != 0:
+            print(result.stderr)
+            raise AssertionError
+
+

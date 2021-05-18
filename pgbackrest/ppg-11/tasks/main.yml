@@ -1,0 +1,108 @@
+---
+
+- name: Configure repository
+  include_tasks: ../../../../tasks/enable_repo.yml
+
+- name: Setup additional yum packages
+  yum:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: present
+  vars:
+    packages:
+      - yum-utils
+      - centos-release-scl
+
+- name: setup devtoolset-7-gcc
+  yum:
+    name: devtoolset-7-gcc*
+    update_cache: yes
+    enablerepo: centos-sclo-rh-testing
+    state: present
+
+- name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - percona-postgresql-client-common
+    - percona-postgresql-common
+    - percona-postgresql-server-dev-all
+    - percona-postgresql11
+    - percona-postgresql11-contrib
+    - percona-postgresql11-devel
+    - percona-postgresql11-libs
+    - percona-postgresql11-llvmjit
+    - percona-postgresql11-plperl
+    - percona-postgresql11-plpython3
+    - percona-postgresql11-pltcl
+    - percona-postgresql11-server
+    - percona-postgresql11-test
+    - openssl-devel
+    - llvm-toolset-7-clang
+    - llvm5.0
+    - llvm-toolset-7
+    - readline-devel
+    - gcc
+    - gcc-c++
+    - git
+    - perl-Pod-Checker
+    - perl-devel
+    - perl-JSON-XS.x86_64
+
+- name: Enable gcc 7
+  shell: scl enable devtoolset-7 bash
+
+- name: Initialize Postgres RHEL
+  command: /usr/pgsql-11/bin/postgresql-11-setup initdb
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+- name: Enable gcc 7
+  shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
+
+- name: Set source
+  shell: source /opt/rh/devtoolset-7/enable;
+
+- name: Delete old gcc
+  shell: rm /usr/bin/gcc
+
+- name: Set symbol link
+  shell: ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc
+
+- shell: gcc --version
+  register: gcc
+
+- debug: var=gcc.stdout_lines
+
+- name: Clone pgbadger sources
+  git:
+    repo: "{{ repo }}"
+    version: "{{ version }}"
+    dest: /tmp/pgbadger
+  vars:
+    repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
+    version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
+  become_user: postgres
+
+- name: Make perl for pgbadger
+  shell: perl Makefile.PL
+  args:
+    chdir: /tmp/pgbadger
+
+- name: Build pgbadger from sources
+  make:
+    chdir: "/tmp/pgbadger"
+
+- name: Install pgbadger from sources
+  make:
+    target: install
+    chdir: "/tmp/pgbadger"
+
+- name: Restart Postgres RHEL
+  service:
+    name: postgresql-11
+    state: restarted
+  register: out
