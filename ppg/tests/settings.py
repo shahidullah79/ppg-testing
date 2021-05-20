@@ -403,5 +403,5 @@ def get_settings(distro_type):
                          "extensions": ppg_versions["ppg-13.3"]['extensions'],
                          "languages": ppg_versions["ppg-13.3"]['languages'],
                          "binaries": ppg_versions["ppg-13.3"]['binaries'],
-                         "pg_stat_monitor": "0.9.1"}
+                         "pg_stat_monitor": "0.9.0"}
     }
