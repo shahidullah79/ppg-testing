@@ -300,6 +300,35 @@ def get_settings(distro_type):
                          "binaries": ppg_versions["ppg-12.6"]['binaries'],
                          "pg_stat_monitor": "0.9.0"
                          },
+            "ppg-12.7": {"version": "12.7",
+                         "deb_pkg_ver": ppg_versions["ppg-12.7"]['deb_pkg_ver'],
+                         "deb_packages": ppg_versions["ppg-12.7"]['deb_packages'],
+                         "percona-postgresql-common": '225',
+                         "percona-postgresql-client-common": "225",
+                         "libpq_version": "120006",
+                         "pgaudit": pgaudit['ppg-12.7'],
+                         "pgbackrest": pgbackrest['ppg-12.7'],
+                         "pgbadger": pgbadger['12.7'],
+                         'pgbouncer': pgbouncer['12.7'],
+                         "wal2json": wal2json['12.7'],
+                         "set_user": set_user['12.7'],
+                         "patroni": patroni['ppg-12.7'],
+                         "pgrepack": pgrepack['ppg-12.7'],
+                         "pgrepack_package_rpm": 'percona-pg_repack12',
+                         "pgrepack_package_deb": "percona-postgresql-12-repack",
+                         "libpq": "Version of libpq: 120007",
+                         "deb_provides": ppg_versions["ppg-12.7"]['deb_provides'],
+                         "rpm7_provides": ppg_versions["ppg-12.7"]['rpm7_provides'],
+                         'rpm_provides': ppg_versions["ppg-12.7"]['rpm_provides'],
+                         "rpm_packages": ppg_versions["ppg-12.7"]['rpm_packages'],
+                         "rpm7_packages": ppg_versions["ppg-12.7"]['rpm7_packages'],
+                         "rhel_files": ppg_versions["ppg-12.7"]['rhel_files'],
+                         "deb_files": ppg_versions["ppg-12.7"]['deb_files'],
+                         "extensions": ppg_versions["ppg-12.7"]['extensions'],
+                         "languages": ppg_versions["ppg-12.7"]['languages'],
+                         "binaries": ppg_versions["ppg-12.7"]['binaries'],
+                         "pg_stat_monitor": "0.9.1"
+                         },
             "ppg-13.0": {"version": "13.0",
                          "deb_pkg_ver": ppg_versions["ppg-13.0"]['deb_pkg_ver'],
                          "deb_packages": ppg_versions["ppg-13.0"]['deb_packages'],
@@ -403,5 +432,6 @@ def get_settings(distro_type):
                          "extensions": ppg_versions["ppg-13.3"]['extensions'],
                          "languages": ppg_versions["ppg-13.3"]['languages'],
                          "binaries": ppg_versions["ppg-13.3"]['binaries'],
-                         "pg_stat_monitor": "0.9.0"}
+                         "pg_stat_monitor": "0.9.1"}
     }
+
