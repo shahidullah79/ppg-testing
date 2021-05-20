@@ -19,6 +19,7 @@
       - texlive-latex-base
       - texlive-latex-extra
       - texlive-fonts-recommended
+      - lcov
   retries: 60
   delay: 10
   register: result
@@ -66,7 +67,6 @@
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
-  become_user: postgres
 
 
 - name: Restart Postgres RHEL
