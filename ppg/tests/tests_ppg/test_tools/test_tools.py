@@ -374,7 +374,7 @@ def test_patroni_version(patroni_version):
 
 def test_pg_stat_monitor_package_version(host):
     pg_stat = host.package("percona-pg-stat-monitor13")
-    if "11" in os.getenv("VERSION"):
+    if "11" in os.getenv("VERSION") or os.getenv("VERSION") == "11.12":
         pg_stat = host.package("percona-pg-stat-monitor11")
     if "12" in os.getenv("VERSION"):
         pg_stat = host.package("percona-pg-stat-monitor12")
