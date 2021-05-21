@@ -376,7 +376,7 @@ def test_pg_stat_monitor_package_version(host):
     pg_stat = host.package("percona-pg-stat-monitor13")
     if "11" in os.getenv("VERSION") or os.getenv("VERSION") == "11.12":
         pg_stat = host.package("percona-pg-stat-monitor11")
-    if "12" in os.getenv("VERSION"):
+    elif "12" in os.getenv("VERSION"):
         pg_stat = host.package("percona-pg-stat-monitor12")
     assert pg_versions['pg_stat_monitor'] in pg_stat.version
 
