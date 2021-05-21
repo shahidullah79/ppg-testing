@@ -20,6 +20,12 @@
       - texlive-latex-extra
       - texlive-fonts-recommended
       - lcov
+      - rsync
+      - zlib1g-dev
+      - libssl-dev
+      - libxml2-dev
+      - libpq-dev
+      - pkg-config
   retries: 60
   delay: 10
   register: result
