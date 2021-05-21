@@ -238,6 +238,17 @@
       update_cache: yes
     when: ansible_os_family == "RedHat"
 
+  - name: Install patroni debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-patroni
+        - percona-patroni-doc
+    when: ansible_os_family == "Debian"
+
   - name: Get root filesystem
     shell: systemctl status postgresql
     register: pg_status
