@@ -236,6 +236,7 @@
       name: percona-patroni
       state: latest
       update_cache: yes
+    when: ansible_os_family == "RedHat"
 
   - name: Get root filesystem
     shell: systemctl status postgresql
