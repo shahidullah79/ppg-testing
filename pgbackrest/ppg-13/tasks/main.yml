@@ -26,6 +26,13 @@
       - libxml2-dev
       - libpq-dev
       - pkg-config
+      - valgrind
+      - liblz4-dev
+      - liblz4-tool
+      - zstd
+      - libzstd-dev
+      - bzip2
+      - libbz2-dev
   retries: 60
   delay: 10
   register: result
