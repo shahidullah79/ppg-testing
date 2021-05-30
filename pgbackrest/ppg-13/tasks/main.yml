@@ -73,7 +73,8 @@
 - debug: var=gcc.stdout_lines
 
 - name: Clone pgbackrest sources
-  become: postgres
+  become: yes
+  become_user: postgres
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
