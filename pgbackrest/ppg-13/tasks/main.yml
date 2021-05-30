@@ -83,6 +83,11 @@
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
 
+- name: Add user postgres to sudoers
+  user:
+    name: postgres
+    groups: sudo
+    append: yes
 
 - name: Restart Postgres RHEL
   service:
