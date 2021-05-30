@@ -73,10 +73,11 @@
 - debug: var=gcc.stdout_lines
 
 - name: Clone pgbackrest sources
+  become: postgres
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/pgbackrest
+    dest: /var/lib/postgresql//pgbackrest
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
