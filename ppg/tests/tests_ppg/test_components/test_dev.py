@@ -55,7 +55,8 @@ def test_pgbadger(host):
 def test_pgbouncer(host):
     with host.sudo("postgres"):
         result = host.run(
-            f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\" && cd /tmp/pgbouncer && make check")
+            f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\""
+            f" && cd /tmp/pgbouncer && make check")
         print(result.stdout)
         if result.rc != 0:
             print(result.stderr)
@@ -68,3 +69,18 @@ def test_wal2json(host):
         if result.rc != 0:
             print(host.file("/tmp/wal2json/regression.diffs").content)
             raise AssertionError
+
+
+def test_pgbackrest(host):
+    with host.sudo("postgres"):
+        result = host.run(
+            f'cd /var/lib/postgresql/pgbackrest && test/test.pl'
+            f' --pgsql-bin=/usr/lib/postgresql/{MAJOR_VER}/bin --log-level-test-file=off'
+            f' --no-coverage-report --module=command --module=storage'
+            f' --vm-host=none --vm-max=2 --vm=none --no-coverage')
+        print(result.stdout)
+        if result.rc != 0:
+            print(result.stderr)
+            raise AssertionError
+
+

@@ -352,6 +352,13 @@
       dest: /tmp/wal2json
     become_user: postgres
 
+  - name: Clone pgbackrest sources
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.32
+      dest: /tmp/pgbackrest
+    become_user: postgres
+
   - name: Restart Postgres RHEL
     service:
       name: postgresql-13

@@ -380,6 +380,12 @@
         host    replication     all             ::1/128                 trust
     when: ansible_os_family == "Debian"
 
+  - name: Clone pgbackrest sources
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.32
+      dest: /tmp/pgbackrest
+    become_user: postgres
 
   - name: Restart Postgres RHEL
     service:
