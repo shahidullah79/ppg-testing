@@ -86,6 +86,7 @@
       update_cache: yes
     vars:
       packages:
+        - etcd
         - percona-postgresql-client-common
         - percona-postgresql-common
         - percona-postgresql-server-dev-all

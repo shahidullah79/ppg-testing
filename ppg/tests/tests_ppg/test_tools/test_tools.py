@@ -209,10 +209,7 @@ def patroni(host):
 
 @pytest.fixture()
 def patroni_version(host):
-    os_dist = host.system_info.distribution
     cmd = "patroni --version"
-    # if os_dist in ["redhat", "centos", 'rhel']:
-    #     cmd = "/opt/patroni/bin/patroni --version"
     return host.run(cmd)
 
 
