@@ -84,6 +84,13 @@
       - etcd
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
+  - name: Restart Postgres RHEL
+    service:
+      name: etcd
+      state: restarted
+      enabled: yes
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
   - name: DNF clean RHEL
     command: sudo dnf module disable postgresql -y
     when: ansible_distribution == "RedHat"

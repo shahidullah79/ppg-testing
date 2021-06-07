@@ -411,3 +411,12 @@ def test_binary_version(host, binary):
     result = host.run(f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\" && {binary} --version")
     assert result.rc == 0, result.stderr
     assert pg_versions[binary]['binary_version'] in result.stdout.strip("\n"), result.stdout
+
+
+def test_etcd(host):
+    ds = host.system_info.distribution
+    if ds.lower() in ["redhat", "centos", 'rhel']:
+        if "8" in host.system_info.release:
+            service = host.service("etcd")
+            assert service.is_running
+            assert service.is_enabled
