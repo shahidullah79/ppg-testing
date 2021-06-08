@@ -417,6 +417,16 @@ def test_etcd(host):
     ds = host.system_info.distribution
     if ds.lower() in ["redhat", "centos", 'rhel']:
         if "8" in host.system_info.release:
+            etcd_package = host.package("etcd")
+            assert etcd_package.is_installed
             service = host.service("etcd")
             assert service.is_running
             assert service.is_enabled
+
+
+def test_python_etcd(host):
+    ds = host.system_info.distribution
+    if ds.lower() in ["redhat", "centos", 'rhel']:
+        if "8" in host.system_info.release:
+            package = host.package("python3-python-etcd")
+            assert package.is_installed
