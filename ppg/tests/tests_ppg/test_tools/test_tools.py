@@ -372,7 +372,6 @@ def test_patroni_version(patroni_version):
 def test_patroni_service(host):
     patroni = host.service("patroni")
     assert patroni.is_enabled
-    assert patroni.is_running
 
 
 def test_pg_stat_monitor_package_version(host):
