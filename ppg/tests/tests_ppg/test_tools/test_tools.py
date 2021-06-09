@@ -369,6 +369,12 @@ def test_patroni_version(patroni_version):
     assert patroni_version.stdout.strip("\n") == pg_versions['patroni']['binary_version']
 
 
+def test_patroni_service(host):
+    patroni = host.service("patroni")
+    assert patroni.is_enabled
+    assert patroni.is_running
+
+
 def test_pg_stat_monitor_package_version(host):
     pg_stat = host.package("percona-pg-stat-monitor13")
     if "11" in os.getenv("VERSION") or os.getenv("VERSION") == "11.12":

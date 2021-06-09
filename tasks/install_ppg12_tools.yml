@@ -369,3 +369,9 @@
     environment:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     when: ansible_os_family == "Debian"
+
+  - name: Start Postgres RHEL
+    service:
+      name: patroni
+      state: started
+      enabled: yes
