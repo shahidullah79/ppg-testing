@@ -29,7 +29,7 @@
       yum:
         name: epel-release
         state: latest
-      when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "6"
+      when: ansible_os_family == "RedHat"
 
     - name: Install cloud-utils-growpart package for CentOS 6
       yum:
