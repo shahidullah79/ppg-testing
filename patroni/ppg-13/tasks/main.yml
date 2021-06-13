@@ -103,10 +103,16 @@
 - name: Start patroni postgresql1 from shell
   shell: patroni patroni_test/postgres1.yml &
   become_user: postgres
+  register: patroni1
 
-- name: Start patroni postgresql1 from shell
+- debug: var=patroni1.stdout_lines
+
+- name: Start patroni postgresql2 from shell
   shell: patroni patroni_test/postgres2.yml &
   become_user: postgres
+  register: patroni2
+
+- debug: var=patroni2.stdout_lines
 
 - name: Copy haproxy.cfg
   copy:
@@ -118,3 +124,6 @@
 
 - name: Start haproxy
   shell: haproxy -f /etc/haproxy/haproxy-test.cfg &
+  register: haproxy
+
+- debug: var=haproxy.stdout_lines

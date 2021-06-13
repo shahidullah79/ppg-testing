@@ -8,8 +8,12 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_patroni(host):
+    assert host.service("patroni").is_running
+    assert host.service("etcd").is_running
     with host.sudo("postgres"):
         select = 'psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
-        assert host.run(select).rc == 0
+        result = host.run(select)
+        print(result.stdout)
+        assert result.rc == 0, result.stderr
 
 
