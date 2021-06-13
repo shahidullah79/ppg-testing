@@ -85,6 +85,22 @@
     group: postgres
     mode: 0644
 
+- name: Copy patroni1 service file
+  copy:
+    src: patroni1.service
+    dest: /usr/lib/systemd/system/patroni1.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy patroni2 service file
+  copy:
+    src: patroni2.service
+    dest: /usr/lib/systemd/system/patroni2.service
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Start etcd
   service:
     name: etcd
@@ -97,30 +113,29 @@
     state: started
     enabled: yes
 
-- name: Start patroni postgresql1 from shell
-  shell: "patroni /var/lib/pgsql/patroni_test/postgres1.yml &"
-  become_user: postgres
-  register: patroni1
+- name: Start patroni1
+  service:
+    name: patroni1
+    state: started
+    enabled: yes
 
-- debug: var=patroni1.stdout_lines
-
-- name: Start patroni postgresql2 from shell
-  shell: "patroni /var/lib/pgsql/patroni_test/postgres2.yml &"
-  become_user: postgres
-  register: patroni2
-
-- debug: var=patroni2.stdout_lines
+- name: Start patroni2
+  service:
+    name: patroni2
+    state: started
+    enabled: yes
 
 - name: Copy haproxy.cfg
   copy:
     src: haproxy.cfg
-    dest: /etc/haproxy/haproxy-test.cfg
+    dest: /etc/haproxy/haproxy.cfg
     owner: root
     group: root
     mode: 0644
 
 - name: Start haproxy
-  shell: "haproxy -f /etc/haproxy/haproxy-test.cfg &"
-  register: haproxy
+  service:
+    name: haproxy
+    state: started
+    enabled: yes
 
-- debug: var=haproxy.stdout_lines
