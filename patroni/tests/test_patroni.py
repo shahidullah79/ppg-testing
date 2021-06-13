@@ -11,7 +11,7 @@ def test_patroni(host):
     assert host.service("patroni").is_running
     assert host.service("etcd").is_running
     with host.sudo("postgres"):
-        select = 'psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
+        select = 'cd; psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
         result = host.run(select)
         print(result.stdout)
         assert result.rc == 0, result.stderr
