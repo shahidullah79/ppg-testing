@@ -101,14 +101,14 @@
     enabled: yes
 
 - name: Start patroni postgresql1 from shell
-  shell: patroni patroni_test/postgres1.yml &
+  shell: patroni /var/lib/pgsql/patroni_test/postgres1.yml &
   become_user: postgres
   register: patroni1
 
 - debug: var=patroni1.stdout_lines
 
 - name: Start patroni postgresql2 from shell
-  shell: patroni patroni_test/postgres2.yml &
+  shell: patroni /var/lib/pgsql/patroni_test/postgres2.yml &
   become_user: postgres
   register: patroni2
 
