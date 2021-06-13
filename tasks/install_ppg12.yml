@@ -96,8 +96,8 @@
       update_cache: yes
     vars:
       packages:
-#        - etcd
-#        - python3-python-etcd
+        - etcd
+        - python3-python-etcd
         - percona-postgresql-client-common
         - percona-postgresql-common
         - percona-postgresql-server-dev-all
@@ -127,9 +127,9 @@
         - percona-postgresql12-test-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-#  - name: Restart etcd RHEL
-#    service:
-#      name: etcd
-#      state: restarted
-#      enabled: yes
-#    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+  - name: Restart etcd RHEL
+    service:
+      name: etcd
+      state: restarted
+      enabled: yes
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
