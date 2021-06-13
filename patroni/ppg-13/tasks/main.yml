@@ -57,14 +57,14 @@
     path: /etc/patroni
     state: directory
 
-- name: Create /etc/patroni directory
+- name: Create test patroni directory
   file:
     path: /var/lib/pgsql/patroni_test/
     state: directory
     owner: postgres
     group: postgres
 
-- name: Copy postgresql.yml for patroni service
+- name: Copy postgresql0.yml for patroni service
   copy:
     src: postgresql0.yml
     dest: /etc/patroni/postgresql.yml
@@ -87,7 +87,6 @@
     owner: postgres
     group: postgres
     mode: 0644
-
 
 - name: Start etcd
   service:
