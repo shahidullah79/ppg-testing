@@ -134,8 +134,4 @@
     mode: 0644
 
 - name: Start haproxy
-  service:
-    name: haproxy
-    state: started
-    enabled: yes
-
+  shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
