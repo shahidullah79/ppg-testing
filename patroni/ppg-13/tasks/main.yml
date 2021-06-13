@@ -98,18 +98,14 @@
     enabled: yes
 
 - name: Start patroni postgresql1 from shell
-  shell: patroni /var/lib/pgsql/patroni_test/postgres1.yml &
+  shell: "patroni /var/lib/pgsql/patroni_test/postgres1.yml &"
   become_user: postgres
-  async: 45
-  poll: 0
   register: patroni1
 
 - debug: var=patroni1.stdout_lines
 
 - name: Start patroni postgresql2 from shell
-  shell: patroni /var/lib/pgsql/patroni_test/postgres2.yml &
-  async: 45
-  poll: 0
+  shell: "patroni /var/lib/pgsql/patroni_test/postgres2.yml &"
   become_user: postgres
   register: patroni2
 
@@ -124,9 +120,7 @@
     mode: 0644
 
 - name: Start haproxy
-  shell: haproxy -f /etc/haproxy/haproxy-test.cfg &
-  async: 45
-  poll: 0
+  shell: "haproxy -f /etc/haproxy/haproxy-test.cfg &"
   register: haproxy
 
 - debug: var=haproxy.stdout_lines
