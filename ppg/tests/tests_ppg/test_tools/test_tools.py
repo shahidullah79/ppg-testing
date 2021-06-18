@@ -438,9 +438,6 @@ def test_python_etcd(host):
 
 
 def test_patroni_cluster(host):
-    assert host.service("patroni").is_running
-    # assert host.service("patroni1").is_running
-    # assert host.service("patroni2").is_running
     assert host.service("etcd").is_running
     with host.sudo("postgres"):
         select = 'cd && psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
