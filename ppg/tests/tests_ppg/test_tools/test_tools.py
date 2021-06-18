@@ -435,3 +435,15 @@ def test_python_etcd(host):
         if "8" in host.system_info.release:
             package = host.package("python3-python-etcd")
             assert package.is_installed
+
+
+def test_patroni_cluster(host):
+    assert host.service("patroni").is_running
+    # assert host.service("patroni1").is_running
+    # assert host.service("patroni2").is_running
+    assert host.service("etcd").is_running
+    with host.sudo("postgres"):
+        select = 'cd && psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
+        result = host.run(select)
+        print(result.stdout)
+        assert result.rc == 0, result.stderr
