@@ -398,7 +398,6 @@
     vars:
       packages:
       - etcd
-      - python-etcd
       - python3-etcd
       - haproxy
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
