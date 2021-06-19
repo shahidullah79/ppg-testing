@@ -279,6 +279,21 @@
       dest: /tmp/pg_repack
     become_user: postgres
 
+  - name: Remove Makefile pg_repack debian
+    file:
+      path: /tmp/pg_repack/Makefile
+      state: absent
+    when: ansible_os_family == "Debian"
+
+  - name: Edit Makefile for pg_repack on Debian
+    copy:
+      src: MakefileDebianPgrepack
+      dest: /tmp/pg_repack/Makefile
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
