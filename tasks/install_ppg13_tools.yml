@@ -402,7 +402,7 @@
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
 
   - name: Install patroni related packages Debian
-    yum:
+    apt:
       name: "{{ packages }}"
       state: latest
       update_cache: yes
