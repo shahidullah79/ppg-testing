@@ -322,7 +322,7 @@
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
       version: pgbouncer_1_15_0
-      dest: /var/lib/pgsql/
+      dest: /var/lib/pgsql/pgbouncer
       recursive: yes
       update: yes
     become_user: postgres
@@ -338,10 +338,9 @@
   - name: Configure pgbouncer RHEL
     shell: ./configure --prefix=/usr/local
     args:
-      chdir: /var/lib/pgsql/
+      chdir: /var/lib/pgsql/pgbouncer
     become_user: postgres
     when: ansible_os_family == "RedHat"
-
 
   - name: Clone pgbouncer sources Debian
     git:
@@ -388,7 +387,7 @@
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
       version: release/2.32
-      dest:  /var/lib/postgresql/pgbackrest
+      dest:  /var/lib/pgsql/pgbackrest
     become_user: postgres
     when: ansible_os_family == "RedHat"
 
