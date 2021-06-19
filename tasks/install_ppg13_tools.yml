@@ -346,12 +346,21 @@
       dest: /tmp/wal2json
     become_user: postgres
 
-  - name: Clone pgbackrest sources
+  - name: Clone pgbackrest sources Debian
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
       version: release/2.32
-      dest: /tmp/pgbackrest
+      dest:  /var/lib/postgresql//pgbackrest
     become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Clone pgbackrest sources RHEL
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.32
+      dest:  /var/lib/postgresql//pgbackrest
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
 
   - name: Restart Postgres RHEL
     service:
@@ -575,3 +584,10 @@
 
   - name: Start haproxy
     shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
+
+  - name: Add user postgres to sudoers
+    user:
+      name: postgres
+      groups: sudo
+      append: yes
+    when: ansible_os_family == "Debian"

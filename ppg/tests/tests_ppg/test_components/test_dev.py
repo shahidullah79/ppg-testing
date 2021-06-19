@@ -72,10 +72,16 @@ def test_wal2json(host):
 
 
 def test_pgbackrest(host):
+    dist = host.system_info.distribution
+    test_dir = "/var/lib/postgresql/pgbackrest"
+    bin_dir = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
+    if dist in ['centos', 'rhel', 'redhat']:
+        test_dir = "/var/lib/pgsql/"
+        bin_dir = f"/usr/pgsql-{MAJOR_VER}/bin/"
     with host.sudo("postgres"):
         result = host.run(
-            f'cd /var/lib/postgresql/pgbackrest && test/test.pl'
-            f' --pgsql-bin=/usr/lib/postgresql/{MAJOR_VER}/bin --log-level-test-file=off'
+            f'cd {test_dir} && test/test.pl'
+            f' --pgsql-bin={bin_dir} --log-level-test-file=off'
             f' --no-coverage-report --module=command --module=storage'
             f' --vm-host=none --vm-max=2 --vm=none --no-coverage')
         print(result.stdout)
