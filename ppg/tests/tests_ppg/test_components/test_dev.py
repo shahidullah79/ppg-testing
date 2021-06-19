@@ -53,10 +53,16 @@ def test_pgbadger(host):
 
 
 def test_pgbouncer(host):
+    dist = host.system_info.distribution
+    test_dir = "/var/lib/postgresql/pgbouncer"
+    bin_dir = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
+    if dist in ['centos', 'rhel', 'redhat']:
+        test_dir = "/var/lib/pgsql/pgbouncer"
+        bin_dir = f"/usr/pgsql-{MAJOR_VER}/bin/"
     with host.sudo("postgres"):
         result = host.run(
-            f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\""
-            f" && cd /tmp/pgbouncer && make check")
+            f"PATH=\"{bin_dir}:/usr/sbin/:$PATH\""
+            f" && cd {test_dir} && make check")
         print(result.stdout)
         if result.rc != 0:
             print(result.stderr)
@@ -76,7 +82,7 @@ def test_pgbackrest(host):
     test_dir = "/var/lib/postgresql/pgbackrest"
     bin_dir = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
     if dist in ['centos', 'rhel', 'redhat']:
-        test_dir = "/var/lib/pgsql/"
+        test_dir = "/var/lib/pgsql/pgbackrest"
         bin_dir = f"/usr/pgsql-{MAJOR_VER}/bin/"
     with host.sudo("postgres"):
         result = host.run(

@@ -121,7 +121,6 @@
     target: install
     chdir: "/tmp/pgbouncer"
 
-
 - name: Restart Postgres RHEL
   service:
     name: postgresql-13
