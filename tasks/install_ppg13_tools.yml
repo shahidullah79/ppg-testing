@@ -1,4 +1,31 @@
 ---
+  - name: Install additional tools for pgbackrest test Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+        - libxml-checker-perl
+        - libyaml-perl
+        - texlive-latex-base
+        - texlive-latex-extra
+        - texlive-fonts-recommended
+        - lcov
+        - rsync
+        - zlib1g-dev
+        - libssl-dev
+        - libxml2-dev
+        - libpq-dev
+        - pkg-config
+        - valgrind
+        - liblz4-dev
+        - liblz4-tool
+        - zstd
+        - libzstd-dev
+        - bzip2
+        - libbz2-dev
+    when: ansible_os_family == "Debian"
+
   - name: Install pgaudit Debian
     apt:
       name: "{{ packages }}"
