@@ -111,6 +111,9 @@
           - make
           - pandoc
           - pkgconfig
+          - llvm-toolset-7-clang
+          - llvm5.0
+          - llvm-toolset-7
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
     - name: Install additional packages RPM
