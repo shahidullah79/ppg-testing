@@ -373,7 +373,7 @@
   - name: Autogen pgbouncer RHEL
     shell: ./autogen.sh
     args:
-      chdir: /var/lib/pgsql/
+      chdir: /var/lib/pgsql/pgbouncer
     become_user: postgres
     when: ansible_os_family == "RedHat"
 
