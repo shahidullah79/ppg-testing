@@ -401,7 +401,6 @@
     become_user: postgres
     when: ansible_os_family == "Debian"
 
-
   - name: Configure pgbouncer Debian
     shell: ./configure --prefix=/usr/local
     args:
@@ -423,6 +422,7 @@
       version: release/2.32
       dest:  /var/lib/postgresql/pgbackrest
     become_user: postgres
+    become: yes
     when: ansible_os_family == "Debian"
 
   - name: Clone pgbackrest sources RHEL
@@ -431,6 +431,7 @@
       version: release/2.32
       dest:  /var/lib/pgsql/pgbackrest
     become_user: postgres
+    become: yes
     when: ansible_os_family == "RedHat"
 
   - name: Restart Postgres RHEL
