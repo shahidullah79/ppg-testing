@@ -9,6 +9,14 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 MAJOR_VER = settings.MAJOR_VER
 
 
+def test_wal2json(host):
+    with host.sudo("postgres"):
+        result = host.run("cd /tmp/wal2json && make installcheck USE_PGXS=1")
+        if result.rc != 0:
+            print(host.file("/tmp/wal2json/regression.diffs").content)
+            raise AssertionError
+
+
 def test_pgaudit(host):
     with host.sudo("postgres"):
         result = host.run("cd /tmp/pg_audit && make installcheck USE_PGXS=1")
@@ -69,14 +77,6 @@ def test_pgbouncer(host):
             raise AssertionError
 
 
-def test_wal2json(host):
-    with host.sudo("postgres"):
-        result = host.run("cd /tmp/wal2json && make installcheck USE_PGXS=1")
-        if result.rc != 0:
-            print(host.file("/tmp/wal2json/regression.diffs").content)
-            raise AssertionError
-
-
 def test_pgbackrest(host):
     dist = host.system_info.distribution
     test_dir = "/var/lib/postgresql/pgbackrest"
@@ -89,7 +89,7 @@ def test_pgbackrest(host):
             f'cd {test_dir} && test/test.pl'
             f' --pgsql-bin={bin_dir} --log-level-test-file=off'
             f' --no-coverage-report --module=command --module=storage'
-            f' --vm-host=none --vm-max=2 --vm=none --no-coverage')
+            f' --vm-host=none --vm-max=2 --vm=none --no-coverage --no-valgrind')
         print(result.stdout)
         if result.rc != 0:
             print(result.stderr)
