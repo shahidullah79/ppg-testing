@@ -476,8 +476,8 @@
 
   - name: Install python-etcd for RHEL 7
     pip:
-      name:
-        - python-etcd
+      name: python-etcd
+      executable: pip3
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
 
   - name: Restart etcd RHEL
