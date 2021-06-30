@@ -249,14 +249,6 @@
         - percona-patroni-doc
     when: ansible_os_family == "Debian"
 
-  - name: Get root filesystem
-    shell: systemctl status postgresql
-    register: pg_status
-    when: ansible_os_family == "Debian"
-
-  - debug: msg="{{pg_status.stdout}}"
-    when: ansible_os_family == "Debian"
-
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
