@@ -418,7 +418,7 @@
   - name: Clone pgbackrest sources Debian
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.32
+      version: release/2.34
       dest:  /var/lib/postgresql/pgbackrest
     become_user: postgres
     become: yes
@@ -427,7 +427,7 @@
   - name: Clone pgbackrest sources RHEL
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.32
+      version: release/2.34
       dest:  /var/lib/pgsql/pgbackrest
     become_user: postgres
     become: yes

@@ -284,59 +284,103 @@
       dest: /tmp/pg_repack
     become_user: postgres
 
-#  - name: Clone pgbadger sources
-#    git:
-#      repo: https://github.com/darold/pgbadger.git
-#      version: v11.5
-#      dest: /tmp/pgbadger
-#    become_user: postgres
+  - name: Clone pgbadger sources
+    git:
+      repo: https://github.com/darold/pgbadger.git
+      version: v11.5
+      dest: /tmp/pgbadger
+    become_user: postgres
 
-#  - name: Make perl for pgbadger
-#    shell: perl Makefile.PL
-#    args:
-#      chdir: /tmp/pgbadger
-#
-#  - name: Clone set_user sources
-#    git:
-#      repo: https://github.com/pgaudit/set_user.git
-#      version: REL2_0_0
-#      dest: /tmp/set_user
-#    become_user: postgres
-#
-#  - name: Clone pgbouncer sources
-#    git:
-#      repo: https://github.com/pgbouncer/pgbouncer.git
-#      version: pgbouncer_1_15_0
-#      dest: /tmp/pgbouncer
-#      recursive: yes
-#      update: yes
-#    become_user: postgres
-#
-#  - name: Autogen pgbouncer
-#    shell: ./autogen.sh
-#    args:
-#      chdir: /tmp/pgbouncer
-#    become_user: postgres
-#
-#  - name: Configure pgbouncer
-#    shell: ./configure --prefix=/usr/local
-#    args:
-#      chdir: /tmp/pgbouncer
-#    become_user: postgres
-#
-#  - name: Clone wal2json sources
-#    git:
-#      repo: https://github.com/eulerto/wal2json.git
-#      version: wal2json_2_3
-#      dest: /tmp/wal2json
-#    become_user: postgres
+  - name: Make perl for pgbadger
+    shell: perl Makefile.PL
+    args:
+      chdir: /tmp/pgbadger
+
+  - name: Clone set_user sources
+    git:
+      repo: https://github.com/pgaudit/set_user.git
+      version: REL2_0_0
+      dest: /tmp/set_user
+    become_user: postgres
+
+  - name: Clone pgbouncer sources RHEL
+    git:
+      repo: https://github.com/pgbouncer/pgbouncer.git
+      version: pgbouncer_1_15_0
+      dest: /var/lib/pgsql/pgbouncer
+      recursive: yes
+      update: yes
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Autogen pgbouncer RHEL
+    shell: ./autogen.sh
+    args:
+      chdir: /var/lib/pgsql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Configure pgbouncer RHEL
+    shell: ./configure --prefix=/usr/local
+    args:
+      chdir: /var/lib/pgsql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Clone pgbouncer sources Debian
+    git:
+      repo: https://github.com/pgbouncer/pgbouncer.git
+      version: pgbouncer_1_15_0
+      dest: /var/lib/postgresql/pgbouncer
+      recursive: yes
+      update: yes
+    become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Autogen pgbouncer Debian
+    shell: ./autogen.sh
+    args:
+      chdir: /var/lib/postgresql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Configure pgbouncer Debian
+    shell: ./configure --prefix=/usr/local
+    args:
+      chdir: /var/lib/postgresql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Clone wal2json sources
+    git:
+      repo: https://github.com/eulerto/wal2json.git
+      version: wal2json_2_3
+      dest: /tmp/wal2json
+    become_user: postgres
+
+  - name: Clone pgbackrest sources Debian
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.34
+      dest:  /var/lib/postgresql/pgbackrest
+    become_user: postgres
+    become: yes
+    when: ansible_os_family == "Debian"
+
+  - name: Clone pgbackrest sources RHEL
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.34
+      dest:  /var/lib/pgsql/pgbackrest
+    become_user: postgres
+    become: yes
+    when: ansible_os_family == "RedHat"
 
   - name: Remove pg_hba.conf debian
     file:
       path: /var/lib/pgsql/11/data/pg_hba.conf
       state: absent
     when: ansible_os_family == "RedHat"
-
 
   - name: Remove pg_hba.conf debian
     file:
@@ -371,13 +415,6 @@
         host    replication     all             127.0.0.1/32            trust
         host    replication     all             ::1/128                 trust
     when: ansible_os_family == "Debian"
-
-  - name: Clone pgbackrest sources
-    git:
-      repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.32
-      dest: /tmp/pgbackrest
-    become_user: postgres
 
   - name: Restart Postgres RHEL
     service:
