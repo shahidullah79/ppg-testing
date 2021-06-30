@@ -10,7 +10,7 @@ from .versions.ppg import get_ppg_versions
 from .versions.set_user import set_user
 from .versions.wal2json import wal2json
 
-MAJOR_VER = os.getenv("VERSION").split(".")[0]
+MAJOR_VER = os.getenv("VERSION").split(".")[0].split("ppg-")[1]
 # if "11" in os.getenv("VERSION"):
 #     MAJOR_VER = "11"
 # if "13" in os.getenv("VERSION"):
