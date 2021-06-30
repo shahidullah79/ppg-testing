@@ -284,6 +284,15 @@
       dest: /tmp/pg_repack
     become_user: postgres
 
+  - name: Edit Makefile for pg_repack on Debian
+    copy:
+      src: MakefileDebianPgrepack
+      dest: /tmp/pg_repack/Makefile
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
   - name: Clone pgbadger sources
     git:
       repo: https://github.com/darold/pgbadger.git
