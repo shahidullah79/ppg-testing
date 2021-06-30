@@ -293,7 +293,7 @@
   - name: Autogen pgbouncer
     shell: ./autogen.sh
     args:
-      chdir: /tmp/pgbouncer
+      chdir: /var/lib/postgresql/pgbouncer
     become_user: postgres
 
   - name: Configure pgbouncer
