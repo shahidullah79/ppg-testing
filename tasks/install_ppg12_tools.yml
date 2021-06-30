@@ -285,7 +285,7 @@
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
       version: pgbouncer_1_15_0
-      dest: /tmp/pgbouncer
+      dest: /var/lib/postgresql/pgbouncer
       recursive: yes
       update: yes
     become_user: postgres
@@ -299,7 +299,7 @@
   - name: Configure pgbouncer
     shell: ./configure --prefix=/usr/local
     args:
-      chdir: /tmp/pgbouncer
+      chdir: /var/lib/postgresql/pgbouncer
     become_user: postgres
 
   - name: Clone wal2json sources
@@ -354,7 +354,7 @@
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
       version: release/2.32
-      dest: /tmp/pgbackrest
+      dest: /var/lib/postgresql/pgbackrest
     become_user: postgres
 
   - name: Restart Postgres RHEL

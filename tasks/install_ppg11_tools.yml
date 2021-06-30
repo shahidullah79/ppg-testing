@@ -37,74 +37,74 @@
         - percona-pg-stat-monitor11-dbgsym
     when: ansible_os_family == "Debian"
 
-  - name: Install pgbadger RHEL
-    yum:
-      name: percona-pgbadger
-      state: latest
-      update_cache: yes
-    when: ansible_os_family == "RedHat"
-
-  - name: Install pgbadger Debian
-    apt:
-      name: percona-pgbadger
-      state: latest
-      update_cache: yes
-    when: ansible_os_family == "Debian"
-
-  - name: Install percona-pgaudit11_set_user RHEL
-    yum:
-      name: percona-pgaudit11_set_user
-      state: latest
-      update_cache: yes
-    when: ansible_os_family == "RedHat"
-
-  - name: Install percona-pgaudit12_set_user Debian
-    apt:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-        - percona-pgaudit11-set-user
-        - percona-pgaudit11-set-user-dbgsym
-    when: ansible_os_family == "Debian"
-
-
-  - name: Install percona-pgbouncer RHEL
-    yum:
-      name: percona-pgbouncer
-      state: latest
-      update_cache: yes
-    when: ansible_os_family == "RedHat"
-
-  - name: Install percona-pgbouncer Debian
-    apt:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-        - percona-pgbouncer
-        - percona-pgbouncer-dbgsym
-    when: ansible_os_family == "Debian"
-
-  - name: Install percona-wal2json12 RHEL
-    yum:
-      name: percona-wal2json11
-      state: latest
-      update_cache: yes
-    when: ansible_os_family == "RedHat"
-
-  - name: Install percona-wal2json13 Debian
-    apt:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-        - percona-postgresql-11-wal2json
-        - percona-postgresql-11-wal2json-dbgsym
-    when: ansible_os_family == "Debian"
+#  - name: Install pgbadger RHEL
+#    yum:
+#      name: percona-pgbadger
+#      state: latest
+#      update_cache: yes
+#    when: ansible_os_family == "RedHat"
+#
+#  - name: Install pgbadger Debian
+#    apt:
+#      name: percona-pgbadger
+#      state: latest
+#      update_cache: yes
+#    when: ansible_os_family == "Debian"
+#
+#  - name: Install percona-pgaudit11_set_user RHEL
+#    yum:
+#      name: percona-pgaudit11_set_user
+#      state: latest
+#      update_cache: yes
+#    when: ansible_os_family == "RedHat"
+#
+#  - name: Install percona-pgaudit12_set_user Debian
+#    apt:
+#      name: "{{ packages }}"
+#      state: latest
+#      update_cache: yes
+#    vars:
+#      packages:
+#        - percona-pgaudit11-set-user
+#        - percona-pgaudit11-set-user-dbgsym
+#    when: ansible_os_family == "Debian"
+#
+#
+#  - name: Install percona-pgbouncer RHEL
+#    yum:
+#      name: percona-pgbouncer
+#      state: latest
+#      update_cache: yes
+#    when: ansible_os_family == "RedHat"
+#
+#  - name: Install percona-pgbouncer Debian
+#    apt:
+#      name: "{{ packages }}"
+#      state: latest
+#      update_cache: yes
+#    vars:
+#      packages:
+#        - percona-pgbouncer
+#        - percona-pgbouncer-dbgsym
+#    when: ansible_os_family == "Debian"
+#
+#  - name: Install percona-wal2json12 RHEL
+#    yum:
+#      name: percona-wal2json11
+#      state: latest
+#      update_cache: yes
+#    when: ansible_os_family == "RedHat"
+#
+#  - name: Install percona-wal2json13 Debian
+#    apt:
+#      name: "{{ packages }}"
+#      state: latest
+#      update_cache: yes
+#    vars:
+#      packages:
+#        - percona-postgresql-11-wal2json
+#        - percona-postgresql-11-wal2json-dbgsym
+#    when: ansible_os_family == "Debian"
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
@@ -292,52 +292,52 @@
       dest: /tmp/pg_repack
     become_user: postgres
 
-  - name: Clone pgbadger sources
-    git:
-      repo: https://github.com/darold/pgbadger.git
-      version: v11.5
-      dest: /tmp/pgbadger
-    become_user: postgres
+#  - name: Clone pgbadger sources
+#    git:
+#      repo: https://github.com/darold/pgbadger.git
+#      version: v11.5
+#      dest: /tmp/pgbadger
+#    become_user: postgres
 
-  - name: Make perl for pgbadger
-    shell: perl Makefile.PL
-    args:
-      chdir: /tmp/pgbadger
-
-  - name: Clone set_user sources
-    git:
-      repo: https://github.com/pgaudit/set_user.git
-      version: REL2_0_0
-      dest: /tmp/set_user
-    become_user: postgres
-
-  - name: Clone pgbouncer sources
-    git:
-      repo: https://github.com/pgbouncer/pgbouncer.git
-      version: pgbouncer_1_15_0
-      dest: /tmp/pgbouncer
-      recursive: yes
-      update: yes
-    become_user: postgres
-
-  - name: Autogen pgbouncer
-    shell: ./autogen.sh
-    args:
-      chdir: /tmp/pgbouncer
-    become_user: postgres
-
-  - name: Configure pgbouncer
-    shell: ./configure --prefix=/usr/local
-    args:
-      chdir: /tmp/pgbouncer
-    become_user: postgres
-
-  - name: Clone wal2json sources
-    git:
-      repo: https://github.com/eulerto/wal2json.git
-      version: wal2json_2_3
-      dest: /tmp/wal2json
-    become_user: postgres
+#  - name: Make perl for pgbadger
+#    shell: perl Makefile.PL
+#    args:
+#      chdir: /tmp/pgbadger
+#
+#  - name: Clone set_user sources
+#    git:
+#      repo: https://github.com/pgaudit/set_user.git
+#      version: REL2_0_0
+#      dest: /tmp/set_user
+#    become_user: postgres
+#
+#  - name: Clone pgbouncer sources
+#    git:
+#      repo: https://github.com/pgbouncer/pgbouncer.git
+#      version: pgbouncer_1_15_0
+#      dest: /tmp/pgbouncer
+#      recursive: yes
+#      update: yes
+#    become_user: postgres
+#
+#  - name: Autogen pgbouncer
+#    shell: ./autogen.sh
+#    args:
+#      chdir: /tmp/pgbouncer
+#    become_user: postgres
+#
+#  - name: Configure pgbouncer
+#    shell: ./configure --prefix=/usr/local
+#    args:
+#      chdir: /tmp/pgbouncer
+#    become_user: postgres
+#
+#  - name: Clone wal2json sources
+#    git:
+#      repo: https://github.com/eulerto/wal2json.git
+#      version: wal2json_2_3
+#      dest: /tmp/wal2json
+#    become_user: postgres
 
   - name: Remove pg_hba.conf debian
     file:

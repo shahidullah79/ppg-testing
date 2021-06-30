@@ -1,4 +1,5 @@
 import os
+import pytest
 
 import testinfra.utils.ansible_runner
 from ... import settings
@@ -10,6 +11,8 @@ MAJOR_VER = settings.MAJOR_VER
 
 
 def test_wal2json(host):
+    if MAJOR_VER == "11":
+        pytest.skip("Not supported for PPG 11 versions")
     with host.sudo("postgres"):
         result = host.run("cd /tmp/wal2json && make installcheck USE_PGXS=1")
         if result.rc != 0:
@@ -52,6 +55,8 @@ def test_pg_stat_monitor(host):
 
 
 def test_pgbadger(host):
+    if MAJOR_VER == "11":
+        pytest.skip("Not supported for PPG 11 versions")
     with host.sudo():
         result = host.run('cd /tmp/pgbadger && prove')
         print(result.stdout)
@@ -61,6 +66,8 @@ def test_pgbadger(host):
 
 
 def test_pgbouncer(host):
+    if MAJOR_VER == "11":
+        pytest.skip("Not supported for PPG 11 versions")
     dist = host.system_info.distribution
     test_dir = "/var/lib/postgresql/pgbouncer"
     bin_dir = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
