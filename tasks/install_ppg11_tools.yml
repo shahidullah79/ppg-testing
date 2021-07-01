@@ -135,13 +135,13 @@
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
       path: /etc/postgresql/11/main/postgresql.conf
-      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit'
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
     when: ansible_os_family == "Debian"
 
   - name: Add extensions to postgresql.conf for RHEL
     lineinfile:
       path: /var/lib/pgsql/11/data/postgresql.conf
-      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit'
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
     when: ansible_os_family == "RedHat"
 
   - name: Restart Postgres RHEL
