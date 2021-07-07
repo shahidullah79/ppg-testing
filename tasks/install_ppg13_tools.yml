@@ -472,12 +472,7 @@
       packages:
       - etcd
       - haproxy
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
-
-  - name: Install python-etcd for RHEL 7
-    pip:
-      name: python-etcd
-      executable: pip3
+      - python2-python-etcd
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
 
   - name: Restart etcd RHEL
