@@ -342,6 +342,6 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.3": get_pg13_versions(packages=["2:13-3.2", "13+226-1", '226-1'],
                                           distros=DISTROS, distro_type=distro_type),
-            "ppg-13.4": get_pg13_versions(packages=["2:13-4.2", "13+226-1", '226-1'],
+            "ppg-13.4": get_pg13_versions(packages=["2:13-4.1", "13+226-2", '226-1'],
                                           distros=DISTROS, distro_type=distro_type)
             }

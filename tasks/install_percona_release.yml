@@ -10,7 +10,6 @@
       warn: no
     when: ansible_os_family == "RedHat"
 
-
   - name: clean and update yum cache
     shell: |
       yum clean all
