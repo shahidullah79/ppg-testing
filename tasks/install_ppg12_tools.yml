@@ -315,14 +315,14 @@
   - name: Clone set_user sources
     git:
       repo: https://github.com/pgaudit/set_user.git
-      version: REL2_0_0
+      version: REL2_0_1
       dest: /tmp/set_user
     become_user: postgres
 
   - name: Clone pgbouncer sources RHEL
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
-      version: pgbouncer_1_15_0
+      version: pgbouncer_1_16_0
       dest: /var/lib/pgsql/pgbouncer
       recursive: yes
       update: yes
