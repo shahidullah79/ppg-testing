@@ -129,10 +129,3 @@
         - percona-postgresql11-server-debuginfo
         - percona-postgresql11-test-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Restart etcd RHEL
-    service:
-      name: etcd
-      state: restarted
-      enabled: yes
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"

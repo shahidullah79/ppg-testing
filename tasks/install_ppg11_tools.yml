@@ -494,13 +494,6 @@
       state: started
       enabled: yes
 
-  - name: Restart etcd RHEL
-    service:
-      name: etcd
-      state: restarted
-      enabled: yes
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
   - name: Install patroni related packages RHEL
     yum:
       name: "{{ packages }}"
@@ -511,7 +504,14 @@
       - etcd
       - haproxy
       - python3-python-etcd
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart etcd RHEL
+    service:
+      name: etcd
+      state: restarted
+      enabled: yes
+    when: ansible_os_family == "RedHat"
 
   - name: Install patroni related packages Debian
     apt:
