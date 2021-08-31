@@ -463,18 +463,7 @@
       state: started
       enabled: yes
 
-  - name: install etcd for RHEL 8
-    yum:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-      - etcd
-      - python3-python-etcd
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Install etcd packages RHEL 6 or 7
+  - name: Install etcd packages RHEL
     yum:
       name: "{{ packages }}"
       state: latest
@@ -484,7 +473,7 @@
       - etcd
       - haproxy
       - python3-python-etcd
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
+    when: ansible_os_family == "RedHat"
 
   - name: Restart etcd RHEL
     service:
