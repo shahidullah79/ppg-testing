@@ -322,7 +322,7 @@ def get_ppg_versions(distro_type):
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-11.12": get_pg11_versions(packages=["11+204-1", '2:11.12-2', '226-1', '11+226-1'],
                                            distros=DISTROS, distro_type=distro_type),
-            "ppg-11.13": get_pg11_versions(packages=["11+204-1", '2:11.13-2', '226-1', '11+226-1'],
+            "ppg-11.13": get_pg11_versions(packages=["11+204-1", '2:11.13-2', '226-2', '11+226-1'],
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-12.2": get_pg12_versions(packages=["2:12-3.1", "12+215-1", '215-1'],
                                           distros=DISTROS, distro_type=distro_type),
@@ -336,7 +336,7 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-12.7": get_pg12_versions(packages=["2:12.7-2", "12+226-1", '226-1'],
                                           distros=DISTROS, distro_type=distro_type),
-            "ppg-12.8": get_pg12_versions(packages=["2:12.8-2", "12+226-1", '226-1'],
+            "ppg-12.8": get_pg12_versions(packages=["2:12.8-1", "12+226-1", '226-2'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.0": get_pg13_versions(packages=["2:13-0.1", "13+221-1", '221-1'],
                                           distros=DISTROS, distro_type=distro_type),
@@ -346,6 +346,6 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.3": get_pg13_versions(packages=["2:13-3.2", "13+226-1", '226-1'],
                                           distros=DISTROS, distro_type=distro_type),
-            "ppg-13.4": get_pg13_versions(packages=["2:13-4.1", "13+226-2", '226-1'],
+            "ppg-13.4": get_pg13_versions(packages=["2:13-4.1", "13+226-2", '226-2'],
                                           distros=DISTROS, distro_type=distro_type)
             }
