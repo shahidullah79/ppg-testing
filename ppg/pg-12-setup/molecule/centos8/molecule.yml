@@ -4,9 +4,9 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: rhel8-${BUILD_NUMBER}-${JOB_NAME}
+  - name: centos8-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-0badcc5b522737046
+    image: ami-071096749fda40d3f
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.micro
     ssh_user: ec2-user
@@ -24,7 +24,7 @@ provisioner:
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/test_vanila_components/
+  directory: ../../../tests/tests_ppg
   options:
     verbose: true
     s: true

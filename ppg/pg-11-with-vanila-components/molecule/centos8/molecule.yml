@@ -4,9 +4,9 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: rhel8-${BUILD_NUMBER}-${JOB_NAME}
+  - name: centos8-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-0badcc5b522737046
+    image: ami-071096749fda40d3f
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.micro
     ssh_user: ec2-user
@@ -20,10 +20,11 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
+    cleanup: ../../playbooks/cleanup.yml
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/tests_ppg
+  directory: ../../../tests/test_vanila_components
   options:
     verbose: true
     s: true
@@ -39,4 +40,5 @@ scenario:
     - prepare
     - converge
     - verify
+    - cleanup
     - destroy
