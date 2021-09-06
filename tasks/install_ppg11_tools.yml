@@ -41,27 +41,27 @@
       state: latest
     when: ansible_os_family == "RedHat"
 
-  - name: Install pg-stat-monitor RHEL
-    yum:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-        - percona-pg-stat-monitor11
-        - percona-pg-stat-monitor11-debuginfo
-    when: ansible_os_family == "RedHat"
-
-  - name: Install pg-stat-monitor debian
-    apt:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-        - percona-pg-stat-monitor11
-        - percona-pg-stat-monitor11-dbgsym
-    when: ansible_os_family == "Debian"
+#  - name: Install pg-stat-monitor RHEL
+#    yum:
+#      name: "{{ packages }}"
+#      state: latest
+#      update_cache: yes
+#    vars:
+#      packages:
+#        - percona-pg-stat-monitor11
+#        - percona-pg-stat-monitor11-debuginfo
+#    when: ansible_os_family == "RedHat"
+#
+#  - name: Install pg-stat-monitor debian
+#    apt:
+#      name: "{{ packages }}"
+#      state: latest
+#      update_cache: yes
+#    vars:
+#      packages:
+#        - percona-pg-stat-monitor11
+#        - percona-pg-stat-monitor11-dbgsym
+#    when: ansible_os_family == "Debian"
 
   - name: Install pgbadger RHEL
     yum:
@@ -135,13 +135,15 @@
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
       path: /etc/postgresql/11/main/postgresql.conf
-      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+      line: shared_preload_libraries = 'pgaudit, set_user'
+    #      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
     when: ansible_os_family == "Debian"
 
   - name: Add extensions to postgresql.conf for RHEL
     lineinfile:
       path: /var/lib/pgsql/11/data/postgresql.conf
-      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+      line: shared_preload_libraries = 'pgaudit, set_user'
+    #      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
     when: ansible_os_family == "RedHat"
 
   - name: Restart Postgres RHEL
