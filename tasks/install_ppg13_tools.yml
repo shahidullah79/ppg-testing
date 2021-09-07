@@ -163,27 +163,27 @@
         - percona-patroni-doc
     when: ansible_os_family == "Debian"
 
-#  - name: Install pg-stat-monitor RHEL
-#    yum:
-#      name: "{{ packages }}"
-#      state: latest
-#      update_cache: yes
-#    vars:
-#      packages:
-#        - percona-pg-stat-monitor13
-#        - percona-pg-stat-monitor13-debuginfo
-#    when: ansible_os_family == "RedHat"
-#
-#  - name: Install pg-stat-monitor debian
-#    apt:
-#      name: "{{ packages }}"
-#      state: latest
-#      update_cache: yes
-#    vars:
-#      packages:
-#        - percona-pg-stat-monitor13
-#        - percona-pg-stat-monitor13-dbgsym
-#    when: ansible_os_family == "Debian"
+  - name: Install pg-stat-monitor RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pg-stat-monitor13
+        - percona-pg-stat-monitor13-debuginfo
+    when: ansible_os_family == "RedHat"
+
+  - name: Install pg-stat-monitor debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pg-stat-monitor13
+        - percona-pg-stat-monitor13-dbgsym
+    when: ansible_os_family == "Debian"
 
   - name: Install pgbadger RHEL
     yum:
@@ -253,28 +253,28 @@
         - percona-postgresql-13-wal2json-dbgsym
     when: ansible_os_family == "Debian"
 
-  - name: Add extensions to postgresql.conf for Debian
-    lineinfile:
-      path: /etc/postgresql/13/main/postgresql.conf
-      line: shared_preload_libraries = 'pgaudit, set_user'
-    when: ansible_os_family == "Debian"
-
-  - name: Add extensions to postgresql.conf for RHEL
-    lineinfile:
-      path: /var/lib/pgsql/13/data/postgresql.conf
-      line: shared_preload_libraries = 'pgaudit, set_user'
-    when: ansible_os_family == "RedHat"
 #  - name: Add extensions to postgresql.conf for Debian
 #    lineinfile:
 #      path: /etc/postgresql/13/main/postgresql.conf
-#      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+#      line: shared_preload_libraries = 'pgaudit, set_user'
 #    when: ansible_os_family == "Debian"
 #
 #  - name: Add extensions to postgresql.conf for RHEL
 #    lineinfile:
 #      path: /var/lib/pgsql/13/data/postgresql.conf
-#      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+#      line: shared_preload_libraries = 'pgaudit, set_user'
 #    when: ansible_os_family == "RedHat"
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /etc/postgresql/13/main/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+    when: ansible_os_family == "Debian"
+
+  - name: Add extensions to postgresql.conf for RHEL
+    lineinfile:
+      path: /var/lib/pgsql/13/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+    when: ansible_os_family == "RedHat"
 
   - name: Clone pgaudit sources
     git:
@@ -308,7 +308,7 @@
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: REL0_9_0_STABLE
+      version: 0.9.2-BETA1
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 
