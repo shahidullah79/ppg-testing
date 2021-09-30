@@ -2,7 +2,6 @@
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml
 
-
 - name: install Percona Platform for PostgreSQL deb packages
   apt:
     name: "{{ packages }}"
@@ -24,11 +23,11 @@
 
 - name: DNF disable postgresql RHEL
   command: sudo dnf module disable postgresql -y
-  when: ansible_distribution == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 - name: DNF clean
   command: sudo dnf clean all -y
-  when: ansible_distribution == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
@@ -85,7 +84,7 @@
     name: postgis30_12
     state: latest
     enablerepo: PowerTools
-  when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "8"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
 - name: install postgis RHEL based 7
   yum:

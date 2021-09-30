@@ -17,7 +17,7 @@
       raw: test -e /usr/bin/python || (yum update -y && yum install -y python2)
       become: true
       changed_when: false
-      when: ansible_distribution == "RedHat"
+      when: ansible_os_family == "RedHat"
 
     - name: Install python for Ansible
       raw: test -e /usr/bin/python || (yum update -y && yum install -y python-minimal python-libselinux)
