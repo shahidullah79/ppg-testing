@@ -17,11 +17,11 @@
 
   - name: DNF disable postgresql RHEL
     command: sudo dnf module disable postgresql -y
-    when: ansible_distribution == "RedHat"
+    when: ansible_os_family == "RedHat"
 
   - name: DNF clean RHEL
     command: sudo dnf clean all -y
-    when: ansible_distribution == "RedHat"
+    when: ansible_os_family == "RedHat"
 
   - name: Add PostgreSQL YUM Repository RHEL7
     yum: name=https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm state=present

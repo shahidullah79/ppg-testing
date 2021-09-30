@@ -181,7 +181,6 @@
       path: /etc/pgbackrest/
       state: directory
 
-
   - name: Create pgbackrest configuration Debian
     blockinfile:
       path: /etc/pgbackrest/pgbackrest.conf
@@ -207,7 +206,6 @@
         pg1-path=/var/lib/pgsql/11/data
         pg1-port=5432
     when: ansible_os_family == "RedHat"
-
 
   - name: Configure backup config for Debian
     blockinfile:
