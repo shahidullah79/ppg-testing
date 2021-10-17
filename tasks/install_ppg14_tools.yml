@@ -1,0 +1,665 @@
+---
+  - name: Install additional tools for pgbackrest test Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+        - libxml-checker-perl
+        - libyaml-perl
+        - texlive-latex-base
+        - texlive-latex-extra
+        - texlive-fonts-recommended
+        - lcov
+        - rsync
+        - zlib1g-dev
+        - libssl-dev
+        - libxml2-dev
+        - libpq-dev
+        - pkg-config
+        - valgrind
+        - liblz4-dev
+        - liblz4-tool
+        - zstd
+        - libzstd-dev
+        - bzip2
+        - libbz2-dev
+    when: ansible_os_family == "Debian"
+
+  - name: Install pgaudit Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-postgresql-14-pgaudit
+        - percona-postgresql-14-pgaudit-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install pgaudit RHEL
+    yum:
+      name: percona-pgaudit
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install pgbackrest Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pgbackrest
+        - percona-pgbackrest-doc
+        - percona-pgbackrest-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install pgbackrest RHEL
+    yum:
+      name: percona-pgbackrest
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Create pgbackrest directory
+    file:
+      path: /etc/pgbackrest/
+      state: directory
+
+  - name: Create pgbackrest configuration Debian
+    blockinfile:
+      path: /etc/pgbackrest/pgbackrest.conf
+      create: yes
+      block: |
+        [global]
+        repo1-path=/var/lib/pgbackrest
+
+        [testing]
+        pg1-path=/var/lib/postgresql/14/main
+        pg1-port=5432
+    when: ansible_os_family == "Debian"
+
+  - name: Create pgbackrest configuration RHEL
+    blockinfile:
+      path: /etc/pgbackrest/pgbackrest.conf
+      create: yes
+      block: |
+        [global]
+        repo1-path=/var/lib/pgbackrest
+
+        [testing]
+        pg1-path=/var/lib/pgsql/14/data
+        pg1-port=5432
+    when: ansible_os_family == "RedHat"
+
+  - name: Configure backup config for Debian
+    blockinfile:
+      path: /etc/postgresql/14/main/postgresql.conf
+      block: |
+        archive_mode = on
+        archive_command = 'pgbackrest --stanza=testing archive-push %p'
+        max_wal_senders = 10
+        wal_level = logical
+    when: ansible_os_family == "Debian"
+
+  - name: Configure backup config for RHEL
+    blockinfile:
+      path: /var/lib/pgsql/14/data/postgresql.conf
+      block: |
+        archive_mode = on
+        archive_command = 'pgbackrest --stanza=testing archive-push %p'
+        max_wal_senders = 10
+        wal_level = logical
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart Postgres RHEL
+    service:
+      name: postgresql-14
+      state: restarted
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart Postgres Debian
+    command: sudo systemctl restart postgresql
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "Debian"
+
+  - name: Install pgrepack Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-postgresql-14-repack
+        - percona-postgresql-14-repack-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install pgrepack RHEL
+    yum:
+      name: percona-pg_repack14
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+
+  - name: Install patroni RPM
+    yum:
+      name: percona-patroni
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install patroni debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-patroni
+        - percona-patroni-doc
+    when: ansible_os_family == "Debian"
+
+  - name: Install pg-stat-monitor RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pg-stat-monitor14
+        - percona-pg-stat-monitor14-debuginfo
+    when: ansible_os_family == "RedHat"
+
+  - name: Install pg-stat-monitor debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pg-stat-monitor14
+        - percona-pg-stat-monitor14-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install pgbadger RHEL
+    yum:
+      name: percona-pgbadger
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install pgbadger Debian
+    apt:
+      name: percona-pgbadger
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "Debian"
+
+  - name: Install percona-pgaudit14_set_user RHEL
+    yum:
+      name: percona-pgaudit14_set_user
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install percona-pgaudit14_set_user Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pgaudit14-set-user
+        - percona-pgaudit14-set-user-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install percona-pgbouncer RHEL
+    yum:
+      name: percona-pgbouncer
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install percona-pgbouncer Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pgbouncer
+        - percona-pgbouncer-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install percona-wal2json14 RHEL
+    yum:
+      name: percona-wal2json14
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install percona-wal2json14 Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-postgresql-14-wal2json
+        - percona-postgresql-14-wal2json-dbgsym
+    when: ansible_os_family == "Debian"
+
+#  - name: Add extensions to postgresql.conf for Debian
+#    lineinfile:
+#      path: /etc/postgresql/14/main/postgresql.conf
+#      line: shared_preload_libraries = 'pgaudit, set_user'
+#    when: ansible_os_family == "Debian"
+#
+#  - name: Add extensions to postgresql.conf for RHEL
+#    lineinfile:
+#      path: /var/lib/pgsql/14/data/postgresql.conf
+#      line: shared_preload_libraries = 'pgaudit, set_user'
+#    when: ansible_os_family == "RedHat"
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /etc/postgresql/14/main/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+    when: ansible_os_family == "Debian"
+
+  - name: Add extensions to postgresql.conf for RHEL
+    lineinfile:
+      path: /var/lib/pgsql/14/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+    when: ansible_os_family == "RedHat"
+
+  - name: Clone pgaudit sources
+    git:
+      repo: https://github.com/pgaudit/pgaudit.git
+      version: 1.5.0
+      dest: /tmp/pg_audit
+    become_user: postgres
+
+  - name: Clone pg_repack sources
+    git:
+      repo: https://github.com/reorg/pg_repack.git
+      version: ver_1.4.6
+      dest: /tmp/pg_repack
+    become_user: postgres
+
+  - name: Remove Makefile pg_repack debian
+    file:
+      path: /tmp/pg_repack/Makefile
+      state: absent
+    when: ansible_os_family == "Debian"
+
+  - name: Edit Makefile for pg_repack on Debian
+    copy:
+      src: MakefileDebianPgrepack
+      dest: /tmp/pg_repack/Makefile
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Clone pg_stat_monitor sources
+    git:
+      repo: https://github.com/percona/pg_stat_monitor.git
+      version: 0.9.2-BETA1
+      dest: /tmp/pg_stat_monitor
+    become_user: postgres
+
+  - name: Remove pg_hba.conf debian
+    file:
+      path: /var/lib/pgsql/14/data/pg_hba.conf
+      state: absent
+    when: ansible_os_family == "RedHat"
+
+  - name: Remove pg_hba.conf debian
+    file:
+      path: /etc/postgresql/14/main/pg_hba.conf
+      state: absent
+    when: ansible_os_family == "Debian"
+
+  - name: Edit pg_hba.conf RHEL
+    blockinfile:
+      path: /var/lib/pgsql/14/data/pg_hba.conf
+      create: yes
+      owner: postgres
+      block: |
+        local   all             all                                     trust
+        host    all             all             127.0.0.1/32            trust
+        host    all             all             ::1/128                 trust
+        local   replication     all                                     trust
+        host    replication     all             127.0.0.1/32            trust
+        host    replication     all             ::1/128                 trust
+    when: ansible_os_family == "RedHat"
+
+  - name: Edit pg_hba.conf Debian
+    blockinfile:
+      create: yes
+      owner: postgres
+      path: /etc/postgresql/14/main/pg_hba.conf
+      block: |
+        local   all             all                                     trust
+        host    all             all             127.0.0.1/32            trust
+        host    all             all             ::1/128                 trust
+        local   replication     all                                     trust
+        host    replication     all             127.0.0.1/32            trust
+        host    replication     all             ::1/128                 trust
+    when: ansible_os_family == "Debian"
+
+  - name: Clone pgbadger sources
+    git:
+      repo: https://github.com/darold/pgbadger.git
+      version: v11.5
+      dest: /tmp/pgbadger
+    become_user: postgres
+
+  - name: Make perl for pgbadger
+    shell: perl Makefile.PL
+    args:
+      chdir: /tmp/pgbadger
+
+  - name: Clone set_user sources
+    git:
+      repo: https://github.com/pgaudit/set_user.git
+      version: REL2_0_1
+      dest: /tmp/set_user
+    become_user: postgres
+
+  - name: Clone pgbouncer sources RHEL
+    git:
+      repo: https://github.com/pgbouncer/pgbouncer.git
+      version: pgbouncer_1_16_0
+      dest: /var/lib/pgsql/pgbouncer
+      recursive: yes
+      update: yes
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Autogen pgbouncer RHEL
+    shell: ./autogen.sh
+    args:
+      chdir: /var/lib/pgsql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Configure pgbouncer RHEL
+    shell: ./configure --prefix=/usr/local
+    args:
+      chdir: /var/lib/pgsql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Clone pgbouncer sources Debian
+    git:
+      repo: https://github.com/pgbouncer/pgbouncer.git
+      version: pgbouncer_1_15_0
+      dest: /var/lib/postgresql/pgbouncer
+      recursive: yes
+      update: yes
+    become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Autogen pgbouncer Debian
+    shell: ./autogen.sh
+    args:
+      chdir: /var/lib/postgresql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Configure pgbouncer Debian
+    shell: ./configure --prefix=/usr/local
+    args:
+      chdir: /var/lib/postgresql/pgbouncer
+    become_user: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Clone wal2json sources
+    git:
+      repo: https://github.com/eulerto/wal2json.git
+      version: wal2json_2_3
+      dest: /tmp/wal2json
+    become_user: postgres
+
+  - name: Clone pgbackrest sources Debian
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.34
+      dest:  /var/lib/postgresql/pgbackrest
+    become_user: postgres
+    become: yes
+    when: ansible_os_family == "Debian"
+
+  - name: Clone pgbackrest sources RHEL
+    git:
+      repo: https://github.com/pgbackrest/pgbackrest.git
+      version: release/2.34
+      dest:  /var/lib/pgsql/pgbackrest
+    become_user: postgres
+    become: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart Postgres RHEL
+    service:
+      name: postgresql-14
+      state: restarted
+    when: ansible_os_family == "RedHat"
+    register: out
+
+  - name: Restart Postgres Debian
+    command: sudo systemctl restart postgresql
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "Debian"
+
+  - name: Start patroni
+    service:
+      name: patroni
+      state: started
+      enabled: yes
+
+  - name: Install etcd packages RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - etcd
+      - haproxy
+      - python3-python-etcd
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart etcd RHEL
+    service:
+      name: etcd
+      state: restarted
+      enabled: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Install patroni related packages Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - etcd
+        - haproxy
+    when: ansible_os_family == "Debian"
+
+  - name: Create /etc/patroni directory
+    file:
+      path: /etc/patroni
+      state: directory
+
+  - name: Create test patroni directory RHEL
+    file:
+      path: /var/lib/pgsql/patroni_test/
+      state: directory
+      owner: postgres
+      group: postgres
+    when: ansible_os_family == "RedHat"
+
+  - name: Create test patroni directory Debian
+    file:
+      path: /var/lib/postgresql/patroni_test/
+      state: directory
+      owner: postgres
+      group: postgres
+    when: ansible_os_family == "Debian"
+
+  - name: Copy postgresql0.yml for patroni service Debian
+    copy:
+      src: postgresql0_deb.yml
+      dest: /var/lib/postgresql/patroni_test/postgresql0.yml
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Copy postgresql1.yml for patroni service Debian
+    copy:
+      src: postgresql1_deb.yml
+      dest: /var/lib/postgresql/patroni_test/postgresql1.yml
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Copy postgresql2.yml for patroni service Debian
+    copy:
+      src: postgresql2_deb.yml
+      dest: /var/lib/postgresql/patroni_test/postgresql2.yml
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Copy postgresql0.yml for patroni service RHEL
+    copy:
+      src: postgresql0.yml
+      dest: /var/lib/pgsql/patroni_test/postgresql0.yml
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "RedHat"
+
+  - name: Copy postgresql1.yml for patroni service RHEL
+    copy:
+      src: postgresql1.yml
+      dest: /var/lib/pgsql/patroni_test/postgresql1.yml
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "RedHat"
+
+  - name: Copy postgresql2.yml for patroni service RHEL
+    copy:
+      src: postgresql2.yml
+      dest: /var/lib/pgsql/patroni_test/postgresql2.yml
+      owner: postgres
+      group: postgres
+      mode: 0644
+    when: ansible_os_family == "RedHat"
+
+  - name: Copy patroni0 service file Debian
+    copy:
+      src: patroni0_deb.service
+      dest: /lib/systemd/system/patroni0.service
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Copy patroni1 service file Debian
+    copy:
+      src: patroni1_deb.service
+      dest: /lib/systemd/system/patroni1.service
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Copy patroni2 service file Debian
+    copy:
+      src: patroni2_deb.service
+      dest: /lib/systemd/system/patroni2.service
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == "Debian"
+
+  - name: Copy patroni0 service file RHEL
+    copy:
+      src: patroni0.service
+      dest: /usr/lib/systemd/system/patroni0.service
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == "RedHat"
+
+  - name: Copy patroni1 service file RHEL
+    copy:
+      src: patroni1.service
+      dest: /usr/lib/systemd/system/patroni1.service
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == "RedHat"
+
+  - name: Copy patroni2 service file RHEL
+    copy:
+      src: patroni2.service
+      dest: /usr/lib/systemd/system/patroni2.service
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == "RedHat"
+
+  - name: Start etcd
+    service:
+      name: etcd
+      state: started
+      enabled: yes
+
+  - name: Start patroni0
+    service:
+      name: patroni0
+      state: started
+      enabled: yes
+
+  - name: Start patroni1
+    service:
+      name: patroni1
+      state: started
+      enabled: yes
+
+  - name: Start patroni2
+    service:
+      name: patroni2
+      state: started
+      enabled: yes
+
+  - name: Copy haproxy.cfg
+    copy:
+      src: haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Start haproxy
+    shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
+
+  - name: Add user postgres to sudoers
+    user:
+      name: postgres
+      groups: sudo
+      append: yes
+    when: ansible_os_family == "Debian"

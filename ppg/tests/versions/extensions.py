@@ -277,3 +277,9 @@ def get_extensions_ppg13(distro_type):
     if ("debian" or "ubuntu" or "ubuntu-bionic" or "ubuntu-focal") in distro_type:
         return DEB12_EXTENSIONS
     return RPM13_EXTENSIONS
+
+
+def get_extensions_ppg14(distro_type):
+    if ("debian" or "ubuntu" or "ubuntu-bionic" or "ubuntu-focal") in distro_type:
+        return DEB12_EXTENSIONS
+    return RPM13_EXTENSIONS
