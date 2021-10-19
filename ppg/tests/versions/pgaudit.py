@@ -20,5 +20,5 @@ pgaudit = {
     "ppg-13.2": {"version": "1.5"},
     "ppg-13.3": {"version": "1.5"},
     "ppg-13.4": {"version": "1.5"},
-    "ppg-14.0": {"version": "1.5"},
+    "ppg-14.0": {"version": "1.6"},
 }

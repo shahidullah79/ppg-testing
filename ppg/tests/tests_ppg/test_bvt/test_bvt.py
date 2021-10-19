@@ -215,8 +215,9 @@ def test_extenstions_list(extension_list, host):
         if ds.lower() in ['centos', 'redhat', 'rhel']:
             if "python3" in extension:
                 pytest.skip("Skipping python3 extensions for Centos or RHEL")
-            if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
-                             'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in settings.MAJOR_VER:
+            if extension in [
+                'plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
+                'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and settings.MAJOR_VER in ["13", "14"]:
                 pytest.skip("Skipping extensions for Centos or RHEL")
         if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
             if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
@@ -231,8 +232,9 @@ def test_enable_extension(host, extension):
     if ds.lower() in ["redhat", "centos", 'rhel']:
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
-        if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
-                         'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in settings.MAJOR_VER:
+        if extension in [
+            'plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
+            'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and settings.MAJOR_VER in ["13", "14"]:
             pytest.skip("Skipping extensions for Centos or RHEL")
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
@@ -255,8 +257,9 @@ def test_drop_extension(host, extension):
     if ds.lower() in ["redhat", "centos", 'rhel']:
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
-        if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
-                         'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and "13" in settings.MAJOR_VER:
+        if extension in [
+            'plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
+            'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u'] and settings.MAJOR_VER in ["13", "14"]:
             pytest.skip("Skipping extensions for Centos or RHEL")
 
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
@@ -311,12 +314,13 @@ def test_rpm_files(file, host):
 
 @pytest.mark.parametrize("language", LANGUAGES)
 def test_language(host, language):
+    dists = ['debian', 'ubuntu']
     ds = host.system_info.distribution
     with host.sudo("postgres"):
         if ds.lower() in ["redhat", "centos", 'rhel']:
             if "python3" in language:
                 pytest.skip("Skipping python3 language for Centos or RHEL")
-        if ds.lower() in ['debian', 'ubuntu'] and language in ['plpythonu', "plpython2u"] or "13" in settings.MAJOR_VER:
+        if ds.lower() in dists and language in ['plpythonu', "plpython2u"] or settings.MAJOR_VER in ["13", "14"]:
             pytest.skip("Skipping python2 extensions for DEB based in 12.* and all centos 13")
         lang = host.run("psql -c 'CREATE LANGUAGE {};'".format(language))
         assert lang.rc == 0, lang.stderr

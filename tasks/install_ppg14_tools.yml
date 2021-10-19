@@ -367,7 +367,7 @@
   - name: Clone set_user sources
     git:
       repo: https://github.com/pgaudit/set_user.git
-      version: REL2_0_1
+      version: REL3_0_0
       dest: /tmp/set_user
     become_user: postgres
 

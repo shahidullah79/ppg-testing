@@ -301,7 +301,7 @@ def get_pg13_versions(distros, packages, distro_type):
 
 
 def get_pg14_versions(distros, packages, distro_type):
-    ppg_13_versions = {
+    ppg_14_versions = {
                        "deb_packages": fill_template_form(DEB12_PACKAGES_TEMPLATE, "14"),
                        "deb_provides": fill_provides_template_form(DEB_PROVIDES_TEMPLATE, "14"),
                        "rpm7_provides": fill_provides_template_form(RPM7_PROVIDES_TEMPLATE, "14"),
@@ -319,9 +319,9 @@ def get_pg14_versions(distros, packages, distro_type):
                                     'reindexdb', 'vacuumdb'],
                        "languages": LANGUAGES}
 
-    ppg_13_versions.update({"deb_pkg_ver": fill_package_versions(packages=packages,
+    ppg_14_versions.update({"deb_pkg_ver": fill_package_versions(packages=packages,
                                                                  distros=distros)})
-    return ppg_13_versions
+    return ppg_14_versions
 
 
 def get_ppg_versions(distro_type):
@@ -372,6 +372,6 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.4": get_pg13_versions(packages=["2:13-4.1", "13+226-2", '226-2'],
                                           distros=DISTROS, distro_type=distro_type),
-            "ppg-14.0": get_pg14_versions(packages=["2:14-0.1", "14+226-0", '226-0'],
+            "ppg-14.0": get_pg14_versions(packages=["2:14.0-1", "14+226-0", '226-0'],
                                           distros=DISTROS, distro_type=distro_type)
             }
