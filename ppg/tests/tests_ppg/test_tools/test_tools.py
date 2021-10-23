@@ -134,7 +134,7 @@ def pgbackrest_delete_data(host):
     service_name = "postgresql"
     if dist.lower() in ["redhat", "centos", 'rhel']:
         data_dir = f"/var/lib/pgsql/{MAJOR_VER}/data/*"
-        service_name = "postgresql-{MAJOR_VER}"
+        service_name = f"postgresql-{MAJOR_VER}"
     with host.sudo("root"):
         stop_postgresql = 'systemctl stop {}'.format(service_name)
         s = host.run(stop_postgresql)
@@ -375,11 +375,7 @@ def test_patroni_service(host):
 
 
 def test_pg_stat_monitor_package_version(host):
-    pg_stat = host.package("percona-pg-stat-monitor13")
-    if "11" in os.getenv("VERSION") or os.getenv("VERSION") == "11.12":
-        pg_stat = host.package("percona-pg-stat-monitor11")
-    elif "12" in os.getenv("VERSION"):
-        pg_stat = host.package("percona-pg-stat-monitor12")
+    pg_stat = host.package(f"percona-pg-stat-monitor{MAJOR_VER}")
     assert pg_versions['pg_stat_monitor'] in pg_stat.version
 
 
