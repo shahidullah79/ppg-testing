@@ -1,12 +1,12 @@
   - name: Clean dnf RHEL8
     become: true
     command: dnf clean all -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat"
 
   - name: Disable dnf module for RHEL8
     become: true
     command: dnf module disable postgresql -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat"
 
   - name: Disable llvm-toolset dnf module for RHEL8
     become: true
@@ -78,10 +78,6 @@
       - percona-postgresql13-test
       - percona-postgresql13-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
-
-  - name: DNF clean RHEL
-    command: sudo dnf module disable postgresql -y
-    when: ansible_distribution == "RedHat"
 
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
