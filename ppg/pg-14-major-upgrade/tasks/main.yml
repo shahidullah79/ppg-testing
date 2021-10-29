@@ -198,14 +198,14 @@
       port = 5432
   when: ansible_os_family == "RedHat"
 
-- name: Start postgresql service for RHEL based
+- name: Restart postgresql service for RHEL based
   service:
     name: postgresql-14
     state: restarted
     enabled: true
   when: ansible_os_family == "RedHat"
 
-- name: Start postgresql service for Debian based
+- name: Restart postgresql service for Debian based
   service:
     name: postgresql
     state: restarted
