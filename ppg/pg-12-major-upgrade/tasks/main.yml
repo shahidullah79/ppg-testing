@@ -208,14 +208,14 @@
 - name: Start postgresql service for RHEL based
   service:
     name: postgresql-12
-    state: started
+    state: restarted
     enabled: true
   when: ansible_os_family == "RedHat"
 
 - name: Start postgresql service for Debian based
   service:
     name: postgresql
-    state: started
+    state: restarted
     enabled: true
   when: ansible_os_family == "Debian"
 
