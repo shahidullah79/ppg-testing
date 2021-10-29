@@ -3,10 +3,10 @@
     command: dnf clean all -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-  - name: Disable dnf module for RHEL8 and ansible_distribution_major_version == "8"
+  - name: Disable dnf module for RHEL8
     become: true
     command: dnf module disable postgresql -y
-    when: ansible_os_family == "RedHat"
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
   - name: Disable llvm-toolset dnf module for RHEL8
     become: true
