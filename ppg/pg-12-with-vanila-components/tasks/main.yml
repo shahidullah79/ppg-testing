@@ -23,11 +23,11 @@
 
 - name: DNF disable postgresql RHEL
   command: sudo dnf module disable postgresql -y
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" ansible_distribution_major_version == "8"
 
 - name: DNF clean
   command: sudo dnf clean all -y
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" ansible_distribution_major_version == "8"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
