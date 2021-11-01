@@ -6,10 +6,10 @@ driver:
 platforms:
   - name: centos8-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-071096749fda40d3f
+    image: ami-0e337c7f9752d9d34
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.micro
-    ssh_user: ec2-user
+    ssh_user: centos
     root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pg-worker
