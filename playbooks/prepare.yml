@@ -5,6 +5,13 @@
   become_method: sudo
   gather_facts: true
   tasks:
+    - name: setup ca-certificates release
+      yum:
+        name: ca-certificates
+        update_cache: yes
+        state: present
+      when: ansible_os_family == "RedHat"
+
     - name: install GPG key for epel 8
       rpm_key:
         state: present
@@ -27,12 +34,12 @@
       yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm state=present
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-    - name: setup ca-certificates release
-      yum:
-        name: ca-certificates
-        update_cache: yes
-        state: present
-      when: ansible_os_family == "RedHat"
+#    - name: setup ca-certificates release
+#      yum:
+#        name: ca-certificates
+#        update_cache: yes
+#        state: present
+#      when: ansible_os_family == "RedHat"
 
     - name: setup epel release
       yum:
@@ -40,7 +47,6 @@
         update_cache: yes
         state: present
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
-
 
     - name: install needed packages for running tests with apt
       apt:
