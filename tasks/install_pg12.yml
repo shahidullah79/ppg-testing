@@ -1,3 +1,9 @@
+  - name: install GPG key for Postgresql repos
+    rpm_key:
+      state: present
+      key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+    when: ansible_os_family == "RedHat"
+
   - name: postgresql key
     apt_key:
       url: https://www.postgresql.org/media/keys/ACCC4CF8.asc

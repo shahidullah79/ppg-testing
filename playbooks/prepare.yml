@@ -182,9 +182,3 @@
           - build-essential
           - pandoc
       when: ansible_os_family == "Debian"
-
-    - name: install GPG key for Postgresql repos
-      rpm_key:
-        state: present
-        key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
-      when: ansible_os_family == "RedHat"
