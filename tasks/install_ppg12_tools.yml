@@ -451,6 +451,7 @@
       name: patroni
       state: started
       enabled: yes
+    when: ansible_os_family == "RedHat"
 
   - name: install etcd for RHEL
     yum:
