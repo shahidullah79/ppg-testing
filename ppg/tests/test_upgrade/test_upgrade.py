@@ -53,7 +53,7 @@ def test_service_status(host):
     ds = host.system_info.distribution
     service = "postgresql"
     if ds.lower() in ["redhat", "centos", 'rhel']:
-        service = f"postgresql-{MAJOR_VER}"
+        service = f"postgresql{MAJOR_VER}"
     with host.sudo():
         print(host.run(f"service {service} status").stdout)
         print(host.run(f"service {service} status").stderr)
