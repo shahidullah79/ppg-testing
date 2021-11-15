@@ -9,6 +9,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 pg_versions = settings.get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
 EXTENSIONS = pg_versions['extensions']
+EXTENSIONS.pop("pg_stat_monitor")
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", 'ppg-12.2',
                   'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-13.0", "ppg-13.1"]
 
@@ -137,6 +138,8 @@ def test_extenstions_list(extension_list, host):
 @pytest.mark.parametrize("extension", EXTENSIONS)
 def test_enable_extension(host, extension):
     ds = host.system_info.distribution
+    if extension == "pg_stat_monitor":
+        pytest.skip("No pg_stat_monitor in upgrade test")
     if ds.lower() in ["redhat", "centos", 'rhel']:
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
@@ -161,6 +164,8 @@ def test_enable_extension(host, extension):
 @pytest.mark.parametrize("extension", EXTENSIONS[::-1])
 def test_drop_extension(host, extension):
     ds = host.system_info.distribution
+    if extension == "pg_stat_monitor":
+        pytest.skip("No pg_stat_monitor in upgrade test")
     if ds.lower() in ["redhat", "centos", 'rhel']:
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
