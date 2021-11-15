@@ -49,6 +49,15 @@ def insert_data(host):
     yield result.strip("\n")
 
 
+def test_service_status(host):
+    ds = host.system_info.distribution
+    service = "postgresql"
+    if ds.lower() in ["redhat", "centos", 'rhel']:
+        service = f"postgresql-{MAJOR_VER}"
+    print(host.run(f"service {service} status").stdout)
+    print(host.run(f"service {service} status").stderr)
+
+
 def test_psql_client_version(host):
     result = host.run('psql --version')
     assert pg_versions['version'] in result.stdout, result.stdout
