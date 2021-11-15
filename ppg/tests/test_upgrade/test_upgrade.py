@@ -54,8 +54,9 @@ def test_service_status(host):
     service = "postgresql"
     if ds.lower() in ["redhat", "centos", 'rhel']:
         service = f"postgresql-{MAJOR_VER}"
-    print(host.run(f"service {service} status").stdout)
-    print(host.run(f"service {service} status").stderr)
+    with host.sudo():
+        print(host.run(f"service {service} status").stdout)
+        print(host.run(f"service {service} status").stderr)
 
 
 def test_psql_client_version(host):
