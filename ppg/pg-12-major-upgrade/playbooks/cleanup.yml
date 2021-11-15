@@ -18,7 +18,6 @@
           - percona-postgresql-plpython3-11
           - percona-postgresql-pltcl-11
           - percona-postgresql-server-dev-11
-          - percona-postgresql-server-dev-all
           - percona-postgresql-11-dbgsym
           - percona-postgresql-client-11-dbgsym
           - percona-postgresql-plperl-11-dbgsym
