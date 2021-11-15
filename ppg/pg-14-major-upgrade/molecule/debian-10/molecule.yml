@@ -39,6 +39,7 @@ scenario:
     - create
     - prepare
     - converge
-    - cleanup
     - verify
+    - cleanup
     - destroy
+
