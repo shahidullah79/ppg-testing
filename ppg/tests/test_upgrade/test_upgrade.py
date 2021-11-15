@@ -9,7 +9,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 pg_versions = settings.get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
 EXTENSIONS = pg_versions['extensions']
-EXTENSIONS.pop("pg_stat_monitor")
+EXTENSIONS.remove("pg_stat_monitor")
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", 'ppg-12.2',
                   'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-13.0", "ppg-13.1"]
 
