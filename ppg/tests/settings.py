@@ -631,6 +631,6 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-14.1"]["extensions"],
             "languages": ppg_versions["ppg-14.1"]["languages"],
             "binaries": ppg_versions["ppg-14.1"]["binaries"],
-            "pg_stat_monitor": "1.1.0"
+            "pg_stat_monitor": "1.0.0"
         },
     }
