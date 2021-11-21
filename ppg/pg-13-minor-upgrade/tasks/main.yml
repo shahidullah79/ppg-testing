@@ -130,39 +130,17 @@
       - percona-postgresql13-test-debuginfo
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Initialize Postgres RHEL
-  command: /usr/pgsql-13/bin/postgresql-13-setup initdb
-  environment:
-    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-  when: ansible_os_family == "RedHat"
-
-- name: Stop postgresql service for RHEL based
+- name: Restart postgresql service for RHEL based
   service:
     name: postgresql-13
-    state: stopped
-  when: ansible_os_family == "RedHat"
-
-- name: Stop postgresql service for Debian based
-  service:
-    name: postgresql
-    state: stopped
-  when: ansible_os_family == "Debian"
-
-- name: Stop postgresql service for Debian based
-  command: sudo pkill postgres
-  when: ansible_os_family == "Debian"
-
-- name: Start postgresql service for RHEL based
-  service:
-    name: postgresql-13
-    state: started
+    state: restarted
     enabled: true
   when: ansible_os_family == "RedHat"
 
-- name: Start postgresql service for Debian based
+- name: Restart postgresql service for Debian based
   service:
     name: postgresql
-    state: started
+    state: restarted
     enabled: true
   when: ansible_os_family == "Debian"
 
