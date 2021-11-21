@@ -1,5 +1,5 @@
 ---
-# Tasks for test major upgrade for PPG 13 packages
+# Tasks for test major upgrade for PPG 14 packages
 
 - name: Configure repository
   include_tasks: ../../../tasks/install_percona_release.yml
@@ -197,34 +197,6 @@
     search_string: 'port'
     line: port = 5432
   when: ansible_os_family == "RedHat"
-
-#- name: Change postgresql 13 port in config Debian
-#  blockinfile:
-#    path: /etc/postgresql/13/main/postgresql.conf
-#    block: |
-#      port = 5433
-#  when: ansible_os_family == "Debian"
-#
-#- name: Change postgresql 13 port in config RHEL
-#  blockinfile:
-#    path: /var/lib/pgsql/13/data/postgresql.conf
-#    block: |
-#      port = 5433
-#  when: ansible_os_family == "RedHat"
-
-#- name: Change postgresql 14 port in config Debian
-#  blockinfile:
-#    path: /etc/postgresql/14/main/postgresql.conf
-#    block: |
-#      port = 5432
-#  when: ansible_os_family == "Debian"
-#
-#- name: Change postgresql 14 port in config RHEL
-#  blockinfile:
-#    path: /var/lib/pgsql/14/data/postgresql.conf
-#    block: |
-#      port = 5432
-#  when: ansible_os_family == "RedHat"
 
 - name: Restart postgresql service for RHEL based
   service:

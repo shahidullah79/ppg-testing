@@ -150,10 +150,6 @@
     state: stopped
   when: ansible_os_family == "Debian"
 
-- name: Stop postgresql service for Debian based
-  command: sudo pkill postgres
-  when: ansible_os_family == "Debian"
-
 - pause:
     minutes: 1
 
@@ -175,41 +171,41 @@
   when: ansible_os_family == "Debian"
 
 - name: Change postgresql 12 port in config Debian
-  blockinfile:
+  lineinfile:
     path: /etc/postgresql/12/main/postgresql.conf
-    block: |
-      port = 5433
+    search_string: 'port'
+    line: port = 5433
   when: ansible_os_family == "Debian"
 
 - name: Change postgresql 12 port in config RHEL
-  blockinfile:
+  lineinfile:
     path: /var/lib/pgsql/12/data/postgresql.conf
-    block: |
-      port = 5433
+    search_string: 'port'
+    line: port = 5433
   when: ansible_os_family == "RedHat"
 
 - name: Change postgresql 13 port in config Debian
-  blockinfile:
+  lineinfile:
     path: /etc/postgresql/13/main/postgresql.conf
-    block: |
-      port = 5432
+    search_string: 'port'
+    line: port = 5432
   when: ansible_os_family == "Debian"
 
 - name: Change postgresql 13 port in config RHEL
-  blockinfile:
+  lineinfile:
     path: /var/lib/pgsql/13/data/postgresql.conf
-    block: |
-      port = 5432
+    search_string: 'port'
+    line: port = 5432
   when: ansible_os_family == "RedHat"
 
-- name: Start postgresql service for RHEL based
+- name: Restart postgresql service for RHEL based
   service:
     name: postgresql-13
     state: restarted
     enabled: true
   when: ansible_os_family == "RedHat"
 
-- name: Start postgresql service for Debian based
+- name: Restart postgresql service for Debian based
   service:
     name: postgresql
     state: restarted
