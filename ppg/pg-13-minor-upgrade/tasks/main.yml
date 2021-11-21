@@ -53,6 +53,7 @@
     state: latest
   vars:
     packages:
+    - percona-postgresql-client-common
     - percona-postgresql-13
     - percona-postgresql-client-13
     - percona-postgresql-doc-13
