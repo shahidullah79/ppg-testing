@@ -53,7 +53,6 @@
     state: latest
   vars:
     packages:
-    - percona-postgresql-client-common
     - percona-postgresql-13
     - percona-postgresql-client-13
     - percona-postgresql-doc-13
@@ -87,6 +86,7 @@
     update_cache: yes
   vars:
     packages:
+    - percona-postgresql-client-common
     - percona-postgresql13
     - percona-postgresql13-contrib
     - percona-postgresql13-debuginfo
@@ -108,6 +108,7 @@
     update_cache: yes
   vars:
     packages:
+      - percona-postgresql-client-common
       - percona-postgresql13
       - percona-postgresql13-contrib
       - percona-postgresql13-debuginfo
