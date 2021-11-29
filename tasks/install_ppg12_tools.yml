@@ -273,14 +273,14 @@
   - name: Clone pgaudit sources
     git:
       repo: https://github.com/pgaudit/pgaudit.git
-      version: REL_12_STABLE
+      version: 1.4.1
       dest: /tmp/pg_audit
     become_user: postgres
 
   - name: Clone pg_repack sources
     git:
       repo: https://github.com/reorg/pg_repack.git
-      version: master
+      version: ver_1.4.7
       dest: /tmp/pg_repack
     become_user: postgres
 
@@ -303,7 +303,7 @@
   - name: Clone pgbadger sources
     git:
       repo: https://github.com/darold/pgbadger.git
-      version: v11.5
+      version: v11.6
       dest: /tmp/pgbadger
     become_user: postgres
 
@@ -315,14 +315,14 @@
   - name: Clone set_user sources
     git:
       repo: https://github.com/pgaudit/set_user.git
-      version: REL2_0_1
+      version: REL3_0_0
       dest: /tmp/set_user
     become_user: postgres
 
   - name: Clone pgbouncer sources RHEL
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
-      version: pgbouncer_1_16_0
+      version: pgbouncer_1_16_1
       dest: /var/lib/pgsql/pgbouncer
       recursive: yes
       update: yes
@@ -346,7 +346,7 @@
   - name: Clone pgbouncer sources Debian
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
-      version: pgbouncer_1_15_0
+      version: pgbouncer_1_16_1
       dest: /var/lib/postgresql/pgbouncer
       recursive: yes
       update: yes
@@ -370,14 +370,14 @@
   - name: Clone wal2json sources
     git:
       repo: https://github.com/eulerto/wal2json.git
-      version: wal2json_2_3
+      version: wal2json_2_4
       dest: /tmp/wal2json
     become_user: postgres
 
   - name: Clone pgbackrest sources Debian
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.34
+      version: release/2.36
       dest:  /var/lib/postgresql/pgbackrest
     become_user: postgres
     become: yes
@@ -386,7 +386,7 @@
   - name: Clone pgbackrest sources RHEL
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.34
+      version: release/2.36
       dest:  /var/lib/pgsql/pgbackrest
     become_user: postgres
     become: yes

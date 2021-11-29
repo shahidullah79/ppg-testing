@@ -286,7 +286,7 @@
   - name: Clone pg_repack sources
     git:
       repo: https://github.com/reorg/pg_repack.git
-      version: ver_1.4.6
+      version: ver_1.4.7
       dest: /tmp/pg_repack
     become_user: postgres
 
@@ -374,7 +374,7 @@
   - name: Clone pgbouncer sources RHEL
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
-      version: pgbouncer_1_16_0
+      version: pgbouncer_1_16_1
       dest: /var/lib/pgsql/pgbouncer
       recursive: yes
       update: yes
@@ -398,7 +398,7 @@
   - name: Clone pgbouncer sources Debian
     git:
       repo: https://github.com/pgbouncer/pgbouncer.git
-      version: pgbouncer_1_16_0
+      version: pgbouncer_1_16_1
       dest: /var/lib/postgresql/pgbouncer
       recursive: yes
       update: yes
