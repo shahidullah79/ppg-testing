@@ -67,6 +67,8 @@
     - percona-postgresql-plperl-13-dbgsym
     - percona-postgresql-plpython3-13-dbgsym
     - percona-postgresql-pltcl-13-dbgsym
+    - percona-postgresql-client-common
+    - percona-postgresql-common
   when: ansible_os_family == "Debian"
 
 - name: install Percona Platform for PostgreSQL deb packages
@@ -100,6 +102,8 @@
     - percona-postgresql13-server
     - percona-postgresql13-test
     - percona-postgresql13-debuginfo
+    - percona-postgresql-client-common
+    - percona-postgresql-common
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
@@ -130,6 +134,8 @@
       - percona-postgresql13-pltcl-debuginfo
       - percona-postgresql13-server-debuginfo
       - percona-postgresql13-test-debuginfo
+      - percona-postgresql-client-common
+      - percona-postgresql-common
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
 - name: Initialize Postgres RHEL
