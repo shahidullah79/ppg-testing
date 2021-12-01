@@ -208,11 +208,13 @@
   service:
     name: postgresql-13
     state: restarted
+    masked: no
     enabled: true
   when: ansible_os_family == "RedHat"
 
 - name: Restart postgresql service for Debian based
   service:
+    masked: no
     name: postgresql
     state: restarted
     enabled: true

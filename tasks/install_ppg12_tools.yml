@@ -398,7 +398,6 @@
       state: absent
     when: ansible_os_family == "RedHat"
 
-
   - name: Remove pg_hba.conf debian
     file:
       path: /etc/postgresql/12/main/pg_hba.conf
