@@ -11,7 +11,6 @@
       vars:
         packages:
           - percona-postgresql12
-          - percona-postgresql-client-common
           - percona-postgresql-common
           - percona-postgresql-server-dev-all
           - percona-postgresql12

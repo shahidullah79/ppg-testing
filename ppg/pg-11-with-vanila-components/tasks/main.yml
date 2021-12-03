@@ -16,7 +16,6 @@
     - percona-postgresql-all
     - percona-postgresql-client
     - percona-postgresql-client-11
-    - percona-postgresql-client-common
     - percona-postgresql-common
     - percona-postgresql-contrib
     - percona-postgresql-server-dev-11
