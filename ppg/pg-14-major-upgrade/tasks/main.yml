@@ -67,7 +67,6 @@
     - percona-postgresql-plperl-14-dbgsym
     - percona-postgresql-plpython3-14-dbgsym
     - percona-postgresql-pltcl-14-dbgsym
-    - percona-postgresql-client-common
     - percona-postgresql-common
   when: ansible_os_family == "Debian"
 
