@@ -296,7 +296,7 @@
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: 1.0.0-Beta-2
+      version: 1.0.0-rc.1
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 
