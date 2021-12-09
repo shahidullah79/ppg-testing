@@ -121,7 +121,7 @@
       update_cache: yes
     when: ansible_os_family == "RedHat"
 
-  - name: Install percona-wal2json13 Debian
+  - name: Install percona-wal2json11 Debian
     apt:
       name: "{{ packages }}"
       state: latest
