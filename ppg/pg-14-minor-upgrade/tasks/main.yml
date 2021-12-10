@@ -142,10 +142,6 @@
     state: stopped
   when: ansible_os_family == "Debian"
 
-- name: Stop postgresql service for Debian based with pkill
-  command: sudo pkill postgres
-  when: ansible_os_family == "Debian"
-
 - pause:
     minutes: 1
 

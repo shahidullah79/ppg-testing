@@ -159,10 +159,6 @@
     state: stopped
   when: ansible_os_family == "Debian"
 
-- name: Stop postgresql service for Debian based
-  command: sudo pkill postgres
-  when: ansible_os_family == "Debian"
-
 - pause:
     minutes: 1
 
@@ -216,6 +212,7 @@
     name: postgresql-12
     state: restarted
     enabled: true
+    masked: no
   when: ansible_os_family == "RedHat"
 
 - name: Start postgresql service for Debian based
@@ -223,6 +220,7 @@
     name: postgresql
     state: restarted
     enabled: true
+    masked: no
   when: ansible_os_family == "Debian"
 
 - name: Upgrade debian development packages
