@@ -346,7 +346,7 @@ def get_ppg_versions(distro_type):
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-11.13": get_pg11_versions(packages=["11+204-1", '2:11.13-1', '226-2', '11+226-2'],
                                            distros=DISTROS, distro_type=distro_type),
-            "ppg-11.14": get_pg11_versions(packages=["11+204-1", '2:11.14-1', '226-2', '11+230-2'],
+            "ppg-11.14": get_pg11_versions(packages=["11+204-1", '2:11.14-3', '230-2', '11+230-2'],
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-12.2": get_pg12_versions(packages=["2:12-3.1", "12+215-1", '215-1'],
                                           distros=DISTROS, distro_type=distro_type),
