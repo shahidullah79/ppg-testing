@@ -375,7 +375,11 @@ def test_patroni_service(host):
 
 
 def test_pg_stat_monitor_package_version(host):
-    pg_stat = host.package(f"percona-pg_stat_monitor{MAJOR_VER}")
+    dist = host.system_info.distribution
+    if dist.lower() in ["ubuntu", "debian"]:
+        pg_stat = host.package(f"percona-pg-stat-monitor{MAJOR_VER}")
+    else:
+        pg_stat = host.package(f"percona-pg_stat_monitor{MAJOR_VER}")
     assert pg_versions['pg_stat_monitor'] in pg_stat.version
 
 
