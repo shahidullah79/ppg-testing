@@ -48,8 +48,8 @@
       update_cache: yes
     vars:
       packages:
-        - percona-pg-stat-monitor11
-        - percona-pg-stat-monitor11-debuginfo
+        - percona-pg_stat_monitor11
+        - percona-pg_stat_monitor11-debuginfo
     when: ansible_os_family == "RedHat"
 
   - name: Install pg-stat-monitor debian
