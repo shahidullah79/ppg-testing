@@ -26,7 +26,8 @@ def create_test_users(host):
             host.run(user)
 
 
-def test_pgbouncer(host, create_test_users):
+#def test_pgbouncer(host, create_test_users):
+def test_pgbouncer(host):
     with host.sudo("postgres"):
         result = host.run('PATH="/usr/pgsql-14/bin/:$PATH" && cd /tmp/pgbouncer && make check')
         print(result.stdout)
