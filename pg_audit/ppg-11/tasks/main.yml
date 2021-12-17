@@ -50,16 +50,13 @@
     - git
 
 - name: Enable gcc 7
-  shell: scl enable devtoolset-7 bash
+  shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/initdb -A trust -k /var/lib/pgsql/11/data
   environment:
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   become_user: postgres
-
-- name: Enable gcc 7
-  shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
 
 - name: Set source
   shell: source /opt/rh/devtoolset-7/enable;

@@ -52,9 +52,6 @@
     - perl-devel
     - perl-JSON-XS.x86_64
 
-- name: Enable gcc 7
-  shell: scl enable devtoolset-7 bash
-
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/postgresql-11-setup initdb
   environment:

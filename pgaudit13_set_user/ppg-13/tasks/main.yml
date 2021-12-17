@@ -48,9 +48,6 @@
     - gcc
     - gcc-c++
 
-- name: Enable gcc 7
-  shell: scl enable devtoolset-7 bash
-
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-13/bin/initdb -A trust -k /var/lib/pgsql/13/data
   environment:

@@ -58,8 +58,6 @@
   args:
     executable: /bin/bash
 
-- name: Enable gcc 7
-  shell: scl enable devtoolset-7 bash
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-13/bin/postgresql-13-setup initdb
