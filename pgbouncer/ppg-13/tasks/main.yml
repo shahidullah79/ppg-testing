@@ -58,12 +58,6 @@
   args:
     executable: /bin/bash
 
-
-- name: Initialize Postgres RHEL
-  command: /usr/pgsql-13/bin/postgresql-13-setup initdb
-  environment:
-    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 - shell: gcc --version
   register: gcc
 
@@ -118,15 +112,3 @@
   make:
     target: install
     chdir: "/tmp/pgbouncer"
-
-- name: Restart Postgres RHEL
-  service:
-    name: postgresql-13
-    state: restarted
-  register: out
-
-- name: Start Postgres RHEL
-  service:
-    name: postgresql-13
-    state: started
-    enabled: yes

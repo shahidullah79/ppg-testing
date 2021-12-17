@@ -52,11 +52,6 @@
     - libtool
     - git
 
-- name: Initialize Postgres RHEL
-  command: /usr/pgsql-12/bin/postgresql-12-setup initdb
-  environment:
-    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 - name: Enable gcc 7
   shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
 
@@ -106,15 +101,3 @@
   make:
     target: install
     chdir: "/tmp/pgbouncer"
-
-- name: Restart Postgres RHEL
-  service:
-    name: postgresql-12
-    state: restarted
-  register: out
-
-- name: Start Postgres RHEL
-  service:
-    name: postgresql-12
-    state: started
-    enabled: yes

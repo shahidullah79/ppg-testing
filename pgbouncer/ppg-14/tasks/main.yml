@@ -58,10 +58,6 @@
   args:
     executable: /bin/bash
 
-#- name: Initialize Postgres RHEL
-#  command: /usr/pgsql-14/bin/postgresql-14-setup initdb
-#  environment:
-#    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 - shell: gcc --version
   register: gcc
@@ -117,32 +113,3 @@
   make:
     target: install
     chdir: "/tmp/pgbouncer"
-
-#- name: Edit pg_hba.conf RHEL
-#  blockinfile:
-#    path: /var/lib/pgsql/14/data/pg_hba.conf
-#    create: yes
-#    owner: postgres
-#    block: |
-#      local  p4   all                password
-#      host   p4   all  127.0.0.1/32  password
-#      host   p4   all  ::1/128       password
-#      local  p5   all                md5
-#      host   p5   all  127.0.0.1/32  md5
-#      host   p5   all  ::1/128       md5
-#      local  all  all                trust
-#      host   all  all  127.0.0.1/32  trust
-#      host   all  all  ::1/128       trust
-#      local   all             all                                     trust
-#      host    all             all             127.0.0.1/32            trust
-#      host    all             all             ::1/128                 trust
-#      local   replication     all                                     trust
-#      host    replication     all             127.0.0.1/32            trust
-#      host    replication     all             ::1/128                 trust
-#  when: ansible_os_family == "RedHat"
-#
-#- name: Restart Postgres RHEL
-#  service:
-#    name: postgresql-14
-#    state: restarted
-#    enabled: yes
