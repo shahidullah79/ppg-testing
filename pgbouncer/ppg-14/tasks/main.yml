@@ -93,18 +93,18 @@
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
   become_user: postgres
 
-#- name: Autogen pgbouncer
-#  shell: ./autogen.sh
-#  args:
-#    chdir: /tmp/pgbouncer
-#  become_user: postgres
+- name: Autogen pgbouncer
+  shell: ./autogen.sh
+  args:
+    chdir: /tmp/pgbouncer
+  become_user: postgres
 
-#- name: Configure pgbouncer
-#  shell: ./configure --prefix=/usr/local
-#  args:
-#    chdir: /tmp/pgbouncer
-#  become_user: postgres
-#
+- name: Configure pgbouncer
+  shell: ./configure --prefix=/usr/local
+  args:
+    chdir: /tmp/pgbouncer
+  become_user: postgres
+
 #- name: Build pgbouncer from sources
 #  make:
 #    chdir: "/tmp/pgbouncer"
