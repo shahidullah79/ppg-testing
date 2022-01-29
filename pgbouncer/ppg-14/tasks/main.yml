@@ -104,12 +104,3 @@
   args:
     chdir: /tmp/pgbouncer
   become_user: postgres
-
-#- name: Build pgbouncer from sources
-#  make:
-#    chdir: "/tmp/pgbouncer"
-#
-#- name: Install pgbouncer from sources
-#  make:
-#    target: install
-#    chdir: "/tmp/pgbouncer"
