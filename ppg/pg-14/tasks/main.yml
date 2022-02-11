@@ -3,6 +3,13 @@
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml
 
+- name: Install perl packages
+  cpanm:
+    name: "{{ item }}"
+  loop:
+    - IPC::RUN
+    - String::Util
+
 - name: install Percona Platform for PostgreSQL 14 packages
   include_tasks: ../../../../tasks/install_ppg14.yml
 
