@@ -47,8 +47,8 @@
     - readline-devel
     - gcc
     - gcc-c++
-    - libipc-run-perl
-    - libsharyanto-string-util-perl
+    - perl-String-Util
+    - perl-IPC-Run
 
 #- name: Install perl modules
 #  command: "cpan install {{ item }}"
