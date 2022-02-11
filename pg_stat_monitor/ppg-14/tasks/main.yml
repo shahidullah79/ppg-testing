@@ -12,6 +12,7 @@
     packages:
       - yum-utils
       - centos-release-scl
+      - epel-release
 
 - name: setup devtoolset-7-gcc
   yum:
