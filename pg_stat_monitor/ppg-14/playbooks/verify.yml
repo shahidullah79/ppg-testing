@@ -17,8 +17,6 @@
 
     - debug: var=installcheck.stdout_lines
 
-    - debug: var=installcheck.rc
-
     - shell: cat /tmp/pg_stat_monitor/regression.diffs
       register: cat
 

@@ -27,6 +27,7 @@
       when: installcheck.rc != 0
       become: true
       become_method: sudo
+      ignore_errors: yes
       become_user: root
 
     - name: Fail tests on error
