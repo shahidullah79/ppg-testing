@@ -48,9 +48,8 @@
     - gcc
     - gcc-c++
 
-- name: Install perl packages
-  cpanm:
-    name: "{{ item }}"
+- name: Install perl modules
+  command: "cpan install {{ item }}"
   loop:
     - "IPC::RUN"
     - "String::Util"
