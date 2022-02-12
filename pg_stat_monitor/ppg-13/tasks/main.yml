@@ -47,6 +47,8 @@
     - readline-devel
     - gcc
     - gcc-c++
+    - http://repo.openfusion.net/centos7-x86_64/perl-String-Util-1.23-1.of.el7.noarch.rpm
+    - http://repo.openfusion.net/centos7-x86_64/perl-IPC-Run-0.92-1.of.el7.noarch.rpm
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-13/bin/postgresql-13-setup initdb

@@ -50,12 +50,6 @@
     - http://repo.openfusion.net/centos7-x86_64/perl-String-Util-1.23-1.of.el7.noarch.rpm
     - http://repo.openfusion.net/centos7-x86_64/perl-IPC-Run-0.92-1.of.el7.noarch.rpm
 
-#- name: Install perl modules
-#  command: "cpan install {{ item }}"
-#  loop:
-#    - "IPC::RUN"
-#    - "String::Util"
-
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-14/bin/postgresql-14-setup initdb
   environment:
