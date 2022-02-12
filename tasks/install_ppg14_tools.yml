@@ -40,7 +40,7 @@
     when: ansible_os_family == "Debian"
 
   - name: Install cpan install String::Util
-    command: "cpan install String::Util"
+    command: "PERL_MM_USE_DEFAULT=1 cpan install String::Util"
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
