@@ -35,13 +35,13 @@
         - libzstd-dev
         - bzip2
         - libbz2-dev
-#        - libsharyanto-string-util-perl
+        - libsharyanto-string-util-perl
         - libipc-run-perl
     when: ansible_os_family == "Debian"
 
-  - name: Install cpan install String::Util
-    command: "cpan install String::Util"
-    when: ansible_os_family == "Debian"
+#  - name: Install cpan install String::Util
+#    shell: "PERL_MM_USE_DEFAULT=1 cpan install String::Util"
+#    when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
     apt:
