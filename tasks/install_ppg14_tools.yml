@@ -325,7 +325,7 @@
   - name: Clone pg_stat_monitor sources
     git:
       repo: https://github.com/percona/pg_stat_monitor.git
-      version: main
+      version: 1.0.0-rc.1
       dest: /tmp/pg_stat_monitor
     become_user: postgres
 
@@ -446,7 +446,7 @@
   - name: Clone pgbackrest sources Debian
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.36
+      version: release/2.37
       dest:  /var/lib/postgresql/pgbackrest
     become_user: postgres
     become: yes
@@ -455,7 +455,7 @@
   - name: Clone pgbackrest sources RHEL
     git:
       repo: https://github.com/pgbackrest/pgbackrest.git
-      version: release/2.36
+      version: release/2.37
       dest:  /var/lib/pgsql/pgbackrest
     become_user: postgres
     become: yes
