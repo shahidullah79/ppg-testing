@@ -13,13 +13,6 @@
       shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*"
       when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "8"
 
-    - name: Edit repos for Centos8
-      replace:
-        path: /etc/hosts
-        regexp: '(\s+)old\.host\.name(\s+.*)?$'
-        replace: '\1new.host.name\2'
-      when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
     - name: setup ca-certificates release
       yum:
         name: ca-certificates
@@ -42,13 +35,6 @@
     - name: setup epel 8 repo
       yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm state=present
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-#    - name: setup ca-certificates release
-#      yum:
-#        name: ca-certificates
-#        update_cache: yes
-#        state: present
-#      when: ansible_os_family == "RedHat"
 
     - name: setup epel release
       yum:
