@@ -49,7 +49,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-11.15"]["extensions"],
             "languages": ppg_versions["ppg-11.15"]["languages"],
             "binaries": ppg_versions["ppg-11.15"]["binaries"],
-            "pg_stat_monitor": "1.0.0-rc.1",
+            "pg_stat_monitor": "1.0.0g",
         },
         "ppg-11.14": {
             "version": "11.14",
@@ -551,7 +551,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-12.10"]["extensions"],
             "languages": ppg_versions["ppg-12.10"]["languages"],
             "binaries": ppg_versions["ppg-12.10"]["binaries"],
-            "pg_stat_monitor": "1.0.0-rc.1"
+            "pg_stat_monitor": "1.0.0"
         },
         "ppg-13.0": {
              "version": "13.0",
@@ -751,7 +751,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-13.6"]["extensions"],
             "languages": ppg_versions["ppg-13.6"]["languages"],
             "binaries": ppg_versions["ppg-13.6"]["binaries"],
-            "pg_stat_monitor": "1.0.0-rc.1"
+            "pg_stat_monitor": "1.0.0"
         },
         "ppg-14.0": {
             "version": "14.0",
