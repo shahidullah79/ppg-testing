@@ -314,7 +314,7 @@
   - name: Clone pgbadger sources
     git:
       repo: https://github.com/darold/pgbadger.git
-      version: v11.6
+      version: v11.7
       dest: /tmp/pgbadger
     become_user: postgres
 
