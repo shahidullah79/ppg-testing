@@ -93,7 +93,7 @@ def test_pgbackrest(host):
             f'cd {test_dir} && test/test.pl'
             f' --pgsql-bin={bin_dir} --log-level-test-file=off'
             f' --no-coverage-report --module=command --module=storage'
-            f' --vm-host=none --vm-max=2 --vm=none --no-coverage --no-valgrind')
+            f' --vm-max=2 --vm=none --no-coverage --no-valgrind')
         print(result.stdout)
         if result.rc != 0:
             print(result.stderr)
