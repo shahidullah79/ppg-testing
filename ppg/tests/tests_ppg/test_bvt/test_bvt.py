@@ -152,7 +152,6 @@ def test_postgresql_is_running_and_enabled(host):
         service_name = f"postgresql-{settings.MAJOR_VER}"
     service = host.service(service_name)
     assert service.is_running
-    assert service.is_enabled
 
 
 def test_postgres_unit_file(postgres_unit_file):
