@@ -48,7 +48,6 @@ DEB12_PACKAGES_TEMPLATE = [
     "percona-postgresql-client",
     "percona-postgresql",
     "percona-postgresql-client-{}",
-    "percona-postgresql-client-common",
     "percona-postgresql-contrib",
     "percona-postgresql-doc",
     "percona-postgresql-server-dev-all",
