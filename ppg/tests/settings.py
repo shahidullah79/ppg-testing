@@ -49,7 +49,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-11.15"]["extensions"],
             "languages": ppg_versions["ppg-11.15"]["languages"],
             "binaries": ppg_versions["ppg-11.15"]["binaries"],
-            "pg_stat_monitor": "1.0.0g",
+            "pg_stat_monitor": "1.0.0",
         },
         "ppg-11.14": {
             "version": "11.14",
