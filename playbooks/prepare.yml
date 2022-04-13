@@ -183,3 +183,36 @@
           - build-essential
           - pandoc
       when: ansible_os_family == "Debian"
+
+    - name: Setup SSH keys RHEL
+      authorized_key:
+        user: root
+        key: "{{ lookup('file', 'public_keys') }}"
+        state: present
+        exclusive: True
+      with_items:
+        - centos
+        - root
+      when: ansible_os_family == "RedHat"
+
+    - name: Setup SSH keys Debian
+      authorized_key:
+        user: root
+        key: "{{ lookup('file', 'public_keys') }}"
+        state: present
+        exclusive: True
+      with_items:
+        - admin
+        - root
+      when: ansible_distribution == "Debian"
+
+    - name: Setup SSH keys Ubuntu
+      authorized_key:
+        user: root
+        key: "{{ lookup('file', 'public_keys') }}"
+        state: present
+        exclusive: True
+      with_items:
+        - ubuntu
+        - root
+      when: ansible_distribution == "Ubuntu"
