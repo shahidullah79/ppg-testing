@@ -135,7 +135,7 @@
 
   - name: RHEL. Edit pg_stat_monitor.pgsm_bucket_time
     lineinfile:
-      path: /etc/postgresql/14/main/postgresql.conf
+      path: /var/lib/pgsql/14/data/postgresql.conf
       line: pg_stat_monitor.pgsm_bucket_time = 600
     when: ansible_os_family == "RedHat"
 
