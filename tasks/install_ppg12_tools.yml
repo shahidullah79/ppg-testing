@@ -8,6 +8,7 @@
       packages:
         - http://repo.openfusion.net/centos7-x86_64/perl-String-Util-1.23-1.of.el7.noarch.rpm
         - http://repo.openfusion.net/centos7-x86_64/perl-IPC-Run-0.92-1.of.el7.noarch.rpm
+        - http://mirror.centos.org/centos/7/os/x86_64/Packages/perl-Text-CSV_XS-1.00-3.el7.x86_64.rpm
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
 
   - name: Install additional tools for pgbackrest test Debian
@@ -35,6 +36,7 @@
         - libzstd-dev
         - bzip2
         - libbz2-dev
+        - libtext-csv-xs-perl
     when: ansible_os_family == "Debian"
 
   - name: Install pgaudit Debian
