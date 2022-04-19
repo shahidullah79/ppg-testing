@@ -8,10 +8,9 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_pgbouncer(host):
-    result = host.run('cd /tmp/pgbadger && prove')
-    print(result.stdout)
-    if result.rc != 0:
-        print(result.stderr)
-        raise AssertionError
-
-
+    with host.sudo():
+        result = host.run('cd /tmp/pgbadger && prove')
+        print(result.stdout)
+        if result.rc != 0:
+            print(result.stderr)
+            raise AssertionError
