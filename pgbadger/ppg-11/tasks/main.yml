@@ -51,6 +51,7 @@
     - perl-Pod-Checker
     - perl-devel
     - perl-JSON-XS.x86_64
+    - http://mirror.centos.org/centos/7/os/x86_64/Packages/perl-Text-CSV_XS-1.00-3.el7.x86_64.rpm
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/postgresql-11-setup initdb
