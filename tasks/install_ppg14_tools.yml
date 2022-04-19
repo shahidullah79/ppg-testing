@@ -127,6 +127,18 @@
         wal_level = logical
     when: ansible_os_family == "RedHat"
 
+  - name: Debian. Edit pg_stat_monitor.pgsm_bucket_time
+    lineinfile:
+      path: /etc/postgresql/14/main/postgresql.conf
+      line: pg_stat_monitor.pgsm_bucket_time = 600
+    when: ansible_os_family == "Debian"
+
+  - name: RHEL. Edit pg_stat_monitor.pgsm_bucket_time
+    lineinfile:
+      path: /etc/postgresql/14/main/postgresql.conf
+      line: pg_stat_monitor.pgsm_bucket_time = 600
+    when: ansible_os_family == "RedHat"
+
   - name: Restart Postgres RHEL
     service:
       name: postgresql-14
