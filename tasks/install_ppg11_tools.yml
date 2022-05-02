@@ -36,7 +36,9 @@
         - bzip2
         - libbz2-dev
         - libtext-csv-xs-perl
+        - libipc-run-perl
     when: ansible_os_family == "Debian"
+
   - name: Install pgaudit Debian
     apt:
       name: "{{ packages }}"
