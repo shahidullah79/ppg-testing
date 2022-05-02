@@ -13,8 +13,6 @@
   - name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
     cpanm:
       name: "{{ packages }}"
-      state: latest
-      update_cache: yes
     vars:
       packages:
       - IPC::RUN
