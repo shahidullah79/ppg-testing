@@ -11,12 +11,11 @@
 #    when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
   - name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
     cpanm:
-      name: "{{ packages }}"
-    vars:
-      packages:
-      - IPC::RUN
-      - String::Util
-      - Data::Str2Num
+      name: "{{ item }}"
+    with_items:
+        - IPC::RUN
+        - String::Util
+        - Data::Str2Num
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
 
   - name: Install additional tools for pgbackrest test Debian
