@@ -506,7 +506,7 @@
     vars:
       packages:
       - etcd
-      - haproxy
+      - percona-haproxy
       - python3-python-etcd
     when: ansible_os_family == "RedHat"
 
@@ -525,7 +525,7 @@
     vars:
       packages:
         - etcd
-        - haproxy
+        - percona-haproxy
     when: ansible_os_family == "Debian"
 
   - name: Create /etc/patroni directory

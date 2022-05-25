@@ -475,7 +475,7 @@
       packages:
       - etcd
       - python3-python-etcd
-      - haproxy
+      - percona-haproxy
     when: ansible_os_family == "RedHat"
 
   - name: Restart etcd RHEL
@@ -506,7 +506,7 @@
     vars:
       packages:
         - etcd
-        - haproxy
+        - percona-haproxy
     when: ansible_os_family == "Debian"
 
   - name: Create /etc/patroni directory

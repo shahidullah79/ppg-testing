@@ -43,7 +43,7 @@
     - openssl-devel
     - etcd
     - python3-python-etcd
-    - haproxy
+    - percona-haproxy
 
 - name: Install patroni RPM
   yum:
