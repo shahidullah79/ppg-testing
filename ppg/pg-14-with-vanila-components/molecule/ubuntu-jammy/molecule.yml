@@ -4,9 +4,9 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: ufocal-${BUILD_NUMBER}-${JOB_NAME}
+  - name: ujammy-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-0be656e75e69af1a9
+    image: ami-04aa66cdfe687d427
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.micro
     ssh_user: ubuntu
@@ -20,11 +20,11 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
+    cleanup: ../../playbooks/cleanup-deb.yml
     converge: ../../playbooks/playbook.yml
-    cleanup: ../../playbooks/cleanup.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/test_upgrade
+  directory: ../../../tests/test_vanila_components/
   options:
     verbose: true
     s: true
