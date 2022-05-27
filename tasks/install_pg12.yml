@@ -2,6 +2,7 @@
     rpm_key:
       state: present
       key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+      validate_certs: false
     when: ansible_os_family == "RedHat"
 
   - name: postgresql key
