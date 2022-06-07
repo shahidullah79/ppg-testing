@@ -7,6 +7,7 @@ from .versions.pgbackrest import pgbackrest
 from .versions.pgaudit import pgaudit
 from .versions.pg_repack import pgrepack
 from .versions.ppg import get_ppg_versions
+from .versions.haproxy import haproxy
 from .versions.set_user import set_user
 from .versions.wal2json import wal2json
 
@@ -36,6 +37,7 @@ def get_settings(distro_type):
             "pgbouncer": pgbouncer["11.16"],
             "wal2json": wal2json["11.16"],
             "set_user": set_user["11.16"],
+            "haproxy": haproxy["11.16"],
             "pgrepack_package_rpm": "percona-pg_repack11",
             "pgrepack_package_deb": "percona-postgresql-11-repack",
             "libpq": "Version of libpq: 110016",
@@ -598,6 +600,7 @@ def get_settings(distro_type):
             "set_user": set_user["12.11"],
             "patroni": patroni["ppg-12.11"],
             "pgrepack": pgrepack["ppg-12.11"],
+            "haproxy": haproxy["12.11"],
             "pgrepack_package_rpm": "percona-pg_repack12",
             "pgrepack_package_deb": "percona-postgresql-12-repack",
             "libpq": "Version of libpq: 120011",
@@ -828,6 +831,7 @@ def get_settings(distro_type):
             "pgbouncer": pgbouncer["13.7"],
             "wal2json": wal2json["13.7"],
             "set_user": set_user["13.7"],
+            "haproxy": haproxy["13.7"],
             "pgrepack_package_rpm": "percona-pg_repack13",
             "pgrepack_package_deb": "percona-postgresql-13-repack",
             "libpq": "Version of libpq: 130007",
@@ -948,6 +952,7 @@ def get_settings(distro_type):
             "pgbouncer": pgbouncer["14.3"],
             "wal2json": wal2json["14.3"],
             "set_user": set_user["14.3"],
+            "haproxy": haproxy["14.3"],
             "pgrepack_package_rpm": "percona-pg_repack14",
             "pgrepack_package_deb": "percona-postgresql-14-repack",
             "libpq": "Version of libpq: 140003",

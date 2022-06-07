@@ -383,7 +383,7 @@ def test_pg_stat_monitor_package_version(host):
     assert pg_versions['pg_stat_monitor'] in pg_stat.version
 
 
-@pytest.mark.parametrize("package", ['pgbadger', 'pgbouncer'])
+@pytest.mark.parametrize("package", ['pgbadger', 'pgbouncer', 'haproxy'])
 def test_package_version(host, package):
     package_name = "-".join(["percona", package])
     pkg = host.package(package_name)
@@ -442,5 +442,9 @@ def test_patroni_cluster(host):
     with host.sudo("postgres"):
         select = 'cd && psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
         result = host.run(select)
-        print(result.stdout)
         assert result.rc == 0, result.stderr
+
+
+def test_haproxy_version(host):
+    version = host.run("haproxy -v")
+    assert pg_versions["haproxy"]['version'] in version.stdout.strip("\n"), version.stdout
