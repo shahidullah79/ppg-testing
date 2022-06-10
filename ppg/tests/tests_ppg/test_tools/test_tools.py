@@ -446,5 +446,6 @@ def test_patroni_cluster(host):
 
 
 def test_haproxy_version(host):
-    version = host.run("haproxy -v")
-    assert pg_versions["haproxy"]['version'] in version.stdout.strip("\n"), version.stdout
+    with host.sudo("postgres"):
+        version = host.run("haproxy -v")
+        assert pg_versions["haproxy"]['version'] in version.stdout.strip("\n"), version.stdout
