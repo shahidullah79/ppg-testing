@@ -411,7 +411,7 @@ def test_set_user_version(host):
     assert pg_versions["set_user"]['version'] in set_user.version, set_user.version
 
 
-@pytest.mark.parametrize("binary", ['pgbadger', 'pgbouncer', 'haproxy'])
+@pytest.mark.parametrize("binary", ['pgbadger', 'pgbouncer'])
 def test_binary_version(host, binary):
     result = host.run(f"PATH=\"/usr/pgsql-{MAJOR_VER}/bin/:/usr/lib/postgresql/{MAJOR_VER}/bin/:/usr/sbin/:$PATH\" && {binary} --version")
     assert result.rc == 0, result.stderr
@@ -443,3 +443,9 @@ def test_patroni_cluster(host):
         select = 'cd && psql --host 127.0.0.1 --port 5000 postgres -c "select version()"'
         result = host.run(select)
         assert result.rc == 0, result.stderr
+
+
+def test_haproxy_version(host):
+    with host.sudo("postgres"):
+        version = host.run("haproxy -v")
+        assert pg_versions["haproxy"]['version'] in version.stdout.strip("\n"), version.stdout
