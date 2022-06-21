@@ -396,6 +396,6 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-14.3": get_pg14_versions(packages=["2:14.3-3", "1:241-3", '241-3'],
                                           distros=DISTROS, distro_type=distro_type),
-            "ppg-14.4": get_pg14_versions(packages=["2:14.4-4", "1:241-3", '241-3'],
+            "ppg-14.4": get_pg14_versions(packages=["2:14.4-4", "1:241-4", '241-4'],
                                           distros=DISTROS, distro_type=distro_type),
             }
