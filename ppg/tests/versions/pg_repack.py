@@ -67,4 +67,6 @@ pgrepack = {
                  "binary_version": "pg_repack 1.4.7"},
     "ppg-14.3": {"version": "1.4.7",
                  "binary_version": "pg_repack 1.4.7"},
+    "ppg-14.4": {"version": "1.4.7",
+                 "binary_version": "pg_repack 1.4.7"},
 }

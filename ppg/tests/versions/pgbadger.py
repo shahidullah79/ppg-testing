@@ -20,4 +20,5 @@ pgbadger = {
     "14.1": {"version": "11.6", "binary_version": "pgBadger version 11.6"},
     "14.2": {"version": "11.7", "binary_version": "pgBadger version 11.7"},
     "14.3": {"version": "11.8", "binary_version": "pgBadger version 11.8"},
+    "14.4": {"version": "11.8", "binary_version": "pgBadger version 11.8"},
 }
