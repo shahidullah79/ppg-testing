@@ -47,6 +47,7 @@
     - readline-devel
     - gcc
     - gcc-c++
+    - lz4
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-14/bin/initdb -A trust -k /var/lib/pgsql/14/data
