@@ -33,13 +33,13 @@
     - percona-postgresql-client-common
     - percona-postgresql-common
     - percona-postgresql-server-dev-all
-    - percona-postgresql13
-    - percona-postgresql13-contrib
-    - percona-postgresql13-devel
-    - percona-postgresql13-libs
-    - percona-postgresql13-plpython3
-    - percona-postgresql13-pltcl
-    - percona-postgresql13-server
+    - percona-postgresql14
+    - percona-postgresql14-contrib
+    - percona-postgresql14-devel
+    - percona-postgresql14-libs
+    - percona-postgresql14-plpython3
+    - percona-postgresql14-pltcl
+    - percona-postgresql14-server
     - openssl-devel
     - etcd
     - python3-python-etcd
