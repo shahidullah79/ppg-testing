@@ -47,17 +47,17 @@
   vars:
     packages:
     - percona-postgresql
-    - percona-postgresql-13
+    - percona-postgresql-14
     - percona-postgresql-all
     - percona-postgresql-client
-    - percona-postgresql-client-13
+    - percona-postgresql-client-14
     - percona-postgresql-client-common
     - percona-postgresql-common
     - percona-postgresql-contrib
-    - percona-postgresql-plperl-13
-    - percona-postgresql-plpython3-13
-    - percona-postgresql-pltcl-13
-    - percona-postgresql-server-dev-13
+    - percona-postgresql-plperl-14
+    - percona-postgresql-plpython3-14
+    - percona-postgresql-pltcl-14
+    - percona-postgresql-server-dev-14
     - percona-postgresql-server-dev-all
   when: ansible_os_family == "Debian"
 
