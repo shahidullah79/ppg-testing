@@ -27,6 +27,7 @@
     name: "{{ packages }}"
     state: latest
     update_cache: yes
+    enablerepo: rpmfusion-*
   vars:
     packages:
     - percona-postgresql-client-common
