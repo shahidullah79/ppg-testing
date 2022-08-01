@@ -12,6 +12,7 @@
     packages:
       - yum-utils
       - centos-release-scl
+      - openfusion-release
 
 - name: setup devtoolset-7-gcc
   yum:
@@ -19,6 +20,7 @@
     update_cache: yes
     enablerepo: centos-sclo-rh-testing
     state: present
+
 
 - name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
   yum:
