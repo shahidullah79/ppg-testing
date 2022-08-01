@@ -12,7 +12,6 @@
     packages:
       - yum-utils
       - centos-release-scl
-      - openfusion-release
 
 - name: setup devtoolset-7-gcc
   yum:
@@ -50,8 +49,8 @@
     - readline-devel
     - gcc
     - gcc-c++
-    - perl-String-Util
-    - perl-IPC-Run
+#    - perl-String-Util
+#    - perl-IPC-Run
 #    - http://repo.openfusion.net/centos7-x86_64/perl-String-Util-1.23-1.of.el7.noarch.rpm
 #    - http://repo.openfusion.net/centos7-x86_64/perl-IPC-Run-0.92-1.of.el7.noarch.rpm
 
