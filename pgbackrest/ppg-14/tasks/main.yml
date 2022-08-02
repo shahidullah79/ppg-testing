@@ -61,9 +61,6 @@
     - percona-postgresql-server-dev-all
   when: ansible_os_family == "Debian"
 
-- name: Install PPG tools
-  include_tasks: ../../../../tasks/install_ppg14_tools.yml
-
 - shell: gcc --version
   register: gcc
 
