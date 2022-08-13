@@ -3,21 +3,10 @@
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml
 
-- name: Setup additional yum packages
+- name: setup epel release
   yum:
-    name: "{{ packages }}"
+    name: epel-release
     update_cache: yes
-    state: present
-  vars:
-    packages:
-      - yum-utils
-      - centos-release-scl
-
-- name: setup devtoolset-7-gcc
-  yum:
-    name: devtoolset-7-gcc*
-    update_cache: yes
-    enablerepo: centos-sclo-rh-testing
     state: present
 
 - name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
@@ -40,6 +29,36 @@
     - percona-postgresql14-pltcl
     - percona-postgresql14-server
     - percona-postgresql14-test
+
+- name: Setup additional yum packages
+  yum:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: present
+  vars:
+    packages:
+      - yum-utils
+      - centos-release-scl
+
+- name: add user to sudo group
+    shell: usermod -aG wheel postgres
+  args:
+    executable: /bin/bash
+
+- name: setup devtoolset-7-gcc
+  yum:
+    name: devtoolset-7-gcc*
+    update_cache: yes
+    enablerepo: centos-sclo-rh-testing
+    state: present
+
+- name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
     - openssl-devel
     - llvm-toolset-7-clang
     - llvm5.0
@@ -53,16 +72,6 @@
     - openssl
     - pkgconfig
 
-- name: add user to sudo group
-  shell: usermod -aG wheel postgres
-  args:
-    executable: /bin/bash
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
-
 - name: Enable gcc 7
   shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
 
@@ -74,11 +83,6 @@
 
 - name: Set symbol link
   shell: ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
 
 - name: Clone pgbouncer sources
   git:
@@ -100,6 +104,12 @@
 
 - name: Configure pgbouncer
   shell: ./configure --prefix=/usr/local
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
+
+- name: Make pgbouncer
+  shell: make
   args:
     chdir: /var/lib/pgsql/pgbouncer
   become_user: postgres
