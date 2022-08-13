@@ -41,7 +41,7 @@
       - centos-release-scl
 
 - name: add user to sudo group
-    shell: usermod -aG wheel postgres
+  shell: usermod -aG wheel postgres
   args:
     executable: /bin/bash
 
