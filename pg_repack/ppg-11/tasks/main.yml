@@ -48,6 +48,8 @@
     - gcc
     - gcc-c++
     - git
+    - lz4-devel
+    - lz4
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/initdb -A trust -k /var/lib/pgsql/11/data
