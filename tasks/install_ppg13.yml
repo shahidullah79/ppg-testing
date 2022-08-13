@@ -1,3 +1,10 @@
+  - name: setup epel release
+    yum:
+      name: epel-release
+      update_cache: yes
+      state: present
+    when: ansible_os_family == "RedHat"
+
   - name: Clean dnf RHEL8
     become: true
     command: dnf clean all -y
