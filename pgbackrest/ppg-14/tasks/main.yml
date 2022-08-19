@@ -34,6 +34,7 @@
       - bzip2
       - libbz2-dev
       - libyaml-dev
+      - meson
   retries: 60
   delay: 10
   register: result
