@@ -37,7 +37,6 @@
   delay: 10
   register: result
   until: result is not failed
-  when: ansible_os_family == "Debian"
 
 - name: install Percona Platform for PostgreSQL deb packages
   apt:
@@ -59,20 +58,9 @@
     - percona-postgresql-pltcl-13
     - percona-postgresql-server-dev-13
     - percona-postgresql-server-dev-all
-  when: ansible_os_family == "Debian"
 
 - name: Install PPG tools
   include_tasks: ../../../../tasks/install_ppg13_tools.yml
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
 
 - name: Clone pgbackrest sources
   become: yes
@@ -91,7 +79,7 @@
     groups: sudo
     append: yes
 
-- name: Restart Postgres RHEL
+- name: Restart Postgres
   service:
     name: postgresql
     state: restarted

@@ -64,16 +64,6 @@
 - name: Install PPG tools
   include_tasks: ../../../../tasks/install_ppg11_tools.yml
 
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
-
 - name: Clone pgbackrest sources
   become: yes
   become_user: postgres
@@ -91,7 +81,7 @@
     groups: sudo
     append: yes
 
-- name: Restart Postgres RHEL
+- name: Restart Postgres
   service:
     name: postgresql
     state: restarted
