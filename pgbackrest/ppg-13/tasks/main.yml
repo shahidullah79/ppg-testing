@@ -33,12 +33,13 @@
       - libzstd-dev
       - bzip2
       - libbz2-dev
+      - libyaml-dev
   retries: 60
   delay: 10
   register: result
   until: result is not failed
 
-- name: install Percona Platform for PostgreSQL deb packages
+- name: install Percona Platform for PostgreSQL packages
   apt:
     name: "{{ packages }}"
     update_cache: yes

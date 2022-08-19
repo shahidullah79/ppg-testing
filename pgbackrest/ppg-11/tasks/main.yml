@@ -33,6 +33,7 @@
       - libzstd-dev
       - bzip2
       - libbz2-dev
+      - libyaml-dev
   retries: 60
   delay: 10
   register: result
