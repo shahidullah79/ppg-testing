@@ -10,35 +10,35 @@
         state: absent
       vars:
         packages:
-          - percona-postgresql13
+          - percona-postgresql14
           - percona-postgresql-client-common
           - percona-postgresql-common
           - percona-postgresql-server-dev-all
-          - percona-postgresql13
-          - percona-postgresql13-contrib
-          - percona-postgresql13-debuginfo
-          - percona-postgresql13-devel
-          - percona-postgresql13-docs
-          - percona-postgresql13-libs
-          - percona-postgresql13-llvmjit
-          - percona-postgresql13-plperl
-          - percona-postgresql13-plpython
-          - percona-postgresql13-pltcl
-          - percona-postgresql13-server
-          - percona-postgresql13-test
-          - percona-postgresql13-debuginfo
-          - percona-postgresql13-debugsource
-          - percona-postgresql13-devel-debuginfo
-          - percona-postgresql13-libs-debuginfo
-          - percona-postgresql13-plperl-debuginfo
-          - percona-postgresql13-plpython3-debuginfo
-          - percona-postgresql13-pltcl-debuginfo
-          - percona-postgresql13-server-debuginfo
-          - percona-postgresql13-test-debuginfo
+          - percona-postgresql14
+          - percona-postgresql14-contrib
+          - percona-postgresql14-debuginfo
+          - percona-postgresql14-devel
+          - percona-postgresql14-docs
+          - percona-postgresql14-libs
+          - percona-postgresql14-llvmjit
+          - percona-postgresql14-plperl
+          - percona-postgresql14-plpython
+          - percona-postgresql14-pltcl
+          - percona-postgresql14-server
+          - percona-postgresql14-test
+          - percona-postgresql14-debuginfo
+          - percona-postgresql14-debugsource
+          - percona-postgresql14-devel-debuginfo
+          - percona-postgresql14-libs-debuginfo
+          - percona-postgresql14-plperl-debuginfo
+          - percona-postgresql14-plpython3-debuginfo
+          - percona-postgresql14-pltcl-debuginfo
+          - percona-postgresql14-server-debuginfo
+          - percona-postgresql14-test-debuginfo
           - percona-pgbadger
           - percona-pgbouncer
-          - percona-pgaudit13_set_user
-          - percona-wal2json13
+          - percona-pgaudit14_set_user
+          - percona-wal2json14
       when: ansible_os_family == "RedHat"
 
     - name: remove pgaudit rpm packages
@@ -49,7 +49,7 @@
 
     - name: remove pg_repack rpm packages
       yum:
-        name: percona-pg_repack13
+        name: percona-pg_repack14
         state: absent
       when: ansible_os_family == "RedHat"
 

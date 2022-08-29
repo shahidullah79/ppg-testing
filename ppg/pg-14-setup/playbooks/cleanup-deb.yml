@@ -10,25 +10,25 @@
         state: absent
       vars:
         packages:
-          - percona-postgresql-13
+          - percona-postgresql-14
           - percona-postgresql-all
-          - percona-postgresql-client-13
+          - percona-postgresql-client-14
           - percona-postgresql-contrib
           - percona-postgresql-doc
-          - percona-postgresql-doc-13
-          - percona-postgresql-plperl-13
-          - percona-postgresql-plpython3-13
-          - percona-postgresql-pltcl-13
-          - percona-postgresql-server-dev-13
+          - percona-postgresql-doc-14
+          - percona-postgresql-plperl-14
+          - percona-postgresql-plpython3-14
+          - percona-postgresql-pltcl-14
+          - percona-postgresql-server-dev-14
           - percona-postgresql-server-dev-all
-          - percona-postgresql-13-dbgsym
-          - percona-postgresql-client-13-dbgsym
-          - percona-postgresql-plperl-13-dbgsym
-          - percona-postgresql-plpython3-13-dbgsym
-          - percona-postgresql-pltcl-13-dbgsym
-          - percona-postgresql-13-pgaudit
-          - percona-postgresql-13-repack
-          - percona-postgresql-13-repack-dbgsym
+          - percona-postgresql-14-dbgsym
+          - percona-postgresql-client-14-dbgsym
+          - percona-postgresql-plperl-14-dbgsym
+          - percona-postgresql-plpython3-14-dbgsym
+          - percona-postgresql-pltcl-14-dbgsym
+          - percona-postgresql-14-pgaudit
+          - percona-postgresql-14-repack
+          - percona-postgresql-14-repack-dbgsym
           - percona-pgbackrest
           - percona-pgbackrest-doc
           - percona-patroni
