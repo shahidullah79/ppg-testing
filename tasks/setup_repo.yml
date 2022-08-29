@@ -27,7 +27,7 @@
     when: not major_repo
 
   - name: setup repo with percona-release {{ version }}
-    command: percona-release setup {{ version }}
+    command: percona-release setup ppg-{{ version }}
     vars:
       repo: "{{ lookup('env', 'REPO') }}"
       version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
