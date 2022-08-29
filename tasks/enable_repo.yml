@@ -19,15 +19,15 @@
   - set_fact:
       major_repo: "{{ lookup('env', 'MAJOR_REPO') }}"
 
-  - name: setup repo with percona-release ppg-{{ version }} with minor prefix
-    command: percona-release enable-only ppg-{{ version }} {{ repo }}
+  - name: setup repo with percona-release {{ version }} with minor prefix
+    command: percona-release enable-only {{ version }} {{ repo }}
     vars:
       repo: "{{ lookup('env', 'REPO') }}"
       version: "{{ lookup('env', 'VERSION') }}"
     when: not major_repo
 
-  - name: setup repo with percona-release ppg-{{ version }}
-    command: percona-release enable-only ppg-{{ version }} {{ repo }}
+  - name: setup repo with percona-release {{ version }}
+    command: percona-release enable-only {{ version }} {{ repo }}
     vars:
       repo: "{{ lookup('env', 'REPO') }}"
       version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
