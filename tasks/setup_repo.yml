@@ -20,7 +20,7 @@
       major_repo: "{{ lookup('env', 'MAJOR_REPO') }}"
 
   - name: setup repo with percona-release {{ version }} with minor prefix
-    command: percona-release setup ppg-{{ version }}
+    command: percona-release setup {{ version }}
     vars:
       repo: "{{ lookup('env', 'REPO') }}"
       version: "{{ lookup('env', 'VERSION') }}"
