@@ -116,5 +116,4 @@
         - percona-postgresql13-pltcl-debuginfo
         - percona-postgresql13-plpython3-debuginfo
         - percona-postgresql13-server-debuginfo
-        - percona-postgresql13-test-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
