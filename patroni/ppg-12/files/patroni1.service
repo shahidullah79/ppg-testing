@@ -22,7 +22,7 @@ User=postgres
 Group=postgres
 
 # Location of Patroni configuration
-Environment=PATRONI_CONFIG_LOCATION=/var/lib/pgsql/patroni_test/postgres1.yml
+Environment=PATRONI_CONFIG_LOCATION=/var/lib/pgsql/patroni_test/postgresql1.yml
 
 # Disable OOM kill on the postmaster
 OOMScoreAdjust=-1000
