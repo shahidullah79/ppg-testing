@@ -88,7 +88,7 @@ RPM_PACKAGES_TEMPLATE = ["percona-postgresql{}",
                          "percona-postgresql{}-plpython3-debuginfo",
                          "percona-postgresql{}-pltcl-debuginfo",
                          "percona-postgresql{}-server-debuginfo",
-                         "percona-postgresql{}-test-debuginfo"]
+                         ]
 
 RPM7_PACKAGES_TEMPLATE = ["percona-postgresql{}",
                           "percona-postgresql{}-contrib",
@@ -142,7 +142,7 @@ RPM_PG13PACKAGES_TEMPLATE = ["percona-postgresql{}",
                              "percona-postgresql{}-plpython3-debuginfo",
                              "percona-postgresql{}-pltcl-debuginfo",
                              "percona-postgresql{}-server-debuginfo",
-                             "percona-postgresql{}-test-debuginfo"]
+                             ]
 
 DEB_FILES_TEMPLATE = ["/etc/postgresql/{}/main/postgresql.conf",
                       "/etc/postgresql/{}/main/pg_hba.conf",
