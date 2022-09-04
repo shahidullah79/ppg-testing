@@ -20,15 +20,12 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
-    cleanup: ../../playbooks/cleanup.yml
-    converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/tests_ppg
+  directory: ../../../tests/
   options:
     verbose: true
     s: true
-    junitxml: report.xml
 scenario:
   destroy_sequence:
     - destroy
