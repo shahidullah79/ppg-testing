@@ -59,7 +59,7 @@
     - percona-postgresql-plperl-12
     - percona-postgresql-plpython3-12
     - percona-postgresql-pltcl-12
-    - percona-postgresql-server-dev-11
+    - percona-postgresql-server-dev-12
     - percona-postgresql-server-dev-all
   when: ansible_os_family == "Debian"
 
