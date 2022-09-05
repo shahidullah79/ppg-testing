@@ -67,7 +67,6 @@
           - percona-postgresql11-plpython3-debuginfo
           - percona-postgresql11-pltcl-debuginfo
           - percona-postgresql11-server-debuginfo
-          - percona-postgresql11-test-debuginfo
       when: ansible_os_family == "RedHat"
 
     - name: remove pgaudit deb packages
