@@ -63,9 +63,6 @@
     - percona-postgresql-server-dev-all
   when: ansible_os_family == "Debian"
 
-- name: Install PPG tools
-  include_tasks: ../../../../tasks/install_ppg12_tools.yml
-
 - name: Clone pgbackrest sources
   become: yes
   become_user: postgres
