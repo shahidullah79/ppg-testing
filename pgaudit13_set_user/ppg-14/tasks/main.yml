@@ -54,11 +54,6 @@
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   become_user: postgres
 
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
-
 - name: Enable gcc 7
   shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
 
@@ -70,11 +65,6 @@
 
 - name: Set symbol link
   shell: ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc
-
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
 
 - name: Clone set_user sources
   git:

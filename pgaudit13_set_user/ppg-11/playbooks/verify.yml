@@ -6,10 +6,10 @@
   become_user: postgres
   gather_facts: true
   tasks:
-    - name: Test pgaudit
+    - name: Test set_user
       make:
         target: installcheck
-        chdir: "/tmp/pg_audit"
+        chdir: "/tmp/set_user"
         params:
           USE_PGXS: 1
       become_user: postgres

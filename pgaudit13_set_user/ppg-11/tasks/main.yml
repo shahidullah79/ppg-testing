@@ -67,11 +67,6 @@
 - name: Set symbol link
   shell: ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc
 
-- shell: gcc --version
-  register: gcc
-
-- debug: var=gcc.stdout_lines
-
 - name: Clone set_user sources
   git:
     repo: "{{ repo }}"
