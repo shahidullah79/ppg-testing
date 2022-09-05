@@ -14,8 +14,8 @@ RPM_PACKAGES = pg_versions['rpm_packages']
 EXTENSIONS = pg_versions['extensions']
 LANGUAGES = pg_versions['languages']
 DEB_FILES = pg_versions['deb_files']
-SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", 'ppg-12.2',
-                  'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-12.7", "ppg-13.0", "ppg-13.1"]
+SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", "ppg-11.17", 'ppg-12.2',
+                  'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-12.7", "ppg-12.12", "ppg-13.0", "ppg-13.1"]
 BINARIES = pg_versions['binaries']
 
 
