@@ -71,9 +71,13 @@ def extension_list(host):
 
 @pytest.fixture()
 def insert_data(host):
+    ds = host.system_info.distribution
     print(host.run("find / -name pgbench").stdout)
+    pgbench_bin = "pgbench"
+    if ds.lower() in ["redhat", "centos", 'rhel']:
+        pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin"
     with host.sudo("postgres"):
-        pgbench = "pgbench -i -s 1"
+        pgbench = f"{pgbench_bin} -i -s 1"
         result = host.run(pgbench)
         assert result.rc == 0, result.stderr
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $1}'"
@@ -88,8 +92,8 @@ def test_psql_client_version(host):
 
 @pytest.mark.parametrize("package", pg_versions['deb_packages'])
 def test_deb_package_is_installed(host, package):
-    os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", 'rhel']:
+    ds = host.system_info.distribution
+    if ds.lower() in ["redhat", "centos", 'rhel']:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(package)
     assert pkg.is_installed
@@ -99,8 +103,8 @@ def test_deb_package_is_installed(host, package):
 @pytest.mark.parametrize("package", RPM_PACKAGES)
 def test_rpm_package_is_installed(host, package):
     with host.sudo():
-        os = host.system_info.distribution
-        if os in ["debian", "ubuntu"]:
+        ds = host.system_info.distribution
+        if ds in ["debian", "ubuntu"]:
             pytest.skip("This test only for RHEL based platforms")
         if host.system_info.release == "7":
             pytest.skip("Only for RHEL8 tests")
@@ -129,27 +133,27 @@ def test_rpm7_package_is_installed(host, package):
 
 
 def test_postgresql_client_version(host):
-    os = host.system_info.distribution
+    ds = host.system_info.distribution
     pkg = "percona-postgresql-{}".format(settings.MAJOR_VER)
-    if os.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", 'rhel']:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(pkg)
     assert settings.MAJOR_VER in pkg.version
 
 
 def test_postgresql_version(host):
-    os = host.system_info.distribution
+    ds = host.system_info.distribution
     pkg = "percona-postgresql-client-{}".format(settings.MAJOR_VER)
-    if os.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", 'rhel']:
         pkg = "percona-postgresql{}".format(settings.MAJOR_VER)
     pkg = host.package(pkg)
     assert settings.MAJOR_VER in pkg.version, pkg.version
 
 
 def test_postgresql_is_running_and_enabled(host):
-    os = host.system_info.distribution
+    ds = host.system_info.distribution
     service_name = "postgresql"
-    if os.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", 'rhel']:
         service_name = f"postgresql-{settings.MAJOR_VER}"
     service = host.service(service_name)
     assert service.is_running
