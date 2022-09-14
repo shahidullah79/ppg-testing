@@ -71,6 +71,7 @@ def extension_list(host):
 
 @pytest.fixture()
 def insert_data(host):
+    print(host.run("find / -name pgbench").stdout)
     with host.sudo("postgres"):
         pgbench = "pgbench -i -s 1"
         result = host.run(pgbench)
