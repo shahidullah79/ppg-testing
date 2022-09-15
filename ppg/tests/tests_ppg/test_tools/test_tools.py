@@ -167,30 +167,38 @@ def pgrepack(host):
 def pg_repack_functional(host):
     dist = host.system_info.distribution
     pgbench_bin = "pgbench"
+    pg_repack_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack"
     if dist.lower() in ["redhat", "centos", 'rhel']:
         pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
+        pg_repack_bin = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack"
     with host.sudo("postgres"):
         pgbench = f"{pgbench_bin} -i -s 1"
         assert host.run(pgbench).rc == 0
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
-        cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack -t pgbench_accounts -j 4"
+        cmd = f"{pg_repack_bin} -t pgbench_accounts -j 4"
         if dist.lower() in ["redhat", "centos", 'rhel']:
-            cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack -t pgbench_accounts -j 4"
+            cmd = f"{pg_repack_bin} -t pgbench_accounts -j 4"
         pg_repack_result = host.run(cmd)
     yield pg_repack_result
 
 
 @pytest.fixture()
 def pg_repack_dry_run(host, operating_system):
+    dist = host.system_info.distribution
+    pgbench_bin = "pgbench"
+    pg_repack_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack"
+    if dist.lower() in ["redhat", "centos", 'rhel']:
+        pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
+        pg_repack_bin = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack"
     with host.sudo("postgres"):
-        pgbench = "pgbench -i -s 1"
+        pgbench = f"{pgbench_bin} -i -s 1"
         assert host.run(pgbench).rc == 0
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
-        cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack --dry-run -d postgres"
+        cmd = f"{pg_repack_bin} --dry-run -d postgres"
         if operating_system.lower() in ["redhat", "centos", 'rhel']:
-            cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack --dry-run -d postgres"
+            cmd = f"{pg_repack_bin} --dry-run -d postgres"
 
         pg_repack_result = host.run(cmd)
     yield pg_repack_result
