@@ -166,8 +166,11 @@ def pgrepack(host):
 @pytest.fixture()
 def pg_repack_functional(host):
     dist = host.system_info.distribution
+    pgbench_bin = "pgbench"
+    if dist.lower() in ["redhat", "centos", 'rhel']:
+        pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
     with host.sudo("postgres"):
-        pgbench = "pgbench -i -s 1"
+        pgbench = f"{pgbench_bin} -i -s 1"
         assert host.run(pgbench).rc == 0
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
