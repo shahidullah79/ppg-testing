@@ -75,7 +75,7 @@ def insert_data(host):
     print(host.run("find / -name pgbench").stdout)
     pgbench_bin = "pgbench"
     if ds.lower() in ["redhat", "centos", 'rhel']:
-        pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin"
+        pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
     with host.sudo("postgres"):
         pgbench = f"{pgbench_bin} -i -s 1"
         result = host.run(pgbench)
