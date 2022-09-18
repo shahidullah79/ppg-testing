@@ -24,13 +24,12 @@ provisioner:
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/tests_ppg
+  directory: ../../../tests/test_upgrade
   options:
     verbose: true
     s: true
     junitxml: report.xml
 scenario:
-  name: debian-11
   destroy_sequence:
     - destroy
   cleanup_sequence:

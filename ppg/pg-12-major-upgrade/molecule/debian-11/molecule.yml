@@ -20,17 +20,16 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
-    cleanup: ../../playbooks/cleanup.yml
     converge: ../../playbooks/playbook.yml
+    cleanup: ../../playbooks/cleanup.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/tests_ppg
+  directory: ../../../tests/test_upgrade
   options:
     verbose: true
     s: true
     junitxml: report.xml
 scenario:
-  name: debian-11
   destroy_sequence:
     - destroy
   cleanup_sequence:
