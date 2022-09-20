@@ -51,7 +51,7 @@
       name: "{{ packages }}"
       update_cache: yes
       state: latest
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-11-pgaudit
@@ -61,7 +61,7 @@
   - name: Install pgaudit RHEL
     yum:
       name: percona-pgaudit
-      allow_downgrade: true
+      allow_downgrade: yes
       state: latest
     when: ansible_os_family == "RedHat"
 
@@ -70,7 +70,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pg_stat_monitor11
@@ -82,7 +82,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pg-stat-monitor11
@@ -94,7 +94,7 @@
       name: percona-pgbadger
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install pgbadger Debian
@@ -102,7 +102,7 @@
       name: percona-pgbadger
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "Debian"
 
   - name: Install percona-pgaudit11_set_user RHEL
@@ -110,7 +110,7 @@
       name: percona-pgaudit11_set_user
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install percona-pgaudit12_set_user Debian
@@ -118,7 +118,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pgaudit11-set-user
@@ -131,7 +131,7 @@
       name: percona-pgbouncer
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install percona-pgbouncer Debian
@@ -139,7 +139,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pgbouncer
@@ -151,7 +151,7 @@
       name: percona-wal2json11
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install percona-wal2json11 Debian
@@ -159,7 +159,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-11-wal2json
@@ -197,7 +197,7 @@
       name: "{{ packages }}"
       update_cache: yes
       state: latest
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pgbackrest
@@ -209,7 +209,7 @@
     yum:
       name: percona-pgbackrest
       state: latest
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Create pgbackrest directory
@@ -280,7 +280,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-11-repack
@@ -292,7 +292,7 @@
       name: percona-pg_repack11
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install patroni
@@ -300,7 +300,7 @@
       name: percona-patroni
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install patroni debian
@@ -308,7 +308,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-patroni
@@ -397,7 +397,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
       - etcd
@@ -417,7 +417,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - etcd

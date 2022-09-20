@@ -45,7 +45,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-12-pgaudit
@@ -64,7 +64,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pgbackrest
@@ -149,7 +149,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-12-repack
@@ -161,7 +161,7 @@
       name: percona-pg_repack12
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install patroni RPM
@@ -169,7 +169,7 @@
       name: percona-patroni
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install patroni debian
@@ -177,7 +177,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-patroni
@@ -189,7 +189,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pg_stat_monitor12
@@ -201,7 +201,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pg-stat-monitor12
@@ -213,7 +213,7 @@
       name: percona-pgbadger
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install pgbadger Debian
@@ -221,7 +221,7 @@
       name: percona-pgbadger
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "Debian"
 
   - name: Install percona-pgaudit12_set_user RHEL
@@ -236,7 +236,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pgaudit12-set-user
@@ -256,7 +256,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-pgbouncer
@@ -268,7 +268,7 @@
       name: percona-wal2json12
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
   - name: Install percona-wal2json12 Debian
@@ -276,7 +276,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-12-wal2json
@@ -394,7 +394,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: true
+      allow_downgrade: yes
     vars:
       packages:
         - etcd
