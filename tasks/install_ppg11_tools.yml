@@ -51,7 +51,6 @@
       name: "{{ packages }}"
       update_cache: yes
       state: latest
-      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-11-pgaudit
@@ -82,7 +81,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - percona-pg-stat-monitor11
@@ -102,7 +100,6 @@
       name: percona-pgbadger
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     when: ansible_os_family == "Debian"
 
   - name: Install percona-pgaudit11_set_user RHEL
@@ -118,7 +115,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - percona-pgaudit11-set-user
@@ -139,7 +135,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - percona-pgbouncer
@@ -159,7 +154,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-11-wal2json
@@ -197,7 +191,6 @@
       name: "{{ packages }}"
       update_cache: yes
       state: latest
-      allow_downgrade: yes
     vars:
       packages:
         - percona-pgbackrest
@@ -280,7 +273,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - percona-postgresql-11-repack
@@ -308,7 +300,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - percona-patroni
@@ -417,7 +408,6 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
-      allow_downgrade: yes
     vars:
       packages:
         - etcd
