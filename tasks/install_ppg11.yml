@@ -26,6 +26,7 @@
       name: "{{ packages }}"
       update_cache: yes
       state: latest
+      allow_downgrade: true
     vars:
       packages:
       - percona-postgresql
@@ -55,6 +56,7 @@
       name: "{{ packages }}"
       update_cache: yes
       state: latest
+      allow_downgrade: true
     vars:
       packages:
       - percona-postgresql-plpython-11
@@ -69,6 +71,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
+      allow_downgrade: true
     vars:
       packages:
       - percona-postgresql-client-common
@@ -99,6 +102,7 @@
       name: "{{ packages }}"
       state: latest
       update_cache: yes
+      allow_downgrade: true
     vars:
       packages:
         - percona-postgresql-client-common
