@@ -90,6 +90,7 @@ def test_psql_client_version(host):
     assert pg_versions['version'] in result.stdout, result.stdout
 
 
+@pytest.mark.upgrade
 @pytest.mark.parametrize("package", pg_versions['deb_packages'])
 def test_deb_package_is_installed(host, package):
     ds = host.system_info.distribution
@@ -100,6 +101,7 @@ def test_deb_package_is_installed(host, package):
     assert pkg.version in pg_versions['deb_pkg_ver']
 
 
+@pytest.mark.upgrade
 @pytest.mark.parametrize("package", RPM_PACKAGES)
 def test_rpm_package_is_installed(host, package):
     with host.sudo():
@@ -116,6 +118,7 @@ def test_rpm_package_is_installed(host, package):
             assert pkg.version == pg_versions[package]
 
 
+@pytest.mark.upgrade
 @pytest.mark.parametrize("package", RPM7_PACKAGES)
 def test_rpm7_package_is_installed(host, package):
     with host.sudo():
