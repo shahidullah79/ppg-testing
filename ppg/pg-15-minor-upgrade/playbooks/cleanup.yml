@@ -1,0 +1,80 @@
+---
+- name: Cleanup
+  hosts: all
+  become: true
+  become_method: sudo
+  tasks:
+    - name: remove Postgresql deb packages
+      apt:
+        name: "{{ packages }}"
+        state: absent
+        update_cache: yes
+      vars:
+        packages:
+          - percona-postgresql-14
+          - percona-postgresql-client-14
+          - percona-postgresql-doc-14
+          - percona-postgresql-plperl-14
+          - percona-postgresql-plpython3-14
+          - percona-postgresql-pltcl-14
+          - percona-postgresql-server-dev-14
+          - percona-postgresql-server-dev-all
+          - percona-postgresql-14-dbgsym
+          - percona-postgresql-client-14-dbgsym
+          - percona-postgresql-plperl-14-dbgsym
+          - percona-postgresql-plpython3-14-dbgsym
+          - percona-postgresql-pltcl-14-dbgsym
+      when: ansible_os_family == "Debian"
+
+    - name: remove Postgresql rpm packages
+      yum:
+        name: "{{ packages }}"
+        state: absent
+      vars:
+        packages:
+          - percona-postgresql14
+          - percona-postgresql14
+          - percona-postgresql14-contrib
+          - percona-postgresql14-debuginfo
+          - percona-postgresql14-devel
+          - percona-postgresql14-docs
+          - percona-postgresql14-libs
+          - percona-postgresql14-llvmjit
+          - percona-postgresql14-plperl
+          - percona-postgresql14-plpython
+          - percona-postgresql14-pltcl
+          - percona-postgresql14-server
+          - percona-postgresql14-test
+          - percona-postgresql14-debuginfo
+          - percona-postgresql14-debugsource
+          - percona-postgresql14-devel-debuginfo
+          - percona-postgresql14-libs-debuginfo
+          - percona-postgresql14-plperl-debuginfo
+          - percona-postgresql14-plpython-debuginfo
+          - percona-postgresql14-plpython3-debuginfo
+          - percona-postgresql14-pltcl-debuginfo
+          - percona-postgresql14-server-debuginfo
+          - percona-postgresql14-test-debuginfo
+      when: ansible_os_family == "RedHat"
+
+    - name: remove pgaudit deb packages
+      apt:
+        name: percona-postgresql-14-pgaudit
+        state: absent
+      when: ansible_os_family == "Debian"
+
+    - name: remove pg_repack deb packages
+      apt:
+        name: "{{ packages }}"
+        state: absent
+      vars:
+        packages:
+          - percona-postgresql-14-repack
+          - percona-postgresql-14-repack-dbgsym
+      when: ansible_os_family == "Debian"
+
+    - name: remove pg_repack rpm packages
+      yum:
+        name: percona-pg_repack14
+        state: absent
+      when: ansible_os_family == "RedHat"

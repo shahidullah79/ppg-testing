@@ -1,0 +1,115 @@
+---
+
+- name: Configure repository
+  include_tasks: ../../../../tasks/enable_repo.yml
+
+- name: setup epel release
+  yum:
+    name: epel-release
+    update_cache: yes
+    state: present
+
+- name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - percona-postgresql-client-common
+    - percona-postgresql-common
+    - percona-postgresql-server-dev-all
+    - percona-postgresql15
+    - percona-postgresql15-contrib
+    - percona-postgresql15-devel
+    - percona-postgresql15-libs
+    - percona-postgresql15-llvmjit
+    - percona-postgresql15-plperl
+    - percona-postgresql15-plpython3
+    - percona-postgresql15-pltcl
+    - percona-postgresql15-server
+    - percona-postgresql15-test
+
+- name: Setup additional yum packages
+  yum:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: present
+  vars:
+    packages:
+      - yum-utils
+      - centos-release-scl
+
+- name: add user to sudo group
+  shell: usermod -aG wheel postgres
+  args:
+    executable: /bin/bash
+
+- name: setup devtoolset-7-gcc
+  yum:
+    name: devtoolset-7-gcc*
+    update_cache: yes
+    enablerepo: centos-sclo-rh-testing
+    state: present
+
+- name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - openssl-devel
+    - llvm-toolset-7-clang
+    - llvm5.0
+    - llvm-toolset-7
+    - readline-devel
+    - gcc
+    - gcc-c++
+    - libevent-devel
+    - pandoc
+    - libtool
+    - openssl
+    - pkgconfig
+
+- name: Enable gcc 7
+  shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
+
+- name: Set source
+  shell: source /opt/rh/devtoolset-7/enable;
+
+- name: Delete old gcc
+  shell: rm /usr/bin/gcc
+
+- name: Set symbol link
+  shell: ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc
+
+- name: Clone pgbouncer sources
+  git:
+    repo: "{{ repo }}"
+    version: "{{ version }}"
+    dest: /var/lib/pgsql/pgbouncer
+    recursive: yes
+    update: yes
+  vars:
+    repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
+    version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
+  become_user: postgres
+
+- name: Autogen pgbouncer
+  shell: ./autogen.sh
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
+
+- name: Configure pgbouncer
+  shell: ./configure --prefix=/usr/local
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
+
+- name: Make pgbouncer
+  shell: make
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
