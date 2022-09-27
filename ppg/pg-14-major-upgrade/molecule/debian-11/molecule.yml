@@ -24,10 +24,11 @@ provisioner:
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/test_upgrade
+  directory: ../../../tests/tests_ppg/test_bvt/
   options:
     verbose: true
     s: true
+    m: upgrade
     junitxml: report.xml
 scenario:
   destroy_sequence:

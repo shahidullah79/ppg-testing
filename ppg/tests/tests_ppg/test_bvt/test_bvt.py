@@ -135,6 +135,7 @@ def test_rpm7_package_is_installed(host, package):
             assert pkg.version == pg_versions[package]
 
 
+@pytest.mark.upgrade
 def test_postgresql_client_version(host):
     ds = host.system_info.distribution
     pkg = "percona-postgresql-{}".format(settings.MAJOR_VER)
@@ -144,6 +145,7 @@ def test_postgresql_client_version(host):
     assert settings.MAJOR_VER in pkg.version
 
 
+@pytest.mark.upgrade
 def test_postgresql_version(host):
     ds = host.system_info.distribution
     pkg = "percona-postgresql-client-{}".format(settings.MAJOR_VER)
@@ -153,6 +155,7 @@ def test_postgresql_version(host):
     assert settings.MAJOR_VER in pkg.version, pkg.version
 
 
+@pytest.mark.upgrade
 def test_postgresql_is_running_and_enabled(host):
     ds = host.system_info.distribution
     service_name = "postgresql"
@@ -171,6 +174,7 @@ def test_postgres_binary(postgresql_binary):
     assert postgresql_binary.user == "root"
 
 
+@pytest.mark.upgrade
 @pytest.mark.parametrize("binary", BINARIES)
 def test_binaries(host, binary):
     dist = host.system_info.distribution
@@ -182,6 +186,7 @@ def test_binaries(host, binary):
     assert binary_file.exists
 
 
+@pytest.mark.upgrade
 def test_pg_config_server_version(host):
     cmd = "pg_config --version"
     try:
@@ -191,11 +196,13 @@ def test_pg_config_server_version(host):
         pytest.mark.xfail(reason="Maybe dev package not install")
 
 
+@pytest.mark.upgrade
 def test_postgresql_query_version(postgresql_query_version):
     assert postgresql_query_version.rc == 0, postgresql_query_version.stderr
     assert postgresql_query_version.stdout.strip("\n") == pg_versions['version'], postgresql_query_version.stdout
 
 
+@pytest.mark.upgrade
 def test_postgres_client_version(host):
     cmd = "psql --version"
     result = host.check_output(cmd)
@@ -216,6 +223,7 @@ def test_insert_data(insert_data):
     assert insert_data == "100000", insert_data
 
 
+@pytest.mark.upgrade
 def test_extenstions_list(extension_list, host):
     ds = host.system_info.distribution
     for extension in EXTENSIONS:
@@ -233,6 +241,7 @@ def test_extenstions_list(extension_list, host):
         assert extension in extension_list
 
 
+@pytest.mark.upgrade
 @pytest.mark.parametrize("extension", EXTENSIONS)
 def test_enable_extension(host, extension):
     ds = host.system_info.distribution
@@ -258,6 +267,7 @@ def test_enable_extension(host, extension):
         assert extension in set(extensions.stdout.split()), extensions.stdout
 
 
+@pytest.mark.upgrade
 @pytest.mark.parametrize("extension", EXTENSIONS[::-1])
 def test_drop_extension(host, extension):
     ds = host.system_info.distribution
@@ -284,6 +294,7 @@ def test_drop_extension(host, extension):
         assert extension not in set(extensions.stdout.split()), extensions.stdout
 
 
+@pytest.mark.upgrade
 def test_plpgsql_extension(host):
     with host.sudo("postgres"):
         extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $3}'")
