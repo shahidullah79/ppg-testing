@@ -3,7 +3,7 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
-from ... import settings
+from .. import settings
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')

@@ -3,7 +3,7 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
-from ... import settings
+from .. import settings
 # from ppg.tests.settings import get_settings, MAJOR_VER
 
 
