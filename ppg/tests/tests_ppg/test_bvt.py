@@ -241,7 +241,6 @@ def test_extenstions_list(extension_list, host):
         assert extension in extension_list
 
 
-@pytest.mark.upgrade
 @pytest.mark.parametrize("extension", EXTENSIONS)
 def test_enable_extension(host, extension):
     ds = host.system_info.distribution
@@ -267,7 +266,6 @@ def test_enable_extension(host, extension):
         assert extension in set(extensions.stdout.split()), extensions.stdout
 
 
-@pytest.mark.upgrade
 @pytest.mark.parametrize("extension", EXTENSIONS[::-1])
 def test_drop_extension(host, extension):
     ds = host.system_info.distribution
