@@ -8,21 +8,21 @@
     repo: "{{ lookup('env', 'FROM_REPO') }}"
     pg_version: "{{ lookup('env', 'FROM_VERSION') }}"
 
-- name: install Percona Platform for PostgreSQL 14 packages
-  include_tasks: ../../../../tasks/install_ppg14.yml
+- name: install Percona Platform for PostgreSQL 15 packages
+  include_tasks: ../../../../tasks/install_ppg15.yml
 
 - name: Initialize Postgres RHEL
-  command: /usr/pgsql-14/bin/postgresql-14-setup initdb
+  command: /usr/pgsql-15/bin/postgresql-15-setup initdb
   environment:
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   when: ansible_os_family == "RedHat"
 
 - name: Install PPG tools
-  include_tasks: ../../../../tasks/install_ppg14_tools.yml
+  include_tasks: ../../../../tasks/install_ppg15_tools.yml
 
 - name: Start Postgres RHEL
   service:
-    name: postgresql-14
+    name: postgresql-15
     state: started
     enabled: true
   when: ansible_os_family == "RedHat"
@@ -53,18 +53,18 @@
     state: latest
   vars:
     packages:
-    - percona-postgresql-14
-    - percona-postgresql-client-14
-    - percona-postgresql-doc-14
-    - percona-postgresql-plperl-14
-    - percona-postgresql-plpython3-14
-    - percona-postgresql-pltcl-14
-    - percona-postgresql-server-dev-14
-    - percona-postgresql-14-dbgsym
-    - percona-postgresql-client-14-dbgsym
-    - percona-postgresql-plperl-14-dbgsym
-    - percona-postgresql-plpython3-14-dbgsym
-    - percona-postgresql-pltcl-14-dbgsym
+    - percona-postgresql-15
+    - percona-postgresql-client-15
+    - percona-postgresql-doc-15
+    - percona-postgresql-plperl-15
+    - percona-postgresql-plpython3-15
+    - percona-postgresql-pltcl-15
+    - percona-postgresql-server-dev-15
+    - percona-postgresql-15-dbgsym
+    - percona-postgresql-client-15-dbgsym
+    - percona-postgresql-plperl-15-dbgsym
+    - percona-postgresql-plpython3-15-dbgsym
+    - percona-postgresql-pltcl-15-dbgsym
   when: ansible_os_family == "Debian"
 
 - name: install Percona Platform for PostgreSQL deb packages
@@ -74,8 +74,8 @@
     state: latest
   vars:
     packages:
-    - percona-postgresql-plpython3-14
-    - percona-postgresql-plpython3-14-dbgsym
+    - percona-postgresql-plpython3-15
+    - percona-postgresql-plpython3-15-dbgsym
   when:
     - ansible_os_family == "Debian"
 
@@ -86,18 +86,18 @@
     update_cache: yes
   vars:
     packages:
-    - percona-postgresql14
-    - percona-postgresql14-contrib
-    - percona-postgresql14-debuginfo
-    - percona-postgresql14-devel
-    - percona-postgresql14-docs
-    - percona-postgresql14-libs
-    - percona-postgresql14-llvmjit
-    - percona-postgresql14-plperl
-    - percona-postgresql14-pltcl
-    - percona-postgresql14-server
-    - percona-postgresql14-test
-    - percona-postgresql14-debuginfo
+    - percona-postgresql15
+    - percona-postgresql15-contrib
+    - percona-postgresql15-debuginfo
+    - percona-postgresql15-devel
+    - percona-postgresql15-docs
+    - percona-postgresql15-libs
+    - percona-postgresql15-llvmjit
+    - percona-postgresql15-plperl
+    - percona-postgresql15-pltcl
+    - percona-postgresql15-server
+    - percona-postgresql15-test
+    - percona-postgresql15-debuginfo
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
@@ -107,32 +107,32 @@
     update_cache: yes
   vars:
     packages:
-      - percona-postgresql14
-      - percona-postgresql14-contrib
-      - percona-postgresql14-debuginfo
-      - percona-postgresql14-devel
-      - percona-postgresql14-docs
-      - percona-postgresql14-libs
-      - percona-postgresql14-llvmjit
-      - percona-postgresql14-plperl
-      - percona-postgresql14-pltcl
-      - percona-postgresql14-server
-      - percona-postgresql14-test
-      - percona-postgresql14-contrib-debuginfo
-      - percona-postgresql14-debuginfo
-      - percona-postgresql14-debugsource
-      - percona-postgresql14-devel-debuginfo
-      - percona-postgresql14-libs-debuginfo
-      - percona-postgresql14-plperl-debuginfo
-      - percona-postgresql14-plpython3-debuginfo
-      - percona-postgresql14-pltcl-debuginfo
-      - percona-postgresql14-server-debuginfo
-      - percona-postgresql14-test-debuginfo
+      - percona-postgresql15
+      - percona-postgresql15-contrib
+      - percona-postgresql15-debuginfo
+      - percona-postgresql15-devel
+      - percona-postgresql15-docs
+      - percona-postgresql15-libs
+      - percona-postgresql15-llvmjit
+      - percona-postgresql15-plperl
+      - percona-postgresql15-pltcl
+      - percona-postgresql15-server
+      - percona-postgresql15-test
+      - percona-postgresql15-contrib-debuginfo
+      - percona-postgresql15-debuginfo
+      - percona-postgresql15-debugsource
+      - percona-postgresql15-devel-debuginfo
+      - percona-postgresql15-libs-debuginfo
+      - percona-postgresql15-plperl-debuginfo
+      - percona-postgresql15-plpython3-debuginfo
+      - percona-postgresql15-pltcl-debuginfo
+      - percona-postgresql15-server-debuginfo
+      - percona-postgresql15-test-debuginfo
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
 - name: Stop postgresql service for RHEL based
   service:
-    name: postgresql-14
+    name: postgresql-15
     state: stopped
   when: ansible_os_family == "RedHat"
 
@@ -147,7 +147,7 @@
 
 - name: Start postgresql service for RHEL based
   service:
-    name: postgresql-14
+    name: postgresql-15
     state: started
     enabled: true
   when: ansible_os_family == "RedHat"
