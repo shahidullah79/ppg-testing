@@ -34,7 +34,6 @@
           - percona-postgresql15-plpython3-debuginfo
           - percona-postgresql15-pltcl-debuginfo
           - percona-postgresql15-server-debuginfo
-          - percona-postgresql15-test-debuginfo
           - percona-pgbadger
           - percona-pgbouncer
           - percona-pgaudit15_set_user
