@@ -49,6 +49,8 @@
     - gcc-c++
     - lz4
     - lz4-devel
+    - zstd
+    - libzstd-devel
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-15/bin/initdb -A trust -k /var/lib/pgsql/15/data
