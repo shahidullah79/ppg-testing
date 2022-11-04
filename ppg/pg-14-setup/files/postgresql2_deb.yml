@@ -7,9 +7,9 @@ restapi:
   connect_address: 127.0.0.1:8010
 #  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
 #  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
-  authentication:
-    username: username
-    password: password
+#  authentication:
+#    username: username
+#    password: password
 
 # ctl:
 #   insecure: false # Allow connections to SSL sites without certs
