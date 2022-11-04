@@ -44,13 +44,7 @@
     - etcd
     - python3-python-etcd
     - percona-haproxy
-
-- name: Install patroni RPM
-  yum:
-    name: percona-patroni
-    state: latest
-    update_cache: yes
-  when: ansible_os_family == "RedHat"
+    - percona-patroni
 
 - name: Create /etc/patroni directory
   file:
