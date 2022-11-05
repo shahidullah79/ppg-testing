@@ -122,6 +122,11 @@
     state: started
     enabled: yes
 
+- name: Remove file (delete file)
+  ansible.builtin.file:
+    path: /etc/haproxy/haproxy.cfg
+    state: absent
+
 - name: Copy haproxy.cfg
   copy:
     src: haproxy.cfg
