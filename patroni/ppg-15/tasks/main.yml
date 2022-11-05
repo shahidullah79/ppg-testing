@@ -122,7 +122,7 @@
     state: started
     enabled: yes
 
-- name: Remove file (delete file)
+- name: Remove default haproxy config file
   ansible.builtin.file:
     path: /etc/haproxy/haproxy.cfg
     state: absent
@@ -137,3 +137,7 @@
 
 - name: Start haproxy
   shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
+
+- name: Pause for 1 minutes
+  ansible.builtin.pause:
+    minutes: 1
