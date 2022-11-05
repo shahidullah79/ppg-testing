@@ -539,3 +539,7 @@
       groups: sudo
       append: yes
     when: ansible_os_family == "Debian"
+
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      minutes: 1

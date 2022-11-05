@@ -138,3 +138,7 @@
 
 - name: Start haproxy
   shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
+
+- name: Pause for 1 minutes
+  ansible.builtin.pause:
+    minutes: 1
