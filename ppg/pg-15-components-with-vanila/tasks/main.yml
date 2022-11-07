@@ -2,24 +2,24 @@
 ### temp part until percona-release is updated for PPG project
 
 - name: Install vanila postgresql
-  include_tasks: ../../../../tasks/install_pg14.yml
+  include_tasks: ../../../../tasks/install_pg15.yml
 
 
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml
 
 - name: Initialize Postgres RHEL
-  command: /usr/pgsql-14/bin/postgresql-14-setup initdb
+  command: /usr/pgsql-15/bin/postgresql-15-setup initdb
   environment:
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   when: ansible_os_family == "RedHat"
 
 - name: Start Postgres RHEL
   service:
-    name: postgresql-14
+    name: postgresql-15
     state: started
     enabled: yes
   when: ansible_os_family == "RedHat"
 
-- name: Install ppg14 tools
-  include_tasks: ../../../../tasks/install_ppg14_tools.yml
+- name: Install ppg15 tools
+  include_tasks: ../../../../tasks/install_ppg15_tools.yml
