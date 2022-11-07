@@ -22,6 +22,14 @@
       state: present
     when: ansible_os_family == "Debian"
 
+  - name: DNF disable postgresql RHEL
+    command: sudo dnf module disable postgresql -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: DNF clean RHEL
+    command: sudo dnf clean all -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
   - name: Add PostgreSQL YUM Repository RHEL7
     yum: name=https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm state=present validate_certs=false
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"

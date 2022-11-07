@@ -1,6 +1,4 @@
 ---
-### temp part until percona-release is updated for PPG project
-
 - name: Install vanila postgresql
   include_tasks: ../../../../tasks/install_pg14.yml
 
