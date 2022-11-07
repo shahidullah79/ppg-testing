@@ -67,10 +67,18 @@
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /var/lib/postgresql//pgbackrest
+    dest: /var/lib/postgresql/pgbackrest
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
+
+- name: Create /tmp/pgbackrest directory
+  file:
+    path: /tmp/pgbackrest
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
 
 - name: Add user postgres to sudoers
   user:
@@ -78,7 +86,7 @@
     groups: sudo
     append: yes
 
-- name: Restart Postgres
+- name: Stop Postgres
   service:
     name: postgresql
-    state: restarted
+    state: stopped
