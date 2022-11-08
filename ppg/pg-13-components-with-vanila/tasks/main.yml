@@ -1,22 +1,6 @@
 ---
-# This playbook does following:
-#   enables Percona repository
-#   installs Percona Platform for PostgreSQL packages
-#   does some tests
-#- name: include tasks for test env setup
-#  include_tasks: ../../../tasks/test_prep.yml
-#- name: include tasks for test env setup
-#  include_tasks: ../test_prep.yml
-
-# - name: include tasks for enabling main repo
-#   include: ../tasks/enable_main_repo.yml
-#   when: lookup('env', 'install_repo') == "main"
-
-### temp part until percona-release is updated for PPG project
-
 - name: Install vanila postgresql
   include_tasks: ../../../../tasks/install_pg13.yml
-
 
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml

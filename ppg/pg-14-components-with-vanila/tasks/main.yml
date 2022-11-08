@@ -2,7 +2,6 @@
 - name: Install vanila postgresql
   include_tasks: ../../../../tasks/install_pg14.yml
 
-
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml
 
