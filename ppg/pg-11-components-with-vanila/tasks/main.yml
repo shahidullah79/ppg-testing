@@ -1,17 +1,8 @@
----
-- name: Configure repository
-  include_tasks: ../../../../tasks/enable_repo.yml
-
-- name: DNF disable postgresql RHEL
-  command: sudo dnf module disable postgresql -y
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-- name: DNF clean RHEL
-  command: sudo dnf clean all -y
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
 - name: Install vanila postgresql
   include_tasks: ../../../../tasks/install_pg11.yml
+
+- name: Configure repository
+  include_tasks: ../../../../tasks/enable_repo.yml
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/postgresql-11-setup initdb
