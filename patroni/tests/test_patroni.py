@@ -1,4 +1,5 @@
 import os
+import json
 
 import testinfra.utils.ansible_runner
 
@@ -17,4 +18,17 @@ def test_patroni(host):
     print(result.stdout)
     assert result.rc == 0, result.stderr
 
+    cluster_cmd = 'patronictl -c /var/lib/pgsql/patroni_test/postgresql1.yml list -f json'
+    cluster_result = host.run(cluster_cmd)
+    print(cluster_result.stdout)
+    assert cluster_result.rc == 0, cluster_result.stderr
 
+    cluster_json = json.loads(cluster_result.stdout)
+    assert len(cluster_json) == 3, f"Must have 3 nodes in the cluster, but found {len(cluster_json)}"
+    assert cluster_json[0]['State'] == 'running', cluster_json[0]
+    assert cluster_json[1]['State'] == 'running', cluster_json[1]
+    assert cluster_json[2]['State'] == 'running', cluster_json[2]
+
+    curl_cmd = 'curl http://localhost:7000'
+    curl_result = host.run(curl_cmd)
+    assert curl_result.rc == 0, curl_result.stderr
