@@ -5,7 +5,6 @@ import testinfra.utils.ansible_runner
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
-MAJOR_VERSION = os.getenv("VERSION").split('.')[0]
 
 RPM_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy']
 DEB_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy']

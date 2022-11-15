@@ -3,9 +3,10 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
+from ppg.tests.settings import MAJOR_VER as MAJOR_VERSION
+
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
-MAJOR_VERSION = os.getenv("VERSION").split('.')[0]
 
 RPM_PACKAGES = [
     f'percona-postgresql{MAJOR_VERSION}-server', 'percona-postgresql-common',
