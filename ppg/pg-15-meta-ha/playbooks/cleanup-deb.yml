@@ -12,10 +12,6 @@
         packages:
           - percona-postgresql-15
           - percona-patroni
+          - etcd
+          - haproxy
       when: ansible_distribution == "Debian"
-
-    - name: remove patroni ubuntu
-      apt:
-        name: percona-patroni
-        state: absent
-      when: ansible_distribution == "Ubuntu"

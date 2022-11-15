@@ -6,33 +6,12 @@
   tasks:
     - name: remove Postgresql rpm packages
       yum:
-        name: percona-postgresql15
+        name: "{{ packages }}"
         state: absent
       vars:
         packages:
-          -
-      when: ansible_os_family == "RedHat"
-
-    - name: remove pgaudit rpm packages
-      yum:
-        name: percona-pgaudit
-        state: absent
-      when: ansible_os_family == "RedHat"
-
-    - name: remove pg_repack rpm packages
-      yum:
-        name: percona-pg_repack15
-        state: absent
-      when: ansible_os_family == "RedHat"
-
-    - name: remove pgbackrest rpm packages
-      yum:
-        name: percona-pgbackrest
-        state: absent
-      when: ansible_os_family == "RedHat"
-
-    - name: remove patroni rpm packages
-      yum:
-        name: percona-patroni
-        state: absent
+          - percona-postgresql15
+          - etcd
+          - percona-haproxy
+          - percona-patroni
       when: ansible_os_family == "RedHat"

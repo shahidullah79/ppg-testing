@@ -11,11 +11,8 @@
       vars:
         packages:
           - percona-postgresql-11
-          - percona-patroni
+          - percona-postgresql-11-pgaudit
+          - percona-postgresql-11-repack
+          - percona-postgresql-11-wal2json
+          - percona-pg-stat-monitor11
       when: ansible_distribution == "Debian"
-
-    - name: remove patroni ubuntu
-      apt:
-        name: percona-patroni
-        state: absent
-      when: ansible_distribution == "Ubuntu"

@@ -6,12 +6,15 @@
   tasks:
     - name: remove Postgresql rpm packages
       yum:
-        name: percona-postgresql11
+        name: "{{ packages }}"
         state: absent
-      when: ansible_os_family == "RedHat"
-
-    - name: remove patroni rpm packages
-      yum:
-        name: percona-patroni
-        state: absent
+      vars:
+        packages:
+          - percona-postgresql-client-common
+          - percona-postgresql-common
+          - percona-postgresql11
+          - percona-wal2json11
+          - percona-pg-stat-monitor11
+          - percona-pgaudit
+          - percona-pg_repack11
       when: ansible_os_family == "RedHat"
