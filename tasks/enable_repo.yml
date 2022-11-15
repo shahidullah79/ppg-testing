@@ -4,7 +4,6 @@
     when: ansible_os_family == "Debian"
 
   - name: Install percona-release
-#    yum: name=https://repo.percona.com/yum/testing/latest/RPMS/noarch/percona-release-1.0-27.noarch.rpm
     command: yum -y install https://repo.percona.com/yum/percona-release-latest.noarch.rpm
     args:
       warn: no
@@ -32,9 +31,3 @@
       repo: "{{ lookup('env', 'REPO') }}"
       version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
     when: major_repo
-
-#  - name: setup repo with percona-release
-#    command: percona-release enable {{ pg_version }} {{ repo }}
-#    vars:
-#      repo: "{{ lookup('env', 'REPO') }}"
-#      pg_version: "{{ lookup('env', 'VERSION') }}"
