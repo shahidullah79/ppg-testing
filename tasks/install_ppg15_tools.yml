@@ -117,18 +117,6 @@
         wal_level = logical
     when: ansible_os_family == "RedHat"
 
-#  - name: Debian. Edit pg_stat_monitor.pgsm_bucket_time
-#    lineinfile:
-#      path: /etc/postgresql/15/main/postgresql.conf
-#      line: pg_stat_monitor.pgsm_bucket_time = 600
-#    when: ansible_os_family == "Debian"
-#
-#  - name: RHEL. Edit pg_stat_monitor.pgsm_bucket_time
-#    lineinfile:
-#      path: /var/lib/pgsql/15/data/postgresql.conf
-#      line: pg_stat_monitor.pgsm_bucket_time = 600
-#    when: ansible_os_family == "RedHat"
-
   - name: Restart Postgres RHEL
     service:
       name: postgresql-15
@@ -158,7 +146,6 @@
       state: latest
       update_cache: yes
     when: ansible_os_family == "RedHat"
-
 
   - name: Install patroni RPM
     yum:
