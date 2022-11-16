@@ -3,15 +3,14 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
-from ppg.tests.settings import MAJOR_VER as MAJOR_VERSION
-
+from .. import settings
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
 RPM_PACKAGES = [
-    f'percona-postgresql{MAJOR_VERSION}-server', 'percona-postgresql-common',
-    f'percona-postgresql{MAJOR_VERSION}-contrib', f'percona-pg-stat-monitor%{MAJOR_VERSION}',
-    'percona-pgaudit', f'percona-pg_repack{MAJOR_VERSION}', f'percona-wal2json{MAJOR_VERSION}'
+    f'percona-postgresql{settings.MAJOR_VER}-server', 'percona-postgresql-common',
+    f'percona-postgresql{settings.MAJOR_VER}-contrib', f'percona-pg-stat-monitor%{settings.MAJOR_VER}',
+    'percona-pgaudit', f'percona-pg_repack{settings.MAJOR_VER}', f'percona-wal2json{settings.MAJOR_VER}'
 ]
 DEB_PACKAGES = ['']
 
