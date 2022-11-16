@@ -153,6 +153,26 @@
         - percona-postgresql15-server-debuginfo
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
+- name: Install pg-stat-monitor RHEL
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - percona-pg_stat_monitor15
+  when: ansible_os_family == "RedHat"
+
+- name: Install pg-stat-monitor debian
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - percona-pg-stat-monitor15
+  when: ansible_os_family == "Debian"
+
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-15/bin/postgresql-15-setup initdb
   environment:
@@ -217,6 +237,18 @@
     path: /var/lib/pgsql/15/data/postgresql.conf
     search_string: 'port'
     line: port = 5432
+  when: ansible_os_family == "RedHat"
+
+- name: Add extensions to postgresql.conf for Debian
+  lineinfile:
+    path: /etc/postgresql/15/main/postgresql.conf
+    line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+  when: ansible_os_family == "Debian"
+
+- name: Add extensions to postgresql.conf for RHEL
+  lineinfile:
+    path: /var/lib/pgsql/15/data/postgresql.conf
+    line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
   when: ansible_os_family == "RedHat"
 
 - name: Restart postgresql service for RHEL based
