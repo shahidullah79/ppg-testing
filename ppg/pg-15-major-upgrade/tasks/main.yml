@@ -50,7 +50,7 @@
     pg_version: "{{ lookup('env', 'FROM_VERSION') }}"
 
 - name: Setup new repository
-  command: percona-release enable {{ pg_version }} {{ repo }}
+  command: percona-release enable-only {{ pg_version }} {{ repo }}
   vars:
     repo: "{{ lookup('env', 'TO_REPO') }}"
     pg_version: "{{ lookup('env', 'VERSION') }}"
