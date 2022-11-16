@@ -6,8 +6,8 @@ import testinfra.utils.ansible_runner
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
-RPM_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy']
-DEB_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy']
+RPM_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy', 'python3-python-etcd']
+DEB_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy', 'etcd-client', 'etcd-server']
 
 
 @pytest.mark.upgrade
