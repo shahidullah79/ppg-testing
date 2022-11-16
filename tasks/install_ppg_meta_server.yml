@@ -4,7 +4,7 @@
 
   - name: Install Postgresql Server meta package Debian
     apt:
-      name: percona-ppg-server{{ version }}
+      name: percona-ppg-server-{{ version }}
       state: latest
     when: ansible_os_family == "Debian"
 
