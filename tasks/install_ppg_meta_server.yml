@@ -21,6 +21,7 @@
     apt:
       name: percona-ppg-server-{{ version }}
       state: latest
+      update_cache: yes
     when: ansible_os_family == "Debian"
 
   - name: Install Postgresql Server meta package RHEL
