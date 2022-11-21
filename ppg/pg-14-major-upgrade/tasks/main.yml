@@ -211,16 +211,16 @@
     chdir: /tmp
   when: ansible_os_family == "Debian"
 
-- name: Change postgresql 14 port in config Debian
+- name: Change postgresql 13 port in config Debian
   lineinfile:
-    path: /etc/postgresql/14/main/postgresql.conf
+    path: /etc/postgresql/13/main/postgresql.conf
     search_string: 'port'
     line: port = 5433
   when: ansible_os_family == "Debian"
 
-- name: Change postgresql 14 port in config RHEL
+- name: Change postgresql 13 port in config RHEL
   lineinfile:
-    path: /var/lib/pgsql/14/data/postgresql.conf
+    path: /var/lib/pgsql/13/data/postgresql.conf
     search_string: 'port'
     line: port = 5433
   when: ansible_os_family == "RedHat"
