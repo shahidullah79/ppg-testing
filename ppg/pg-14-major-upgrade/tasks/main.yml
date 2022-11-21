@@ -181,7 +181,7 @@
 
 - name: Stop postgresql service for RHEL based
   service:
-    name: postgresql-14
+    name: postgresql-13
     state: stopped
   when: ansible_os_family == "RedHat"
 
