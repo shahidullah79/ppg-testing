@@ -1018,7 +1018,7 @@ def get_settings(distro_type):
             "wal2json": wal2json["13.9"],
             "set_user": set_user["13.9"],
             "haproxy": haproxy["13.9"],
-            "pgrepack_package_r0pm": "percona-pg_repack13",
+            "pgrepack_package_rpm": "percona-pg_repack13",
             "pgrepack_package_deb": "percona-postgresql-13-repack",
             "libpq": "Version of libpq: 130009",
             "deb_provides": ppg_versions["ppg-13.9"]["deb_provides"],
