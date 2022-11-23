@@ -47,11 +47,12 @@
     - readline-devel
     - gcc
     - gcc-c++
-    - git
+    - libevent-devel
     - perl-Pod-Checker
     - perl-devel
     - perl-JSON-XS.x86_64
     - perl-Text-CSV
+    - perl-Text-CSV_XS
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/postgresql-11-setup initdb
