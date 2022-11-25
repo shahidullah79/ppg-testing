@@ -140,6 +140,26 @@
       - percona-postgresql-common
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
+- name: Install pg-stat-monitor RHEL
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - percona-pg_stat_monitor12
+  when: ansible_os_family == "RedHat"
+
+- name: Install pg-stat-monitor debian
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - percona-pg-stat-monitor12
+  when: ansible_os_family == "Debian"
+
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-12/bin/postgresql-12-setup initdb
   environment:
