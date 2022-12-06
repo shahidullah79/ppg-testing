@@ -379,7 +379,7 @@ def get_ppg_versions(distro_type):
             "ppg-11.17": get_pg11_versions(packages=["11+204-1", '2:11.17-3', '241-3',
                                                      '11+241-4', '1:241-4'],
                                            distros=DISTROS, distro_type=distro_type),
-            "ppg-11.18": get_pg11_versions(packages=['2:11.18-1', '241-6', '11+241-6', '1:241-6'],
+            "ppg-11.18": get_pg11_versions(packages=['2:11.18-2', '241-6', '11+241-6', '1:241-6'],
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-12.2": get_pg12_versions(packages=["2:12-3.1", "12+215-1", '215-1'],
                                           distros=DISTROS, distro_type=distro_type),
