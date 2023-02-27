@@ -356,7 +356,7 @@
     vars:
       packages:
       - etcd
-      - python3-python-etcd
+      - python3-etcd
       - percona-haproxy
     when: ansible_os_family == "RedHat"
 

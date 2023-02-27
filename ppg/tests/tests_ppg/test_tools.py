@@ -444,7 +444,7 @@ def test_python_etcd(host):
     ds = host.system_info.distribution
     if ds.lower() in ["redhat", "centos", 'rhel']:
         if "8" in host.system_info.release:
-            package = host.package("python3-python-etcd")
+            package = host.package("python3-etcd")
             assert package.is_installed
 
 

@@ -42,7 +42,7 @@
     - percona-postgresql14-server
     - openssl-devel
     - etcd
-    - python3-python-etcd
+    - python3-etcd
     - percona-haproxy
 
 - name: Install patroni RPM
