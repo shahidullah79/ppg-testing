@@ -5,13 +5,35 @@
   become_method: sudo
   gather_facts: true
   tasks:
-    - name: Edit mirrorlist for Centos8 repos
-      shell: "sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*"
-      when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "8"
+    # - name: Edit mirrorlist for Centos8 repos
+    #   shell: "sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*"
+    #   when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "8"
 
-    - name: Edit baseurl for Centos8 repos
-      shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*"
-      when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "8"
+    # - name: Edit baseurl for Centos8 repos
+    #   shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*"
+    #   when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "8"
+
+    - name: Find all of the files inside /etc/yum.repos.d directory
+      find:
+        paths: "/etc/yum.repos.d/"
+        patterns: "*.repo"
+      register: repos
+
+    - name: Comment 'mirrorlist' in /etc/yum.repos.d/*.repo files
+      replace:
+        path: "{{ item.path }}"
+        regexp: 'mirrorlist'
+        replace: '#mirrorlist'
+      with_items: "{{ repos.files }}"
+      when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+    - name: Replace 'baseurl' in /etc/yum.repos.d/*.repo files
+      replace:
+        path: "{{ item.path }}"
+        regexp: '#baseurl=http://mirror.centos.org'
+        replace: 'baseurl=http://vault.centos.org'
+      with_items: "{{ repos.files }}"
+      when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
     - name: setup ca-certificates release
       yum:
