@@ -1,120 +1,167 @@
----
+  
+  - name: Configure repository
+    include_tasks: ../../../../tasks/enable_repo.yml
 
-- name: Configure repository
-  include_tasks: ../../../../tasks/enable_repo.yml
+  - name: setup epel release
+    yum:
+      name: epel-release
+      update_cache: yes
+      state: present
+    when: ansible_os_family == "RedHat"
 
-- name: Setup additional yum packages
-  yum:
-    name: "{{ packages }}"
-    update_cache: yes
-    state: present
-  vars:
-    packages:
-      - yum-utils
-      - centos-release-scl
+  - name: Clean dnf RHEL8
+    become: true
+    command: dnf clean all -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: setup devtoolset-7-gcc
-  yum:
-    name: devtoolset-7-gcc*
-    update_cache: yes
-    enablerepo: centos-sclo-rh-testing
-    state: present
+  - name: Find all of the files inside /etc/yum.repos.d directory
+    find:
+      paths: "/etc/yum.repos.d/"
+      patterns: "*.repo"
+    register: repos
 
+  - name: Comment 'mirrorlist' in /etc/yum.repos.d/*.repo files
+    replace:
+      path: "{{ item.path }}"
+      regexp: 'mirrorlist'
+      replace: '#mirrorlist'
+    with_items: "{{ repos.files }}"
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
-  yum:
-    name: "{{ packages }}"
-    state: latest
-    update_cache: yes
-    enablerepo: rpmfusion-*
-  vars:
-    packages:
-    - percona-postgresql-client-common
-    - percona-postgresql-common
-    - percona-postgresql-server-dev-all
-    - percona-postgresql15
-    - percona-postgresql15-contrib
-    - percona-postgresql15-devel
-    - percona-postgresql15-libs
-    - percona-postgresql15-llvmjit
-    - percona-postgresql15-plperl
-    - percona-postgresql15-plpython3
-    - percona-postgresql15-pltcl
-    - percona-postgresql15-server
-    - percona-postgresql15-test
-    - openssl-devel
-    - llvm-toolset-7-clang
-    - llvm5.0
-    - llvm-toolset-7
-    - readline-devel
-    - gcc
-    - gcc-c++
-#    - http://repo.openfusion.net/centos7-x86_64/perl-String-Util-1.23-1.of.el7.noarch.rpm
-#    - http://repo.openfusion.net/centos7-x86_64/perl-IPC-Run-0.92-1.of.el7.noarch.rpm
+  - name: Replace 'baseurl' in /etc/yum.repos.d/*.repo files
+    replace:
+      path: "{{ item.path }}"
+      regexp: '#baseurl=http://mirror.centos.org'
+      replace: 'baseurl=http://vault.centos.org'
+    with_items: "{{ repos.files }}"
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Initialize Postgres RHEL
-  command: /usr/pgsql-15/bin/postgresql-15-setup initdb
-  environment:
-    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  - name: Update dnf RHEL8
+    become: true
+    command: dnf update -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- shell: gcc --version
-  register: gcc
+  - name: Enable powertools RHEL8
+    become: true
+    command: dnf config-manager --set-enabled powertools
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- debug: var=gcc.stdout_lines
+  - name: Disable dnf module for RHEL8
+    become: true
+    command: dnf module disable postgresql -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Enable gcc 7
-  shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;
+  - name: Install CPAN
+    become: true
+    command: yum -y install perl-CPAN
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
 
-- name: Set source
-  shell: source /opt/rh/devtoolset-7/enable;
+  - name: Install perl-App-cpanminus
+    become: true
+    command: yum -y install perl-App-cpanminus
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
 
-- name: Delete old gcc
-  shell: rm /usr/bin/gcc
+  - name: Install install perl-IPC-Run
+    become: true
+    command: yum -y install perl-IPC-Run
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
 
-- name: Set symbol link
-  shell: ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc
+  - name: Install perl module Text::Trim
+    become: true
+    command: cpanm Text::Trim
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
 
-- shell: gcc --version
-  register: gcc
+  - name: Install Development tools
+    become: true
+    command: yum -y groupinstall "Development tools"
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
 
-- debug: var=gcc.stdout_lines
+  # - name: Disable llvm-toolset dnf module for RHEL8
+  #   become: true
+  #   command: dnf module disable llvm-toolset -y
+  #   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Clone pg_stat_monitor sources
-  git:
-    repo: "{{ repo }}"
-    version: "{{ version }}"
-    dest: /tmp/pg_stat_monitor
-  vars:
-    repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
-    version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
-  become_user: postgres
+  - name: install Percona Platform for PostgreSQL rpm packages for RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - percona-postgresql-client-common
+      - percona-postgresql-common
+      - percona-postgresql-server-dev-all
+      - percona-postgresql15
+      - percona-postgresql15-contrib
+      - percona-postgresql15-devel
+      - percona-postgresql15-libs
+      - percona-postgresql15-llvmjit
+      - percona-postgresql15-plperl
+      - percona-postgresql15-plpython3
+      - percona-postgresql15-pltcl
+      - percona-postgresql15-server
+      - percona-postgresql15-test
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Build pg_stat_monitor from sources
-  make:
-    chdir: "/tmp/pg_stat_monitor"
-    params:
-      USE_PGXS: 1
+  - name: Initialize Postgres RHEL
+    become: true
+    command: /usr/pgsql-15/bin/postgresql-15-setup initdb
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-- name: Install pg_stat_monitor from sources
-  make:
-    target: install
-    chdir: "/tmp/pg_stat_monitor"
-    params:
-      USE_PGXS: 1
+  - name: Install llvm-toolset
+    become: true
+    command: yum install -y llvm-toolset
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
+  
+  - name: Clone pg_stat_monitor sources
+    git:
+      repo: "{{ repo }}"
+      version: "{{ version }}"
+      dest: /tmp/pg_stat_monitor
+    vars:
+      repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
+      version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
+    become_user: postgres
 
-- name: Add extensions to postgresql.conf for RHEL
-  lineinfile:
-    path: /var/lib/pgsql/15/data/postgresql.conf
-    line: shared_preload_libraries = 'pg_stat_monitor'
+  - name: Build pg_stat_monitor from sources
+    make:
+      chdir: "/tmp/pg_stat_monitor"
+      params:
+        USE_PGXS: 1
 
-- name: Restart Postgres RHEL
-  service:
-    name: postgresql-15
-    state: restarted
-  register: out
+  - name: Install pg_stat_monitor from sources
+    make:
+      target: install
+      chdir: "/tmp/pg_stat_monitor"
+      params:
+        USE_PGXS: 1
 
-- name: Start Postgres RHEL
-  service:
-    name: postgresql-15
-    state: started
-    enabled: yes
+  - name: Add extensions to postgresql.conf for RHEL
+    lineinfile:
+      path: /var/lib/pgsql/15/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor'
+
+  - name: Restart Postgres RHEL
+    service:
+      name: postgresql-15
+      state: restarted
+    register: out
+
+  - name: Start Postgres RHEL
+    service:
+      name: postgresql-15
+      state: started
+      enabled: yes

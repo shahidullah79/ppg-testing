@@ -154,6 +154,11 @@
       update_cache: yes
     when: ansible_os_family == "RedHat"
 
+  - name: Install python3 module - patroni[etcd]
+    become: true
+    command: python3 -m pip install patroni[etcd]
+    when: ansible_os_family == "RedHat"
+
   - name: Install patroni debian
     apt:
       name: "{{ packages }}"
@@ -335,7 +340,7 @@
       packages:
       - etcd
       - percona-haproxy
-      - python3-python-etcd
+      - python3-etcd
     when: ansible_os_family == "RedHat"
 
   - name: Restart etcd RHEL
