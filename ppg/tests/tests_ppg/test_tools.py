@@ -460,3 +460,34 @@ def test_haproxy_version(host):
     with host.sudo("postgres"):
         version = host.run("haproxy -v")
         assert pg_versions["haproxy"]['version'] in version.stdout.strip("\n"), version.stdout
+
+
+def test_pgpool_package_version(host):
+    dist = host.system_info.distribution
+    if dist.lower() in ["ubuntu", "debian"]:
+        pgpool = host.package(f"percona-pgpool2")
+    else:
+        pgpool = host.package(f"percona-pgpool-II-pg{MAJOR_VER}")
+    assert pgpool.is_installed
+    assert pg_versions["pgpool"]['version'] in pgpool.version, pgpool.version
+
+
+def test_pgpool_binary_version(host):
+    dist = host.system_info.distribution
+    if dist.lower() in ["redhat", "centos", 'rhel','ubuntu']:
+        result = host.run(f"pgpool --version 2>&1 | grep pgpool | cut -d' ' -f3")
+        assert result.rc == 0, result.stderr
+        assert pg_versions["pgpool"]['binary_version'] in result.stdout.strip("\n"), result.stdout
+
+
+def test_pgpool_service(host):
+    dist = host.system_info.distribution
+    service_name = ""
+    if dist.lower() in ["ubuntu", "debian"]:
+        service_name = f"percona-pgpool2"
+    else:
+        service_name = f"pgpool"
+    service = host.service(service_name)
+    with host.sudo("postgres"):
+            assert service.is_running
+            assert service.is_enabled

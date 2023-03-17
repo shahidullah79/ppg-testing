@@ -3,6 +3,7 @@ import os
 from .versions.patroni import patroni
 from .versions.pgbadger import pgbadger
 from .versions.pgbouncer import pgbouncer
+from .versions.pgpool import pgpool
 from .versions.pgbackrest import pgbackrest
 from .versions.pgaudit import pgaudit
 from .versions.pg_repack import pgrepack
@@ -1322,6 +1323,7 @@ def get_settings(distro_type):
             "pgrepack": pgrepack["ppg-15.2"],
             "pgbadger": pgbadger["15.2"],
             "pgbouncer": pgbouncer["15.2"],
+            "pgpool": pgpool["15.2"],
             "wal2json": wal2json["15.2"],
             "set_user": set_user["15.2"],
             "haproxy": haproxy["15.2"],
