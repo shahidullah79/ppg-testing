@@ -1,5 +1,4 @@
 ---
----
 - name: Clean dnf RHEL8
   become: true
   command: dnf clean all -y
