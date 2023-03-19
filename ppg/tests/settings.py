@@ -1047,6 +1047,7 @@ def get_settings(distro_type):
             "pgrepack": pgrepack["ppg-13.10"],
             "pgbadger": pgbadger["13.10"],
             "pgbouncer": pgbouncer["13.10"],
+            "pgpool": pgpool["13.10"],
             "wal2json": wal2json["13.10"],
             "set_user": set_user["13.10"],
             "haproxy": haproxy["13.10"],
