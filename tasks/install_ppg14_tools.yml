@@ -261,8 +261,8 @@
       update_cache: yes
     vars:
       packages:
-        - percona-pgpool-II-pg15
-        - percona-pgpool-II-pg15-extensions
+        - percona-pgpool-II-pg14
+        - percona-pgpool-II-pg14-extensions
     when: ansible_os_family == "RedHat"
 
   - name: Install percona-pgpool Debian
