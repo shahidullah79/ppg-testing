@@ -10,7 +10,8 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 pg_versions = settings.get_settings(os.environ['MOLECULE_SCENARIO_NAME'])[os.getenv("VERSION")]
 EXTENSIONS = pg_versions['extensions']
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", 'ppg-12.2',
-                  'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-12.7", "ppg-13.0", "ppg-13.1"]
+                  'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-12.7",
+                  "ppg-12.14", "ppg-13.0", "ppg-13.1"]
 
 MAJOR_VER = settings.MAJOR_VER
 
@@ -119,7 +120,7 @@ def test_extenstions_list(extension_list, host):
         if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
             if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                              'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
-                pytest.skip("Skipping python2 extensions for DEB based in 12.2 pg")
+                pytest.skip("Skipping python2 extensions for DEB based in pg: " + os.getenv("VERSION"))
         assert extension in extension_list
 
 
@@ -135,7 +136,7 @@ def test_enable_extension(host, extension):
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                          'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
-            pytest.skip("Skipping python2 extensions for DEB based in 12.2 pg")
+            pytest.skip("Skipping python2 extensions for DEB based in pg: " + os.getenv("VERSION"))
     with host.sudo("postgres"):
         install_extension = host.run("psql -c 'CREATE EXTENSION \"{}\";'".format(extension))
         assert install_extension.rc == 0, install_extension.stderr
@@ -159,7 +160,7 @@ def test_drop_extension(host, extension):
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                          'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
-            pytest.skip("Skipping python2 extensions for DEB based in 12.2 pg")
+            pytest.skip("Skipping python2 extensions for DEB based in pg: " + os.getenv("VERSION"))
     with host.sudo("postgres"):
         drop_extension = host.run("psql -c 'DROP EXTENSION \"{}\";'".format(extension))
         assert drop_extension.rc == 0, drop_extension.stderr

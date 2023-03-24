@@ -5,3 +5,5 @@
   become_method: sudo
   roles:
     - role: ppg-12
+  environment:
+    PG_TEST_PORT_DIR: /tmp/pg_stat_monitor
