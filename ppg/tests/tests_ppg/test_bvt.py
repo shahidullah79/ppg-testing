@@ -16,6 +16,7 @@ LANGUAGES = pg_versions['languages']
 DEB_FILES = pg_versions['deb_files']
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", "ppg-11.17", 'ppg-12.2',
                   'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-12.7", "ppg-12.12", "ppg-12.13",
+                  "ppg-12.14",
                   "ppg-13.0", "ppg-13.1",
                   "ppg-15.0", "ppg-15.1"]
 BINARIES = pg_versions['binaries']
@@ -239,7 +240,7 @@ def test_extenstions_list(extension_list, host):
         if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
             if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                              'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
-                pytest.skip("Skipping python2 extensions for DEB based in 12.2 pg")
+                pytest.skip("Skipping python2 extensions for DEB based in pg: " + os.getenv("VERSION"))
         assert extension in extension_list
 
 
@@ -256,7 +257,7 @@ def test_enable_extension(host, extension):
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                          'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
-            pytest.skip("Skipping python2 extensions for DEB based in 12.2 pg")
+            pytest.skip("Skipping python2 extensions for DEB based in pg: " + os.getenv("VERSION"))
     with host.sudo("postgres"):
         install_extension = host.run("psql -c 'CREATE EXTENSION \"{}\";'".format(extension))
         assert install_extension.rc == 0, install_extension.stderr
@@ -282,7 +283,7 @@ def test_drop_extension(host, extension):
     if ds.lower() in ['debian', 'ubuntu'] and os.getenv("VERSION") in SKIPPED_DEBIAN:
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                          'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
-            pytest.skip("Skipping python2 extensions for DEB based in 12.2 pg")
+            pytest.skip("Skipping python2 extensions for DEB based in pg: " + os.getenv("VERSION"))
     with host.sudo("postgres"):
         drop_extension = host.run("psql -c 'DROP EXTENSION \"{}\";'".format(extension))
         assert drop_extension.rc == 0, drop_extension.stderr

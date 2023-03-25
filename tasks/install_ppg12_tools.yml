@@ -169,6 +169,11 @@
       allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
+  - name: Install python3 module - patroni[etcd]
+    become: true
+    command: python3 -m pip install patroni[etcd]
+    when: ansible_os_family == "RedHat"
+
   - name: Install patroni debian
     apt:
       name: "{{ packages }}"
@@ -253,6 +258,28 @@
       packages:
         - percona-pgbouncer
         - percona-pgbouncer-dbgsym
+    when: ansible_os_family == "Debian"
+
+  - name: Install percona-pgpool RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pgpool-II-pg12
+        - percona-pgpool-II-pg12-extensions
+    when: ansible_os_family == "RedHat"
+
+  - name: Install percona-pgpool Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pgpool2
+        - libpgpool2
     when: ansible_os_family == "Debian"
 
   - name: Install percona-wal2json12 RHEL
@@ -554,6 +581,27 @@
 
   - name: Start haproxy
     shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
+
+  - name: Start pgpool service
+    service:
+      name: pgpool
+      state: started
+      enabled: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: Start pgpool service
+    service:
+      name: percona-pgpool2
+      state: started
+      enabled: yes
+    when: ansible_os_family == "Debian"
+
+  - name: Add user postgres to sudoers
+    user:
+      name: postgres
+      groups: sudo
+      append: yes
+    when: ansible_os_family == "Debian"
 
   - name: Pause for 1 minutes
     ansible.builtin.pause:
