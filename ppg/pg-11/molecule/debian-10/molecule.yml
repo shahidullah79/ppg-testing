@@ -8,7 +8,7 @@ platforms:
     region: eu-central-1
     image: ami-0f41e297b3c53fab8
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t2.micro
+    instance_type: t2.small
     ssh_user: admin
     root_device_name: /dev/xvda
     instance_tags:
@@ -30,6 +30,7 @@ verifier:
     s: true
     junitxml: report.xml
 scenario:
+  name: debian-10
   destroy_sequence:
     - destroy
   cleanup_sequence:
@@ -40,5 +41,4 @@ scenario:
     - prepare
     - converge
     - verify
-    - cleanup
     - destroy
