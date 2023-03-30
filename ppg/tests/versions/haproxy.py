@@ -2,6 +2,7 @@ haproxy = {
     "11.16": {"version": "2.5.6", "binary_version": "2.5.6"},
     "11.17": {"version": "2.5.6", "binary_version": "2.5.6"},
     "11.18": {"version": "2.5.9", "binary_version": "2.5.9"},
+    "11.19": {"version": "2.5.11", "binary_version": "2.5.11"},
     "12.11": {"version": "2.5.6", "binary_version": "2.5.6"},
     "12.12": {"version": "2.5.6", "binary_version": "2.5.6"},
     "12.13": {"version": "2.5.9", "binary_version": "2.5.9"},

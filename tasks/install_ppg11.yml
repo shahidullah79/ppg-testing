@@ -11,6 +11,38 @@
     command: dnf clean all -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
+  - name: Enable powertools RHEL8
+    become: true
+    command: dnf config-manager --set-enabled powertools
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: Find all of the files inside /etc/yum.repos.d directory
+    find:
+      paths: "/etc/yum.repos.d/"
+      patterns: "*.repo"
+    register: repos
+
+  - name: Comment 'mirrorlist' in /etc/yum.repos.d/*.repo files
+    replace:
+      path: "{{ item.path }}"
+      regexp: 'mirrorlist'
+      replace: '#mirrorlist'
+    with_items: "{{ repos.files }}"
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: Replace 'baseurl' in /etc/yum.repos.d/*.repo files
+    replace:
+      path: "{{ item.path }}"
+      regexp: '#baseurl=http://mirror.centos.org'
+      replace: 'baseurl=http://vault.centos.org'
+    with_items: "{{ repos.files }}"
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: Update dnf RHEL8
+    become: true
+    command: dnf update -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
   - name: Disable dnf module for RHEL8
     become: true
     command: dnf module disable postgresql -y

@@ -241,7 +241,6 @@
         - percona-pgaudit12-set-user-dbgsym
     when: ansible_os_family == "Debian"
 
-
   - name: Install percona-pgbouncer RHEL
     yum:
       name: percona-pgbouncer
