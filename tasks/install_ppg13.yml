@@ -13,7 +13,12 @@
   - name: Enable powertools RHEL8
     become: true
     command: dnf config-manager --set-enabled powertools
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat" and ansible_distribution != "OracleLinux"  and ansible_distribution_major_version == "8"
+
+  - name: Enable powertools OL8
+    become: true
+    command: dnf config-manager --set-enabled ol8_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "8"
 
   - name: Find all of the files inside /etc/yum.repos.d directory
     find:
