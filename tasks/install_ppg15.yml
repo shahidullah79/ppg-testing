@@ -5,42 +5,21 @@
       state: present
     when: ansible_os_family == "RedHat"
 
-  - name: Clean dnf RHEL8
+  - name: Clean dnf oracle linux
     become: true
     command: dnf clean all -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat" and
+      (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
-  - name: Enable powertools RHEL8
+  - name: Enable powertools on oracle linux 8
     become: true
-    command: dnf config-manager --set-enabled powertools
+    command: dnf config-manager --set-enabled ol8_codeready_builder
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-  - name: Find all of the files inside /etc/yum.repos.d directory
-    find:
-      paths: "/etc/yum.repos.d/"
-      patterns: "*.repo"
-    register: repos
-
-  - name: Comment 'mirrorlist' in /etc/yum.repos.d/*.repo files
-    replace:
-      path: "{{ item.path }}"
-      regexp: 'mirrorlist'
-      replace: '#mirrorlist'
-    with_items: "{{ repos.files }}"
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Replace 'baseurl' in /etc/yum.repos.d/*.repo files
-    replace:
-      path: "{{ item.path }}"
-      regexp: '#baseurl=http://mirror.centos.org'
-      replace: 'baseurl=http://vault.centos.org'
-    with_items: "{{ repos.files }}"
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Update dnf RHEL8
+  - name: Enable powertools on oracle linux 9
     become: true
-    command: dnf update -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    command: dnf config-manager --set-enabled ol9_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
 
   - name: Disable dnf postgresql for RHEL8
     become: true
@@ -148,4 +127,5 @@
         - percona-postgresql15-pltcl-debuginfo
         - percona-postgresql15-plpython3-debuginfo
         - percona-postgresql15-server-debuginfo
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat" and
+      (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")

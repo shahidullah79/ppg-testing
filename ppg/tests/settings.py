@@ -53,7 +53,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-11.19"]["extensions"],
             "languages": ppg_versions["ppg-11.19"]["languages"],
             "binaries": ppg_versions["ppg-11.19"]["binaries"],
-            "pg_stat_monitor": "2.0.0",
+            "pg_stat_monitor": "2.0.1",
         },
         "ppg-11.18": {
             "version": "11.18",
@@ -803,7 +803,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-12.14"]["extensions"],
             "languages": ppg_versions["ppg-12.14"]["languages"],
             "binaries": ppg_versions["ppg-12.14"]["binaries"],
-            "pg_stat_monitor": "2.0.0"
+            "pg_stat_monitor": "2.0.1"
         },
         "ppg-13.0": {
              "version": "13.0",
@@ -1128,7 +1128,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-13.10"]["extensions"],
             "languages": ppg_versions["ppg-13.10"]["languages"],
             "binaries": ppg_versions["ppg-13.10"]["binaries"],
-            "pg_stat_monitor": "2.0.0"
+            "pg_stat_monitor": "2.0.1"
         },
         "ppg-14.0": {
             "version": "14.0",
@@ -1374,7 +1374,7 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-14.7"]["extensions"],
             "languages": ppg_versions["ppg-14.7"]["languages"],
             "binaries": ppg_versions["ppg-14.7"]["binaries"],
-            "pg_stat_monitor": "2.0.0"
+            "pg_stat_monitor": "2.0.1"
         },
         "ppg-15.0": {
             "version": "15.0",
@@ -1468,6 +1468,6 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-15.2"]["extensions"],
             "languages": ppg_versions["ppg-15.2"]["languages"],
             "binaries": ppg_versions["ppg-15.2"]["binaries"],
-            "pg_stat_monitor": "2.0.0"
+            "pg_stat_monitor": "2.0.1"
         },
     }

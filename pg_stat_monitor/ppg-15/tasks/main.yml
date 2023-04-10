@@ -1,4 +1,5 @@
-  
+---
+
   - name: Configure repository
     include_tasks: ../../../../tasks/enable_repo.yml
 
@@ -14,36 +15,9 @@
     command: dnf clean all -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-  - name: Find all of the files inside /etc/yum.repos.d directory
-    find:
-      paths: "/etc/yum.repos.d/"
-      patterns: "*.repo"
-    register: repos
-
-  - name: Comment 'mirrorlist' in /etc/yum.repos.d/*.repo files
-    replace:
-      path: "{{ item.path }}"
-      regexp: 'mirrorlist'
-      replace: '#mirrorlist'
-    with_items: "{{ repos.files }}"
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Replace 'baseurl' in /etc/yum.repos.d/*.repo files
-    replace:
-      path: "{{ item.path }}"
-      regexp: '#baseurl=http://mirror.centos.org'
-      replace: 'baseurl=http://vault.centos.org'
-    with_items: "{{ repos.files }}"
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Update dnf RHEL8
+  - name: Enable ol8_codeready_builder on oracle linux 8
     become: true
-    command: dnf update -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Enable powertools RHEL8
-    become: true
-    command: dnf config-manager --set-enabled powertools
+    command: dnf config-manager --set-enabled ol8_codeready_builder
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
   - name: Disable dnf module for RHEL8
@@ -79,18 +53,6 @@
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     when: ansible_os_family == "RedHat"
 
-  - name: Install Development tools
-    become: true
-    command: yum -y groupinstall "Development tools"
-    environment:
-      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    when: ansible_os_family == "RedHat"
-
-  # - name: Disable llvm-toolset dnf module for RHEL8
-  #   become: true
-  #   command: dnf module disable llvm-toolset -y
-  #   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
       name: "{{ packages }}"
@@ -105,7 +67,6 @@
       - percona-postgresql15-contrib
       - percona-postgresql15-devel
       - percona-postgresql15-libs
-      - percona-postgresql15-llvmjit
       - percona-postgresql15-plperl
       - percona-postgresql15-plpython3
       - percona-postgresql15-pltcl
@@ -119,13 +80,25 @@
     environment:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+  - name: Install Development tools
+    become: true
+    command: yum -y groupinstall "Development tools"
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat"
+
+  - name: Enable llvm-toolset dnf module for RHEL8
+    become: true
+    command: dnf module enable llvm-toolset -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
   - name: Install llvm-toolset
     become: true
     command: yum install -y llvm-toolset
     environment:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     when: ansible_os_family == "RedHat"
-  
+
   - name: Clone pg_stat_monitor sources
     git:
       repo: "{{ repo }}"

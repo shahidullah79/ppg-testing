@@ -14,7 +14,7 @@ DEB_PACKAGES = ['percona-patroni', 'etcd', 'percona-haproxy', 'etcd-client', 'et
 @pytest.mark.parametrize("package", DEB_PACKAGES)
 def test_deb_package_is_installed(host, package):
     ds = host.system_info.distribution
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(package)
     assert pkg.is_installed
