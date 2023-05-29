@@ -15,5 +15,3 @@ def test_pgbouncer(host):
         if result.rc != 0:
             print(result.stderr)
             raise AssertionError
-
-

@@ -11,6 +11,16 @@
     state: present
   when: ansible_os_family == "RedHat"
 
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'FROM_VERSION') | replace('ppg-','') }}"
+
+- name: End play on oracle linux 9
+  meta: end_play
+  when: ansible_os_family == "RedHat" and
+   ansible_distribution_major_version == "9" and
+   pg_version_to_install | string is version('14.6', '<=', strict=True)
+
 - name: Setup initial (old) repository
   command: percona-release enable {{ pg_version }} {{ repo }}
   vars:
@@ -83,17 +93,17 @@
       - percona-postgresql-pltcl-15-dbgsym
   when: ansible_os_family == "Debian"
 
-- name: install Percona Platform for PostgreSQL deb packages
-  apt:
-    name: "{{ packages }}"
-    update_cache: yes
-    state: latest
-  vars:
-    packages:
-    - percona-postgresql-plpython3-15
-    - percona-postgresql-plpython3-15-dbgsym
-  when:
-    - ansible_os_family == "Debian"
+# - name: install Percona Platform for PostgreSQL deb packages
+#   apt:
+#     name: "{{ packages }}"
+#     update_cache: yes
+#     state: latest
+#   vars:
+#     packages:
+#     - percona-postgresql-plpython3-15
+#     - percona-postgresql-plpython3-15-dbgsym
+#   when:
+#     - ansible_os_family == "Debian"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
@@ -151,7 +161,8 @@
         - percona-postgresql15-pltcl-debuginfo
         - percona-postgresql15-plpython3-debuginfo
         - percona-postgresql15-server-debuginfo
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+  when: ansible_os_family == "RedHat" and
+      (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
 - name: Install pg-stat-monitor RHEL
   yum:
@@ -298,3 +309,9 @@
   copy:
     src: ../../common/files/lib_version.c
     dest: /tmp/libpq_command_temp_dir
+
+- name: Again Setup initial (old) repository
+  command: percona-release enable {{ pg_version }} {{ repo }}
+  vars:
+    repo: "{{ lookup('env', 'FROM_REPO') }}"
+    pg_version: "{{ lookup('env', 'FROM_VERSION') }}"

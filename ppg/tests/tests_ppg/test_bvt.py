@@ -44,7 +44,7 @@ def start_stop_postgresql(host):
 def postgresql_binary(host):
     dist = host.system_info.distribution
     pg_bin = f"/usr/lib/postgresql/{settings.MAJOR_VER}/bin/postgres"
-    if dist.lower() in ["redhat", "centos", 'rhel']:
+    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
         pg_bin = f"/usr/pgsql-{settings.MAJOR_VER}/bin/postgres"
     return host.file(pg_bin)
 
@@ -77,7 +77,7 @@ def insert_data(host):
     ds = host.system_info.distribution
     print(host.run("find / -name pgbench").stdout)
     pgbench_bin = "pgbench"
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
     with host.sudo("postgres"):
         pgbench = f"{pgbench_bin} -i -s 1"
@@ -97,7 +97,7 @@ def test_psql_client_version(host):
 @pytest.mark.parametrize("package", pg_versions['deb_packages'])
 def test_deb_package_is_installed(host, package):
     ds = host.system_info.distribution
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(package)
     assert pkg.is_installed
@@ -142,7 +142,7 @@ def test_rpm7_package_is_installed(host, package):
 def test_postgresql_client_version(host):
     ds = host.system_info.distribution
     pkg = "percona-postgresql-{}".format(settings.MAJOR_VER)
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(pkg)
     assert settings.MAJOR_VER in pkg.version
@@ -152,7 +152,7 @@ def test_postgresql_client_version(host):
 def test_postgresql_version(host):
     ds = host.system_info.distribution
     pkg = "percona-postgresql-client-{}".format(settings.MAJOR_VER)
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         pkg = "percona-postgresql{}".format(settings.MAJOR_VER)
     pkg = host.package(pkg)
     assert settings.MAJOR_VER in pkg.version, pkg.version
@@ -162,7 +162,7 @@ def test_postgresql_version(host):
 def test_postgresql_is_running_and_enabled(host):
     ds = host.system_info.distribution
     service_name = "postgresql"
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         service_name = f"postgresql-{settings.MAJOR_VER}"
     service = host.service(service_name)
     assert service.is_running
@@ -182,7 +182,7 @@ def test_postgres_binary(postgresql_binary):
 def test_binaries(host, binary):
     dist = host.system_info.distribution
     bin_path = f"/usr/lib/postgresql/{settings.MAJOR_VER}/bin/"
-    if dist.lower() in ["redhat", "centos", 'rhel']:
+    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
         bin_path = f"/usr/pgsql-{settings.MAJOR_VER}/bin/"
     bin_full_path = os.path.join(bin_path, binary)
     binary_file = host.file(bin_full_path)
@@ -230,7 +230,7 @@ def test_insert_data(insert_data):
 def test_extenstions_list(extension_list, host):
     ds = host.system_info.distribution
     for extension in EXTENSIONS:
-        if ds.lower() in ['centos', 'redhat', 'rhel']:
+        if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
             if "python3" in extension:
                 pytest.skip("Skipping python3 extensions for Centos or RHEL")
             if extension in [
@@ -247,7 +247,7 @@ def test_extenstions_list(extension_list, host):
 @pytest.mark.parametrize("extension", EXTENSIONS)
 def test_enable_extension(host, extension):
     ds = host.system_info.distribution
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
         if extension in [
@@ -272,7 +272,7 @@ def test_enable_extension(host, extension):
 @pytest.mark.parametrize("extension", EXTENSIONS[::-1])
 def test_drop_extension(host, extension):
     ds = host.system_info.distribution
-    if ds.lower() in ["redhat", "centos", 'rhel']:
+    if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         if "python3" in extension:
             pytest.skip("Skipping python3 extensions for Centos or RHEL")
         if extension in [
@@ -308,7 +308,7 @@ def test_plpgsql_extension(host):
 @pytest.mark.parametrize("file", DEB_FILES)
 def test_deb_files(host, file):
     os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", 'rhel']:
+    if os.lower() in ["redhat", "centos", "rhel", "ol"]:
         pytest.skip("This test only for Debian based platforms")
     with host.sudo("postgres"):
         f = host.file(file)
@@ -336,7 +336,7 @@ def test_language(host, language):
     dists = ['debian', 'ubuntu']
     ds = host.system_info.distribution
     with host.sudo("postgres"):
-        if ds.lower() in ["redhat", "centos", 'rhel']:
+        if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
             if "python3" in language:
                 pytest.skip("Skipping python3 language for Centos or RHEL")
         if ds.lower() in dists and language in ['plpythonu', "plpython2u"] or settings.MAJOR_VER in ["13", "14", "15"]:
@@ -354,7 +354,7 @@ def test_deb_packages_provides(host, percona_package, vanila_package):
     """Execute command for check provides and check that we have link to vanila postgres
     """
     os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", 'rhel']:
+    if os.lower() in ["redhat", "centos", "rhel", "ol"]:
         pytest.skip("This test only for Debs.ian based platforms")
     cmd = "dpkg -s {} | grep Provides".format(percona_package)
     result = host.run(cmd)
