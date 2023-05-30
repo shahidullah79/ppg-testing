@@ -4,9 +4,9 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: pgbackrest-ubionic-${BUILD_NUMBER}
+  - name: pgbackrest-ufocal-${BUILD_NUMBER}
     region: eu-central-1
-    image: ami-0a8561d8c5a4f098a
+    image: ami-0be656e75e69af1a9
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.small
     ssh_user: ubuntu
