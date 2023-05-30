@@ -62,7 +62,6 @@
     - percona-postgresql-server-dev-all
 
 - name: Clone pgbackrest sources
-  become: yes
   become_user: postgres
   git:
     repo: "{{ repo }}"
