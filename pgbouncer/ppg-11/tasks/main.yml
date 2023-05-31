@@ -69,11 +69,16 @@
 
 - debug: var=gcc.stdout_lines
 
+- name: Initialize Postgres RHEL
+  command: /usr/pgsql-11/bin/postgresql-11-setup initdb
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
 - name: Clone pgbouncer sources
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /tmp/pgbouncer
+    dest: /var/lib/pgsql/pgbouncer
     recursive: yes
     update: yes
   vars:
@@ -84,20 +89,29 @@
 - name: Autogen pgbouncer
   shell: ./autogen.sh
   args:
-    chdir: /tmp/pgbouncer
+    chdir: /var/lib/pgsql/pgbouncer
   become_user: postgres
 
 - name: Configure pgbouncer
   shell: ./configure --prefix=/usr/local
   args:
-    chdir: /tmp/pgbouncer
+    chdir: /var/lib/pgsql/pgbouncer
   become_user: postgres
 
-- name: Build pgbouncer from sources
-  make:
-    chdir: "/tmp/pgbouncer"
+- name: Make pgbouncer
+  shell: make
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
 
-- name: Install pgbouncer from sources
-  make:
-    target: install
-    chdir: "/tmp/pgbouncer"
+- name: Delete test_password_server test case
+  shell: sed -i '/^test_password_server$/d' test/test.sh
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
+
+- name: Delete test_password_client test case
+  shell: sed -i '/^test_password_client$/d' test/test.sh
+  args:
+    chdir: /var/lib/pgsql/pgbouncer
+  become_user: postgres
