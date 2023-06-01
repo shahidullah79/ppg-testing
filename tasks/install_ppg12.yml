@@ -5,49 +5,28 @@
       state: present
     when: ansible_os_family == "RedHat"
 
-  - name: Clean dnf RHEL8
+  - name: Clean dnf oracle linux
     become: true
     command: dnf clean all -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat" and
+      (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
-  - name: Enable powertools RHEL8
+  - name: Enable powertools on oracle linux 8
     become: true
-    command: dnf config-manager --set-enabled powertools
+    command: dnf config-manager --set-enabled ol8_codeready_builder
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-  - name: Find all of the files inside /etc/yum.repos.d directory
-    find:
-      paths: "/etc/yum.repos.d/"
-      patterns: "*.repo"
-    register: repos
-
-  - name: Comment 'mirrorlist' in /etc/yum.repos.d/*.repo files
-    replace:
-      path: "{{ item.path }}"
-      regexp: 'mirrorlist'
-      replace: '#mirrorlist'
-    with_items: "{{ repos.files }}"
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Replace 'baseurl' in /etc/yum.repos.d/*.repo files
-    replace:
-      path: "{{ item.path }}"
-      regexp: '#baseurl=http://mirror.centos.org'
-      replace: 'baseurl=http://vault.centos.org'
-    with_items: "{{ repos.files }}"
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Update dnf RHEL8
+  - name: Enable powertools on oracle linux 9
     become: true
-    command: dnf update -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    command: dnf config-manager --set-enabled ol9_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
 
-  - name: Disable dnf module for RHEL8
+  - name: Disable postgresql module for RHEL8
     become: true
     command: dnf module disable postgresql -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-  - name: Disable llvm-toolset dnf module for RHEL8
+  - name: Disable llvm-toolset for RHEL8
     become: true
     command: dnf module disable llvm-toolset -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
@@ -81,18 +60,6 @@
       - percona-postgresql-pltcl-12-dbgsym
     when: ansible_os_family == "Debian"
 
-  - name: install Percona Platform for PostgreSQL deb packages
-    apt:
-      name: "{{ packages }}"
-      update_cache: yes
-      state: latest
-    vars:
-      packages:
-      - percona-postgresql-plpython3-12
-      - percona-postgresql-plpython3-12-dbgsym
-    when:
-      - ansible_os_family == "Debian"
-
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
       name: "{{ packages }}"
@@ -119,15 +86,6 @@
       - percona-postgresql12-test
       - percona-postgresql12-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
-
-  - name: DNF clean RHEL
-    command: sudo dnf module disable postgresql -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-  - name: Disable llvm-toolset dnf module for RHEL8
-    become: true
-    command: dnf module disable llvm-toolset -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
@@ -164,3 +122,37 @@
         - percona-postgresql12-pltcl-debuginfo
         - percona-postgresql12-server-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: install Percona Platform for PostgreSQL rpm packages for RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+      allow_downgrade: yes
+    vars:
+      packages:
+        - percona-postgresql-client-common
+        - percona-postgresql-common
+        - percona-postgresql-server-dev-all
+        - percona-postgresql12
+        - percona-postgresql12-contrib
+        - percona-postgresql12-debuginfo
+        - percona-postgresql12-devel
+        - percona-postgresql12-docs
+        - percona-postgresql12-libs
+        - percona-postgresql12-llvmjit
+        - percona-postgresql12-plperl
+        - percona-postgresql12-plpython3
+        - percona-postgresql12-pltcl
+        - percona-postgresql12-server
+        - percona-postgresql12-test
+        - percona-postgresql12-contrib-debuginfo
+        - percona-postgresql12-debuginfo
+        - percona-postgresql12-debugsource
+        - percona-postgresql12-devel-debuginfo
+        - percona-postgresql12-libs-debuginfo
+        - percona-postgresql12-plperl-debuginfo
+        - percona-postgresql12-plpython3-debuginfo
+        - percona-postgresql12-pltcl-debuginfo
+        - percona-postgresql12-server-debuginfo
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
