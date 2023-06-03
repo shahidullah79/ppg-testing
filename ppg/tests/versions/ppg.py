@@ -453,4 +453,6 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-15.2": get_pg15_versions(packages=["2:15.2-2", "1:247-1", '247-1'],
                                           distros=DISTROS, distro_type=distro_type),
+            "ppg-15.3": get_pg15_versions(packages=["2:15.3-1", "1:250-1", '250-1'],
+                                          distros=DISTROS, distro_type=distro_type),
             }
