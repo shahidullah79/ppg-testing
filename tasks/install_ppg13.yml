@@ -5,11 +5,6 @@
       state: present
     when: ansible_os_family == "RedHat"
 
-  - name: Clean dnf RHEL8
-    become: true
-    command: dnf clean all -y
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
   - name: Clean dnf oracle linux
     become: true
     command: dnf clean all -y

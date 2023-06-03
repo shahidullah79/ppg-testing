@@ -169,6 +169,13 @@
       allow_downgrade: yes
     when: ansible_os_family == "RedHat"
 
+  - name: Install python3-pip
+    yum:
+      name: python3-pip
+      state: latest
+      update_cache: yes
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+
   - name: Install python3 module - patroni[etcd]
     become: true
     command: python3 -m pip install patroni[etcd]
@@ -223,6 +230,27 @@
       update_cache: yes
     when: ansible_os_family == "Debian"
 
+  - name: Install CPAN
+    become: true
+    command: yum -y install perl-CPAN
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+
+  - name: Install perl-App-cpanminus
+    become: true
+    command: yum -y install perl-App-cpanminus
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+
+  - name: Install perl module Benchmark
+    become: true
+    command: cpanm Benchmark
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+
   - name: Install percona-pgaudit12_set_user RHEL
     yum:
       name: percona-pgaudit12_set_user
@@ -268,7 +296,8 @@
       packages:
         - percona-pgpool-II-pg12
         - percona-pgpool-II-pg12-extensions
-    when: ansible_os_family == "RedHat"
+    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
+      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('12.14', '>=', strict=True))
 
   - name: Install percona-pgpool Debian
     apt:
@@ -279,7 +308,8 @@
       packages:
         - percona-pgpool2
         - libpgpool2
-    when: ansible_os_family == "Debian"
+    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
+      (ansible_os_family == "Debian" and pg_version_to_install | string is version('12.14', '>=', strict=True))
 
   - name: Install percona-wal2json12 RHEL
     yum:
@@ -586,14 +616,16 @@
       name: pgpool
       state: started
       enabled: yes
-    when: ansible_os_family == "RedHat"
+    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
+      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('12.14', '>=', strict=True))
 
   - name: Start pgpool service
     service:
       name: percona-pgpool2
       state: started
       enabled: yes
-    when: ansible_os_family == "Debian"
+    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
+      (ansible_os_family == "Debian" and pg_version_to_install | string is version('12.14', '>=', strict=True))
 
   - name: Add user postgres to sudoers
     user:
