@@ -4,12 +4,12 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: centos8-${BUILD_NUMBER}-${JOB_NAME}
+  - name: ol9-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-0e337c7f9752d9d34
+    image: ami-02952e732e6126584
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.small
-    ssh_user: centos
+    ssh_user: ec2-user
     root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pg-worker
@@ -24,7 +24,7 @@ provisioner:
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
-  directory: ../../../tests/tests_meta_server
+  directory: ../../../tests/tests_meta_ha
   options:
     verbose: true
     s: true
