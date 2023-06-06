@@ -1,4 +1,6 @@
 ---
+dependency:
+  name: galaxy
 driver:
   name: ec2
 platforms:
@@ -6,7 +8,7 @@ platforms:
     region: eu-central-1
     image: ami-0f41e297b3c53fab8
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t2.micro
+    instance_type: t2.small
     ssh_user: admin
     root_device_name: /dev/xvda
     instance_tags:
@@ -30,13 +32,10 @@ verifier:
 scenario:
   destroy_sequence:
     - destroy
-  cleanup_sequence:
-    - cleanup
   test_sequence:
     - destroy
     - create
     - prepare
     - converge
     - verify
-    - cleanup
     - destroy

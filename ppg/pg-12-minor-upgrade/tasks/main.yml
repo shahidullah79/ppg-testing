@@ -4,6 +4,16 @@
 - name: Install percona release package
   include_tasks: ../../../tasks/install_percona_release.yml
 
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'FROM_VERSION') | replace('ppg-','') }}"
+
+- name: End play on oracle linux 9
+  meta: end_play
+  when: ansible_os_family == "RedHat" and
+   ansible_distribution_major_version == "9" and
+   pg_version_to_install | string is version('12.13', '<=', strict=True)
+
 - name: Setup initial (old) repository
   command: percona-release enable {{ pg_version }} {{ repo }}
   vars:
@@ -81,45 +91,17 @@
     state: started
   when: ansible_os_family == "RedHat"
 
-- name: Install PPG tools
-  include_tasks: ../../../../tasks/install_ppg12_tools.yml
-
-- name: Upgrade debian development packages
-  apt:
-    update_cache: yes
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - libecpg6
-      - libecpg-compat3
-      - libecpg6
-      - libecpg-dev
-      - libpgtypes3
-      - libpq-dev
-      - libpq5
-  when: ansible_os_family == "Debian"
-
 - name: Start postgresql service for Debian based
   service:
     name: postgresql
     state: started
+    enabled: true
   when: ansible_os_family == "Debian"
 
-- name: Install GCC Deb
-  apt:
-    name: gcc
-  when: ansible_os_family == "Debian"
+- name: Display ppg version
+  become_user: postgres
+  shell: psql -c "select version()"
+  register: results
 
-- name: Install GCC RHEL
-  yum:
-    name: gcc
-  when: ansible_os_family == "RedHat"
-
-- name: Create temporary directory for compilation
-  command: mkdir /tmp/libpq_command_temp_dir
-
-- name: Copy libpq source file
-  copy:
-    src: ../../common/files/lib_version.c
-    dest: /tmp/libpq_command_temp_dir
+- debug:
+      var: results.stdout
