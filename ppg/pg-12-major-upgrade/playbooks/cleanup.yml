@@ -23,6 +23,7 @@
           - percona-postgresql-plperl-11-dbgsym
           - percona-postgresql-plpython3-11-dbgsym
           - percona-postgresql-pltcl-11-dbgsym
+      ignore_errors: true
       when: ansible_os_family == "Debian"
 
     - name: Remove Percona Platform for PostgreSQL deb packages

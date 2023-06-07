@@ -4,6 +4,16 @@
 - name: Configure repository
   include_tasks: ../../../tasks/install_percona_release.yml
 
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'FROM_VERSION') | replace('ppg-','') }}"
+
+- name: End play on oracle linux 9
+  meta: end_play
+  when: ansible_os_family == "RedHat" and
+   ansible_distribution_major_version == "9" and
+   pg_version_to_install | string is version('11.18', '<=', strict=True)
+
 - name: Setup initial (old) repository
   command: percona-release enable {{ pg_version }} {{ repo }}
   vars:
@@ -69,6 +79,12 @@
     - percona-postgresql-pltcl-12-dbgsym
     - percona-postgresql-client-common
     - percona-postgresql-common
+    - percona-postgresql-client
+    - percona-postgresql
+    - percona-postgresql-contrib
+    - percona-postgresql-doc
+    - percona-postgresql-server-dev-all
+    - percona-postgresql-all
   when: ansible_os_family == "Debian"
 
 - name: install Percona Platform for PostgreSQL deb packages
@@ -105,6 +121,7 @@
     - percona-postgresql12-debuginfo
     - percona-postgresql-client-common
     - percona-postgresql-common
+    - percona-postgresql12-plpython3
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
@@ -138,7 +155,40 @@
       - percona-postgresql12-server-debuginfo
       - percona-postgresql-client-common
       - percona-postgresql-common
+      - percona-postgresql12-plpython3
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+- name: install Percona Platform for PostgreSQL rpm packages for RHEL
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - percona-postgresql12
+      - percona-postgresql12-contrib
+      - percona-postgresql12-debuginfo
+      - percona-postgresql12-devel
+      - percona-postgresql12-docs
+      - percona-postgresql12-libs
+      - percona-postgresql12-llvmjit
+      - percona-postgresql12-plperl
+      - percona-postgresql12-plpython3
+      - percona-postgresql12-pltcl
+      - percona-postgresql12-server
+      - percona-postgresql12-test
+      - percona-postgresql12-contrib-debuginfo
+      - percona-postgresql12-debuginfo
+      - percona-postgresql12-debugsource
+      - percona-postgresql12-devel-debuginfo
+      - percona-postgresql12-libs-debuginfo
+      - percona-postgresql12-plperl-debuginfo
+      - percona-postgresql12-plpython3-debuginfo
+      - percona-postgresql12-pltcl-debuginfo
+      - percona-postgresql12-server-debuginfo
+      - percona-postgresql-client-common
+      - percona-postgresql-common
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
 
 - name: Install pg-stat-monitor RHEL
   yum:
@@ -254,36 +304,10 @@
     masked: no
   when: ansible_os_family == "Debian"
 
-- name: Upgrade debian development packages
-  apt:
-    update_cache: yes
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - libecpg6
-      - libecpg-compat3
-      - libecpg6
-      - libecpg-dev
-      - libpgtypes3
-      - libpq-dev
-      - libpq5
-  when: ansible_os_family == "Debian"
+- name: Display ppg version
+  become_user: postgres
+  shell: psql -c "select version()"
+  register: results
 
-- name: Install GCC Deb
-  apt:
-    name: gcc
-  when: ansible_os_family == "Debian"
-
-- name: Install GCC RHEL
-  yum:
-    name: gcc
-  when: ansible_os_family == "RedHat"
-
-- name: Create temporary directory for compilation
-  command: mkdir /tmp/libpq_command_temp_dir
-
-- name: Copy libpq source file
-  copy:
-    src: ../../common/files/lib_version.c
-    dest: /tmp/libpq_command_temp_dir
+- debug:
+      var: results.stdout

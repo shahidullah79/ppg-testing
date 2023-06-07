@@ -276,42 +276,10 @@
     enabled: true
   when: ansible_os_family == "Debian"
 
-- name: Upgrade debian development packages
-  apt:
-    update_cache: yes
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - libecpg6
-      - libecpg-compat3
-      - libecpg6
-      - libecpg-dev
-      - libpgtypes3
-      - libpq-dev
-      - libpq5
-  when: ansible_os_family == "Debian"
+- name: Display ppg version
+  become_user: postgres
+  shell: psql -c "select version()"
+  register: results
 
-- name: Install GCC Deb
-  apt:
-    name: gcc
-  when: ansible_os_family == "Debian"
-
-- name: Install GCC RHEL
-  yum:
-    name: gcc
-  when: ansible_os_family == "RedHat"
-
-- name: Create temporary directory for compilation
-  command: mkdir /tmp/libpq_command_temp_dir
-
-- name: Copy libpq source file
-  copy:
-    src: ../../common/files/lib_version.c
-    dest: /tmp/libpq_command_temp_dir
-
-- name: Again Setup initial (old) repository
-  command: percona-release enable {{ pg_version }} {{ repo }}
-  vars:
-    repo: "{{ lookup('env', 'FROM_REPO') }}"
-    pg_version: "{{ lookup('env', 'FROM_VERSION') }}"
+- debug:
+      var: results.stdout
