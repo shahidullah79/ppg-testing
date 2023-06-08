@@ -26,6 +26,16 @@
     command: sudo dnf module disable postgresql -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
+  - name: Enable ol8_codeready_builder on oracle linux 8
+    become: true
+    command: dnf config-manager --set-enabled ol8_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: Enable ol9_codeready_builder on oracle linux 9
+    become: true
+    command: dnf config-manager --set-enabled ol9_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+
   - name: DNF clean RHEL
     command: sudo dnf clean all -y
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
@@ -37,6 +47,10 @@
   - name: Add PostgreSQL YUM Repository RHEL8
     yum: name=https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm state=present validate_certs=false
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: Add PostgreSQL YUM Repository RHEL9
+    yum: name=https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm state=present validate_certs=false
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
 
   - name: Install vanila postgres RHEL
     yum:
