@@ -11,6 +11,16 @@
     state: present
   when: ansible_os_family == "RedHat"
 
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'FROM_VERSION') | replace('ppg-','') }}"
+
+- name: End play on oracle linux 9
+  meta: end_play
+  when: ansible_os_family == "RedHat" and
+   ansible_distribution_major_version == "9" and
+   pg_version_to_install | string is version('13.9', '<=', strict=True)
+
 - name: Setup initial (old) repository
   command: percona-release enable {{ pg_version }} {{ repo }}
   vars:
@@ -83,17 +93,17 @@
       - percona-postgresql-pltcl-14-dbgsym
   when: ansible_os_family == "Debian"
 
-- name: install Percona Platform for PostgreSQL deb packages
-  apt:
-    name: "{{ packages }}"
-    update_cache: yes
-    state: latest
-  vars:
-    packages:
-    - percona-postgresql-plpython3-14
-    - percona-postgresql-plpython3-14-dbgsym
-  when:
-    - ansible_os_family == "Debian"
+# - name: install Percona Platform for PostgreSQL deb packages
+#   apt:
+#     name: "{{ packages }}"
+#     update_cache: yes
+#     state: latest
+#   vars:
+#     packages:
+#     - percona-postgresql-plpython3-14
+#     - percona-postgresql-plpython3-14-dbgsym
+#   when:
+#     - ansible_os_family == "Debian"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
@@ -151,7 +161,8 @@
         - percona-postgresql14-pltcl-debuginfo
         - percona-postgresql14-plpython3-debuginfo
         - percona-postgresql14-server-debuginfo
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+  when: ansible_os_family == "RedHat" and
+      (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
 - name: Install pg-stat-monitor RHEL
   yum:
@@ -265,36 +276,10 @@
     enabled: true
   when: ansible_os_family == "Debian"
 
-- name: Upgrade debian development packages
-  apt:
-    update_cache: yes
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - libecpg6
-      - libecpg-compat3
-      - libecpg6
-      - libecpg-dev
-      - libpgtypes3
-      - libpq-dev
-      - libpq5
-  when: ansible_os_family == "Debian"
+- name: Display ppg version
+  become_user: postgres
+  shell: psql -c "select version()"
+  register: results
 
-- name: Install GCC Deb
-  apt:
-    name: gcc
-  when: ansible_os_family == "Debian"
-
-- name: Install GCC RHEL
-  yum:
-    name: gcc
-  when: ansible_os_family == "RedHat"
-
-- name: Create temporary directory for compilation
-  command: mkdir /tmp/libpq_command_temp_dir
-
-- name: Copy libpq source file
-  copy:
-    src: ../../common/files/lib_version.c
-    dest: /tmp/libpq_command_temp_dir
+- debug:
+      var: results.stdout
