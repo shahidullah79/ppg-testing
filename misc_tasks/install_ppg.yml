@@ -1,0 +1,101 @@
+# We need the variable "version" and "repo"
+# example values for version: 15.2, 14, 13, etc.
+# example values for repo: release, testing, experimental
+
+- name: Set major version
+  set_fact:
+    ver: "{{ version.split('.')[0] }}"
+
+# --------------------[ DEB ]-------------------------
+- name: Install prerequisites for {{ ansible_os_family }}-{{ ansible_distribution_major_version }}
+  when: ansible_os_family == "Debian"
+  apt:
+    name:
+    - curl
+    - gnupg2
+    - lsb-release
+    update_cache: yes
+
+- name: Install percona repository package for {{ ansible_os_family }}
+  when: ansible_os_family == "Debian"
+  apt:
+    deb: https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+
+- name: setup repo with percona-release ppg-{{ version }}
+  when: ansible_os_family == "Debian"
+  command: "percona-release enable-only ppg-{{ version }} {{ repo }}"
+  args:
+    creates: "/etc/apt/sources.list.d/percona-ppg-{{ version }}-release.list"
+
+- name: install Percona Platform for PostgreSQL deb packages, version {{ version }}
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - percona-postgresql
+
+# --------------------[ RHEL ]-------------------------
+- name: Setup epel release on {{ ansible_os_family }}
+  when: ansible_os_family == "RedHat"
+  yum: name="epel-release"
+
+- name: install GPG key for Percona repos
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+  rpm_key:
+    state: present
+    key: https://repo.percona.com/yum/RPM-GPG-KEY-Percona
+
+- name: Install percona repository package for {{ ansible_os_family }}
+  when: ansible_os_family == "RedHat"
+  yum:
+    name: "https://repo.percona.com/yum/percona-release-latest.noarch.rpm"
+    disable_gpg_check: true
+
+- name: setup repo with percona-release ppg-{{ version }}
+  when: ansible_os_family == "RedHat"
+  command: "percona-release enable-only ppg-{{ version }} {{ repo }}"
+  args:
+    creates: "/etc/yum.repos.d/percona-ppg-{{ version }}-{{ repo }}.repo"
+
+- name: Disable dnf module postgresql, llvm-toolset for RHEL8
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+  command: dnf module disable -y postgresql llvm-toolset
+
+- name: Disable dnf module postgresql for RHEL9
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+  command: dnf module disable -y postgresql
+
+- name: install Percona Platform for PostgreSQL rpm packages
+  when: ansible_os_family == "RedHat"
+  yum:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: latest
+  vars:
+    packages:
+    - percona-postgresql{{ ver }}-server
+
+- name: Initialize Postgres RHEL
+  when: ansible_os_family == "RedHat"
+  command: postgresql-{{ ver }}-setup initdb
+  args:
+    creates: "/var/lib/pgsql/{{ ver }}/data/PG_VERSION"
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+- name: Start Postgres RHEL
+  when: ansible_os_family == "RedHat"
+  service:
+    name: postgresql-{{ ver }}
+    state: started
+    enabled: yes
+
+# --------------------[ ALL ]-------------------------
+- name: Verify PPG is installed and running
+  shell: sudo -u postgres psql -c 'select version();'
+  register: ps
+
+- debug: msg={{ ps.stdout }}
