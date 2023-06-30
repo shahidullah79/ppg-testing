@@ -82,7 +82,7 @@
       - percona-postgresql-plpython3-13-dbgsym
     when: ansible_os_family == "Debian"
 
-  - name: install Percona Platform for PostgreSQL deb packages
+  - name: install Percona Platform for PostgreSQL deb packages for non Bionic
     apt:
       name: "{{ packages }}"
       update_cache: yes
