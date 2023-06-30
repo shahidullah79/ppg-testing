@@ -40,7 +40,6 @@
       packages:
       - percona-postgresql
       - percona-postgresql-13
-      - percona-postgresql-all
       - percona-postgresql-client
       - percona-postgresql-client-13
       - percona-postgresql-common
@@ -49,14 +48,12 @@
       - percona-postgresql-doc-13
       - percona-postgresql-plperl-13
       - percona-postgresql-plpython3-13
-      - percona-postgresql-pltcl-13
       - percona-postgresql-server-dev-13
       - percona-postgresql-server-dev-all
       - percona-postgresql-13-dbgsym
       - percona-postgresql-client-13-dbgsym
       - percona-postgresql-plperl-13-dbgsym
       - percona-postgresql-plpython3-13-dbgsym
-      - percona-postgresql-pltcl-13-dbgsym
     when: ansible_os_family == "Debian"
 
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
