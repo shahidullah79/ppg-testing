@@ -548,6 +548,60 @@ def test_postgis_extension_version(host):
         # assert result.rc == 0, result.stderr
 
 
+def test_shp2pgsql_binary_version(host):
+    result = host.run(f"shp2pgsql | grep -i release | cut -d' ' -f2")
+    print(result.stdout)
+    assert result.rc == 0, result.stderr
+    assert pg_versions['postgis_version'] in result.stdout.strip("\n"), result.stdout
+
+
+def test_pgsql2shp_binary_version(host):
+    result = host.run(f"pgsql2shp | grep -i release | cut -d' ' -f2")
+    print(result.stdout)
+    assert result.rc == 0, result.stderr
+    assert pg_versions['postgis_version'] in result.stdout.strip("\n"), result.stdout
+
+
+def test_postgis_binary_presence(host):
+    dist = host.system_info.distribution
+    with host.sudo("postgres"):
+        if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+            binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/pgtopo_export")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/pgtopo_import")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/pgsql2shp")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/raster2pgsql")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/shp2pgsql-gui")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/shp2pgsql")
+            assert binary_file.exists
+            assert binary_file.is_file
+        if dist.lower() in ['debian', 'ubuntu']:
+            binary_file = host.file("/usr/bin/shp2pgsql")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file("/usr/bin/raster2pgsql")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file("/usr/bin/pgtopo_import")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file("/usr/bin/pgtopo_export")
+            assert binary_file.exists
+            assert binary_file.is_file
+            binary_file = host.file("/usr/bin/pgsql2shp")
+            assert binary_file.exists
+            assert binary_file.is_file
+
+
 @pytest.mark.parametrize("package", ['pgbadger', 'pgbouncer', 'haproxy'])
 def test_package_version(host, package):
     package_name = "-".join(["percona", package])
