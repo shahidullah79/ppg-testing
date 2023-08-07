@@ -32,8 +32,11 @@ def test_cluster_status(host):
     assert cluster_result.rc == 0, cluster_result.stderr
     cluster_json = json.loads(cluster_result.stdout)
     assert len(cluster_json) == 3, f"Must have 3 nodes in the cluster, but found {len(cluster_json)}"
-    for cluster in cluster_json:
-        assert cluster['State'] == 'running', cluster
+    assert cluster_json[0]['State'] == 'running', cluster_json[0]
+    assert cluster_json[1]['State'] == 'streaming', cluster_json[1]
+    assert cluster_json[2]['State'] == 'streaming', cluster_json[2]
+    # for cluster in cluster_json:
+    #     assert cluster['State'] == 'running', cluster
 
 
 def test_haproxy_web(host):

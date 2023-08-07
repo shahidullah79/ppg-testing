@@ -4,13 +4,13 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: ubionic-${BUILD_NUMBER}-${JOB_NAME}
+  - name: debian12-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-0a8561d8c5a4f098a
+    image: ami-05e2f78cbc7f80978
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.small
-    ssh_user: ubuntu
-    root_device_name: /dev/sda1
+    ssh_user: admin
+    root_device_name: /dev/xvda
     instance_tags:
       iit-billing-tag: jenkins-pg-worker
 provisioner:
@@ -20,7 +20,7 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
-    cleanup: ../../playbooks/cleanup-deb.yml
+    cleanup: ../../playbooks/cleanup.yml
     converge: ../../playbooks/playbook.yml
 verifier:
   name: testinfra
@@ -30,6 +30,7 @@ verifier:
     s: true
     junitxml: report.xml
 scenario:
+  name: debian-12
   destroy_sequence:
     - destroy
   cleanup_sequence:
@@ -40,5 +41,4 @@ scenario:
     - prepare
     - converge
     - verify
-    - cleanup
     - destroy

@@ -12,6 +12,4 @@
         packages:
           - percona-postgresql-15
           - percona-patroni
-          - etcd
-          - haproxy
       when: ansible_distribution == "Debian"
