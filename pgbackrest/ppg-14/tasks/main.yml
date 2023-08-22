@@ -10,6 +10,9 @@
     state: latest
   vars:
     packages:
+      - make
+      - gcc
+      - pkg-config
       - apt-transport-https
       - ca-certificates
       - curl
@@ -25,7 +28,6 @@
       - libssl-dev
       - libxml2-dev
       - libpq-dev
-      - pkg-config
       - valgrind
       - liblz4-dev
       - liblz4-tool
@@ -35,6 +37,10 @@
       - libbz2-dev
       - libyaml-dev
       - meson
+      - libz-dev
+      - libyaml-dev
+      - libssh2-1-dev
+      - psmisc
   retries: 60
   delay: 10
   register: result
@@ -66,7 +72,7 @@
   git:
     repo: "{{ repo }}"
     version: "{{ version }}"
-    dest: /var/lib/postgresql/pgbackrest
+    dest: /tmp/pgbackrest
   vars:
     repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
     version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
@@ -82,13 +88,18 @@
     name: postgresql
     state: stopped
 
+- name: Make sure tcp port 80 is free
+  become: true
+  command: sudo fuser -k 80/tcp
+  ignore_errors: true
+
 - name: Run pgbackrest regression
   become_user: postgres
-  command: pgbackrest/test/test.pl --psql-bin=/usr/lib/postgresql/15/bin \
+  command: pgbackrest/test/test.pl --psql-bin=/usr/lib/postgresql/14/bin \
     --no-valgrind --log-level-test-file=off --no-coverage-report \
-    --module=command --module=storage --vm-out --vm=none --no-coverage
+    --module=command --module=storage --vm-out --vm=none --no-coverage --test-path /tmp
   args:
-    chdir: "/var/lib/postgresql"
+    chdir: "/tmp"
   register: results
 
 - debug:
