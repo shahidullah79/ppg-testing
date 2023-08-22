@@ -699,3 +699,25 @@ def test_pgpool_service(host):
     with host.sudo("postgres"):
             assert service.is_running
             assert service.is_enabled
+
+
+def test_pg_gather_output(host):
+    with host.sudo("postgres"):
+        result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
+        assert result.rc == 0, result.stderr
+
+
+def test_pg_gather_package_version(host):
+    dist = host.system_info.distribution
+    if dist.lower() in ["ubuntu", "debian"]:
+        pg_gather = host.package(f"percona-pg-gather")
+    else:
+        pg_gather = host.package(f"percona-pg_gather")
+    assert pg_gather.is_installed
+    assert pg_versions["pg_gather"]['version'] in pg_gather.version, pg_gather.version
+
+
+def test_pg_gather_file_version(host):
+    result = host.run(f"head -4 /usr/bin/gather.sql | tail -1 | cut -d' ' -f3")
+    assert result.rc == 0, result.stderr
+    assert pg_versions["pg_gather"]['sql_file_version'] in result.stdout.strip("\n"), result.stdout

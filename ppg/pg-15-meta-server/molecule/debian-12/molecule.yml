@@ -4,13 +4,13 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: pgbackrest-ufocal-${BUILD_NUMBER}
+  - name: debian12-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-0be656e75e69af1a9
+    image: ami-05e2f78cbc7f80978
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t2.xlarge
-    ssh_user: ubuntu
-    root_device_name: /dev/sda1
+    instance_type: t2.small
+    ssh_user: admin
+    root_device_name: /dev/xvda
     instance_tags:
       iit-billing-tag: jenkins-pg-worker
 provisioner:
@@ -20,10 +20,17 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
+    cleanup: ../../playbooks/cleanup-deb.yml
     converge: ../../playbooks/playbook.yml
 verifier:
-  name: ansible
+  name: testinfra
+  directory: ../../../tests/tests_meta_server
+  options:
+    verbose: true
+    s: true
+    junitxml: report.xml
 scenario:
+  name: debian-12
   destroy_sequence:
     - destroy
   cleanup_sequence:
@@ -33,4 +40,5 @@ scenario:
     - create
     - prepare
     - converge
+    - verify
     - destroy

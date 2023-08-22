@@ -1,6 +1,6 @@
 from .extensions import get_extensions_ppg11, get_extensions_ppg12, get_extensions_ppg13
 
-DISTROS = ['buster', 'stretch', 'bionic', 'focal', 'bullseye', 'jammy']
+DISTROS = ['buster', 'stretch', 'bionic', 'focal', 'bullseye', 'jammy', 'bookworm']
 DEB116_PACKAGES_TEMPLATE = ["percona-postgresql-{}",
                             "percona-postgresql-client",
                             "percona-postgresql",
@@ -385,6 +385,8 @@ def get_ppg_versions(distro_type):
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-11.20": get_pg11_versions(packages=['2:11.20-1', '250-1', '11+250-1', '1:250-1'],
                                            distros=DISTROS, distro_type=distro_type),
+            "ppg-11.21": get_pg11_versions(packages=['2:11.21-1', '252-1', '11+252-1', '1:252-1'],
+                                           distros=DISTROS, distro_type=distro_type),
             "ppg-12.2": get_pg12_versions(packages=["2:12-3.1", "12+215-1", '215-1'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-12.3": get_pg12_versions(packages=["2:12-3.1", "12+215-1", '215-1'],
@@ -413,6 +415,8 @@ def get_ppg_versions(distro_type):
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-12.15": get_pg12_versions(packages=["2:12.15-1", "12+226-1", "1:250-1", '250-1'],
                                            distros=DISTROS, distro_type=distro_type),
+            "ppg-12.16": get_pg12_versions(packages=["2:12.16-1", "12+226-1", "1:252-1", '252-1'],
+                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.0": get_pg13_versions(packages=["2:13-0.1", "13+221-1", '221-1'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.1": get_pg13_versions(packages=["2:13-1.1", "13+223-1", '223-1'],
@@ -437,6 +441,8 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-13.11": get_pg13_versions(packages=["2:13.11-1", "1:250-1", '250-1'],
                                           distros=DISTROS, distro_type=distro_type),
+            "ppg-13.12": get_pg13_versions(packages=["2:13.12-1", "1:252-1", '252-1'],
+                                          distros=DISTROS, distro_type=distro_type),
             "ppg-14.0": get_pg14_versions(packages=["2:14.0-1", "1:226-1", '226-0'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-14.1": get_pg14_versions(packages=["2:14.1-1", "1:230-1", '230-0'],
@@ -455,6 +461,8 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-14.8": get_pg14_versions(packages=["2:14.8-1", "1:250-1", '250-1'],
                                           distros=DISTROS, distro_type=distro_type),
+            "ppg-14.9": get_pg14_versions(packages=["2:14.9-1", "1:252-1", '252-1'],
+                                          distros=DISTROS, distro_type=distro_type),
             "ppg-15.0": get_pg15_versions(packages=["2:15.0-1", "1:241-5", '241-5'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-15.1": get_pg15_versions(packages=["2:15.1-1", "1:241-6", '241-6'],
@@ -462,5 +470,7 @@ def get_ppg_versions(distro_type):
             "ppg-15.2": get_pg15_versions(packages=["2:15.2-2", "1:247-1", '247-1'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-15.3": get_pg15_versions(packages=["2:15.3-1", "1:250-1", '250-1'],
+                                          distros=DISTROS, distro_type=distro_type),
+            "ppg-15.4": get_pg15_versions(packages=["2:15.4-1", "1:252-1", '252-1'],
                                           distros=DISTROS, distro_type=distro_type),
             }

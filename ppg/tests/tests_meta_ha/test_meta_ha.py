@@ -16,6 +16,8 @@ def test_deb_package_is_installed(host, package):
     ds = host.system_info.distribution
     if ds.lower() in ["redhat", "centos", "rhel", "ol"]:
         pytest.skip("This test only for Debian based platforms")
+    if package == 'etcd' and host.system_info.distribution == "debian" and host.system_info.release == '12':
+        pytest.skip("This test not for Debian 12")
     pkg = host.package(package)
     assert pkg.is_installed
 

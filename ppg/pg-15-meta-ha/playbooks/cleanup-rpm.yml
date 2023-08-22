@@ -11,7 +11,5 @@
       vars:
         packages:
           - percona-postgresql15
-          - etcd
-          - percona-haproxy
           - percona-patroni
       when: ansible_os_family == "RedHat"
