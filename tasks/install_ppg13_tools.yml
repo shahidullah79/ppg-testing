@@ -408,17 +408,25 @@
         - percona-postgresql-13-wal2json-dbgsym
     when: ansible_os_family == "Debian"
 
-#  - name: Add extensions to postgresql.conf for Debian
-#    lineinfile:
-#      path: /etc/postgresql/13/main/postgresql.conf
-#      line: shared_preload_libraries = 'pgaudit, set_user'
-#    when: ansible_os_family == "Debian"
-#
-#  - name: Add extensions to postgresql.conf for RHEL
-#    lineinfile:
-#      path: /var/lib/pgsql/13/data/postgresql.conf
-#      line: shared_preload_libraries = 'pgaudit, set_user'
-#    when: ansible_os_family == "RedHat"
+  - name: Install percona-pg_gather RHEL
+    yum:
+      name: percona-pg_gather
+      state: latest
+      update_cache: yes
+    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
+     (ansible_os_family == "RedHat" and pg_version_to_install | string is version('13.12', '>=', strict=True))
+
+  - name: Install percona-pg_gather Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pg-gather
+    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
+      (ansible_os_family == "Debian" and pg_version_to_install | string is version('13.12', '>=', strict=True))
+
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
       path: /etc/postgresql/13/main/postgresql.conf
@@ -518,7 +526,20 @@
       packages:
         - etcd
         - percona-haproxy
-    when: ansible_os_family == "Debian"
+    when: (ansible_distribution == "Ubuntu") or
+      (ansible_os_family == "Debian" and ansible_lsb.major_release|int <= 11)
+
+  - name: Install patroni related packages Debian 12
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - etcd-server
+        - etcd-client
+        - percona-haproxy
+    when: (ansible_os_family == "Debian" and ansible_lsb.major_release|int == 12)
 
   - name: Create /etc/patroni directory
     file:
@@ -594,6 +615,21 @@
       group: postgres
       mode: 0644
     when: ansible_os_family == "RedHat"
+
+  - name: Find all of the patroni files inside /var/lib/postgresql/patroni_test directory
+    find:
+      paths: "/var/lib/postgresql/patroni_test/"
+      patterns: "*.yml"
+    register: ymls
+    when: (ansible_os_family == "Debian" and ansible_lsb.major_release|int == 12)
+
+  - name: replace 'etcd' to 'etcd3' in /var/lib/postgresql/patroni_test/*.yml files
+    replace:
+      path: "{{ item.path }}"
+      regexp: 'etcd'
+      replace: 'etcd3'
+    with_items: "{{ ymls.files }}"
+    when: (ansible_os_family == "Debian" and ansible_lsb.major_release|int == 12)
 
   - name: Copy patroni0 service file Debian
     copy:

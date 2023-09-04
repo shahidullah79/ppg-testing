@@ -391,7 +391,8 @@
       name: percona-pg_gather
       state: latest
       update_cache: yes
-    when: ansible_os_family == "RedHat"
+    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
+     (ansible_os_family == "RedHat" and pg_version_to_install | string is version('15.4', '>=', strict=True))
 
   - name: Install percona-pg_gather Debian
     apt:
@@ -401,7 +402,8 @@
     vars:
       packages:
         - percona-pg-gather
-    when: ansible_os_family == "Debian"
+    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
+      (ansible_os_family == "Debian" and pg_version_to_install | string is version('15.4', '>=', strict=True))
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
