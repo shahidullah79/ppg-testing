@@ -443,7 +443,7 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
     os = host.system_info.distribution
     if os in ["debian", "ubuntu"]:
         pytest.skip("This test only for RHEL based platforms")
-    if host.system_info.release == "8.0":
+    if host.system_info.release.startswith("8") or host.system_info.release.startswith("9"):
         pytest.skip("Only for centos7 tests")
     cmd = "rpm -q --provides {} | awk \'{{ print $1 }}\'".format(percona_package)
     result = host.run(cmd)
