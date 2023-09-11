@@ -1,3 +1,12 @@
+
+  - name: Set Facts.
+    set_fact:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
+      cacheable: true
+
+  - debug:
+      msg: "Value of PERCONA_TELEMETRY_URL is : {{ PERCONA_TELEMETRY_URL }}"
+
   - name: setup epel release
     yum:
       name: epel-release
@@ -58,6 +67,8 @@
       - percona-postgresql-plpython3-13-dbgsym
       - percona-postgresql-pltcl-13-dbgsym
     when: ansible_os_family == "Debian"
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
@@ -83,6 +94,8 @@
       - percona-postgresql13-test
       - percona-postgresql13-debuginfo
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
@@ -117,3 +130,20 @@
         - percona-postgresql13-server-debuginfo
     when: ansible_os_family == "RedHat" and
       (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
+
+  - name: Check if Telemetry file exisits
+    stat:
+        path: /usr/local/percona/telemetry_uuid
+    register: telemetry_file_check
+
+  - name: Register output of /usr/local/percona/telemetry_uuid
+    become: true
+    command: cat /usr/local/percona/telemetry_uuid
+    register: telemetry_file_output
+    when: telemetry_file_check.stat.exists
+
+  - debug:
+      msg: "Telemetry file output is : {{ telemetry_file_output }}"
+    when: telemetry_file_check.stat.exists

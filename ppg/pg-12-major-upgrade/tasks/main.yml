@@ -83,7 +83,6 @@
     - percona-postgresql-plperl-12-dbgsym
     - percona-postgresql-plpython3-12-dbgsym
     - percona-postgresql-pltcl-12-dbgsym
-    - percona-postgresql-client-common
     - percona-postgresql-common
     - percona-postgresql-client
     - percona-postgresql
@@ -91,7 +90,11 @@
     - percona-postgresql-doc
     - percona-postgresql-server-dev-all
     - percona-postgresql-all
+    - postgresql-common
+    - postgresql-client-common
   when: ansible_os_family == "Debian"
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: install Percona Platform for PostgreSQL deb packages
   apt:
@@ -129,6 +132,8 @@
     - percona-postgresql-common
     - percona-postgresql12-plpython3
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
@@ -163,6 +168,8 @@
       - percona-postgresql-common
       - percona-postgresql12-plpython3
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
@@ -195,6 +202,8 @@
       - percona-postgresql-client-common
       - percona-postgresql-common
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: Install pg-stat-monitor RHEL
   yum:

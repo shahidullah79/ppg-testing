@@ -48,6 +48,8 @@
     - gcc
     - gcc-c++
     - git
+  environment:
+    PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-11/bin/initdb -A trust -k /var/lib/pgsql/11/data

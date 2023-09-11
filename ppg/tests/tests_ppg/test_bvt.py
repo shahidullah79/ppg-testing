@@ -16,7 +16,7 @@ LANGUAGES = pg_versions['languages']
 DEB_FILES = pg_versions['deb_files']
 SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", "ppg-11.17", 'ppg-12.2',
                   'ppg-12.3', "ppg-12.4", "ppg-12.5", "ppg-12.6", "ppg-12.7", "ppg-12.12", "ppg-12.13",
-                  "ppg-12.14", "ppg-12.15", "ppg-12.16",
+                  "ppg-12.14", "ppg-12.15", "ppg-12.16", "ppg-12.17",
                   "ppg-13.0", "ppg-13.1",
                   "ppg-15.0", "ppg-15.1"]
 BINARIES = pg_versions['binaries']
@@ -217,6 +217,13 @@ def test_postgres_client_version(host):
     assert settings.MAJOR_VER in result.strip("\n"), result.stdout
 
 
+@pytest.mark.upgrade
+def test_postgres_client_string(host):
+    if settings.MAJOR_VER in ["11"]:
+        pytest.skip("Skipping for ppg 11")
+    assert f"psql (PostgreSQL) {pg_versions['version']} - Percona Distribution" in host.check_output('psql -V')
+
+
 def test_start_stop_postgresql(start_stop_postgresql):
     assert start_stop_postgresql.rc == 0, start_stop_postgresql.rc
     assert "active" in start_stop_postgresql.stdout, start_stop_postgresql.stdout
@@ -387,22 +394,30 @@ def test_rpm_files(file, host):
 
 @pytest.mark.parametrize("language", LANGUAGES)
 def test_language(host, language):
-    dists = ['debian', 'ubuntu']
+    deb_dists = ['debian', 'ubuntu']
+    rpm_dists = ["redhat", "centos", "rhel", "ol"]
     dist = host.system_info.distribution
     with host.sudo("postgres"):
         # if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
         #     if "python3" in language:
         #         pytest.skip("Skipping python3 language for Centos or RHEL")
-        if dist.lower() in dists and language in ['plpythonu', "plpython2u"] or settings.MAJOR_VER in ["13", "14", "15"]:
-            pytest.skip("Skipping python2 extensions for DEB based in 12.* and all centos 13")
+        if dist.lower() in rpm_dists and language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["12", "13" , "14", "15", "16"]:
+            pytest.skip("Skipping python2 extensions for RHEL on Major version 16")
+        if dist.lower() in deb_dists and language in ['plpythonu', "plpython2u"]:
+            pytest.skip("Skipping python2 extensions for DEB based")
         if language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["12","11"] and host.system_info.release.startswith("9"):
             pytest.skip("Skipping python2 extensions for OL 9 based ppg 12 & 11")
         lang = host.run("psql -c 'CREATE LANGUAGE {};'".format(language))
         assert lang.rc == 0, lang.stderr
         assert lang.stdout.strip("\n") in ["CREATE LANGUAGE", "CREATE EXTENSION"], lang.stdout
-        drop_lang = host.run("psql -c 'DROP LANGUAGE {};'".format(language))
-        assert drop_lang.rc == 0, drop_lang.stderr
-        assert drop_lang.stdout.strip("\n") == "DROP LANGUAGE", lang.stdout
+        if settings.MAJOR_VER in ["12","11"]:
+            drop_lang = host.run("psql -c 'DROP LANGUAGE {};'".format(language))
+            assert drop_lang.rc == 0, drop_lang.stderr
+            assert drop_lang.stdout.strip("\n") in ["DROP LANGUAGE"], lang.stdout
+        else:
+            drop_lang = host.run("psql -c 'DROP EXTENSION {};'".format(language))
+            assert drop_lang.rc == 0, drop_lang.stderr
+            assert drop_lang.stdout.strip("\n") in ["DROP LANGUAGE", "DROP EXTENSION"], lang.stdout
 
 
 @pytest.mark.parametrize("percona_package, vanila_package", pg_versions['deb_provides'])
