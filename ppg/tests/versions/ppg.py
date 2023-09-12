@@ -343,6 +343,30 @@ def get_pg15_versions(distros, packages, distro_type):
     return ppg_15_versions
 
 
+def get_pg16_versions(distros, packages, distro_type):
+    ppg_16_versions = {
+                       "deb_packages": fill_template_form(DEB12_PACKAGES_TEMPLATE, "16"),
+                       "deb_provides": fill_provides_template_form(DEB_PROVIDES_TEMPLATE, "16"),
+                       "rpm7_provides": fill_provides_template_form(RPM7_PROVIDES_TEMPLATE, "16"),
+                       'rpm_provides': fill_provides_template_form(RPM_PROVIDES_TEMPLATE, "16"),
+                       "rpm_packages": fill_template_form(RPM_PG13PACKAGES_TEMPLATE, "16"),
+                       "rpm7_packages": fill_template_form(RPM7_PG13PACKAGES_TEMPLATE, "16"),
+                       "rhel_files": fill_template_form(RHEL_FILES_TEMPLATE, "16"),
+                       "deb_files": fill_template_form(DEB_FILES_TEMPLATE, "16"),
+                       "extensions": get_extensions_ppg13(distro_type),
+                       "binaries": ['clusterdb', 'createdb', 'createuser',
+                                    'dropdb', 'dropuser', 'pg_basebackup',
+                                    'pg_config', 'pg_dump', 'pg_dumpall',
+                                    'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                                    'pg_restore', 'pg_verifybackup', 'psql',
+                                    'reindexdb', 'vacuumdb'],
+                       "languages": LANGUAGES}
+
+    ppg_16_versions.update({"deb_pkg_ver": fill_package_versions(packages=packages,
+                                                                 distros=distros)})
+    return ppg_16_versions
+
+
 def get_ppg_versions(distro_type):
     """Get dictionary with versions
     :param distro_type: deb or rpm
@@ -472,5 +496,7 @@ def get_ppg_versions(distro_type):
             "ppg-15.3": get_pg15_versions(packages=["2:15.3-1", "1:250-1", '250-1'],
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-15.4": get_pg15_versions(packages=["2:15.4-1", "1:252-1", '252-1'],
+                                          distros=DISTROS, distro_type=distro_type),
+            "ppg-16.0": get_pg16_versions(packages=["2:16.0-1", "1:253-1", '253-1'],
                                           distros=DISTROS, distro_type=distro_type),
             }
