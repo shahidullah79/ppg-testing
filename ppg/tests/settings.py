@@ -1897,7 +1897,7 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-16.0"]["binaries"],
             "PGSM_version": "2.0.2",
             "PGSM_package_version": "2.0.2",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0",
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
     }
