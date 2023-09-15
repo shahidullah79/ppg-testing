@@ -387,22 +387,25 @@ def test_rpm_files(file, host):
 
 @pytest.mark.parametrize("language", LANGUAGES)
 def test_language(host, language):
-    dists = ['debian', 'ubuntu']
+    deb_dists = ['debian', 'ubuntu']
+    rpm_dists = ["redhat", "centos", "rhel", "ol"]
     dist = host.system_info.distribution
     with host.sudo("postgres"):
         # if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
         #     if "python3" in language:
         #         pytest.skip("Skipping python3 language for Centos or RHEL")
-        if dist.lower() in dists and language in ['plpythonu', "plpython2u"] or settings.MAJOR_VER in ["13", "14", "15"]:
-            pytest.skip("Skipping python2 extensions for DEB based in 12.* and all centos 13")
+        if dist.lower() in rpm_dists and language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["16"]:
+            pytest.skip("Skipping python2 extensions for RHEL on Major version 16")
+        if dist.lower() in deb_dists and language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["13", "14", "15", "16"]:
+            pytest.skip("Skipping python2 extensions for DEB based in 12 13 14 15")
         if language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["12","11"] and host.system_info.release.startswith("9"):
             pytest.skip("Skipping python2 extensions for OL 9 based ppg 12 & 11")
         lang = host.run("psql -c 'CREATE LANGUAGE {};'".format(language))
         assert lang.rc == 0, lang.stderr
         assert lang.stdout.strip("\n") in ["CREATE LANGUAGE", "CREATE EXTENSION"], lang.stdout
-        drop_lang = host.run("psql -c 'DROP LANGUAGE {};'".format(language))
+        drop_lang = host.run("psql -c 'DROP EXTENSION {};'".format(language))
         assert drop_lang.rc == 0, drop_lang.stderr
-        assert drop_lang.stdout.strip("\n") == "DROP LANGUAGE", lang.stdout
+        assert drop_lang.stdout.strip("\n") in ["DROP LANGUAGE", "DROP EXTENSION"], lang.stdout
 
 
 @pytest.mark.parametrize("percona_package, vanila_package", pg_versions['deb_provides'])
