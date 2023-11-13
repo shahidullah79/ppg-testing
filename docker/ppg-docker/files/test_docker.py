@@ -4,6 +4,7 @@ import subprocess
 import testinfra
 import sys
 import settings
+import time
 
 MAJOR_VER = os.getenv('VERSION').split('.')[0]
 MAJOR_MINOR_VER = os.getenv('VERSION')
@@ -25,7 +26,9 @@ def host(request):
     print('Major Minor Version: ' + MAJOR_MINOR_VER)
 
     docker_id = subprocess.check_output(
-        ['docker', 'run', '--name', f'PG{MAJOR_VER}', '-e', 'POSTGRES_PASSWORD=secret', '-d', f'{DOCKER_REPO}/percona-distribution-postgresql:{MAJOR_MINOR_VER}']).decode().strip()
+        ['docker', 'run', '--name', f'PG{MAJOR_VER}', '-e', 'POSTGRES_PASSWORD=secret',
+        '-e', 'PERCONA_TELEMETRY_URL=https://check-dev.percona.com/v1/telemetry/GenericReport',
+        '-d', f'{DOCKER_REPO}/percona-distribution-postgresql:{MAJOR_MINOR_VER}']).decode().strip()
 
     # return a testinfra connection to the container
     yield testinfra.get_host("docker://" + docker_id)
@@ -36,6 +39,11 @@ def host(request):
 def test_myimage(host):
     # 'host' now binds to the container
     assert host.check_output('psql -V') == f'psql (PostgreSQL) {MAJOR_MINOR_VER} - Percona Distribution'
+
+def test_wait_docker_load(host):
+    dist = host.system_info.distribution
+    time.sleep(5)
+    assert 0 == 0
 
 @pytest.fixture()
 def postgresql_binary(host):
@@ -131,12 +139,11 @@ def test_rpm_package_is_installed(host, package):
     assert pkg.is_installed
     if package in ["percona-postgresql-client-common", "percona-postgresql-common"]:
         assert pkg.version == pg_docker_versions[package]
-    elif package in ["percona-pgaudit", f"percona-wal2json{MAJOR_VER}", f"percona-pg_stat_monitor{MAJOR_VER}",
+    elif package in [f"percona-pgaudit{MAJOR_VER}", f"percona-wal2json{MAJOR_VER}", f"percona-pg_stat_monitor{MAJOR_VER}",
         f"percona-pgaudit{MAJOR_VER}_set_user", f"percona-pg_repack{MAJOR_VER}"]:
         assert pkg.version == pg_docker_versions[package]['version']
     else:
         assert pkg.version == pg_docker_versions['version']
-
 
 @pytest.mark.parametrize("file", DOCKER_RHEL_FILES)
 def test_rpm_files(file, host):
@@ -145,3 +152,8 @@ def test_rpm_files(file, host):
     assert f.size > 0
     assert f.content_string != ""
     assert f.user == "postgres"
+
+def test_telemetry_enabled(host):
+    assert host.file('/usr/local/percona/telemetry_uuid').exists
+    assert host.file('/usr/local/percona/telemetry_uuid').contains('PRODUCT_FAMILY_POSTGRESQL')
+    assert host.file('/usr/local/percona/telemetry_uuid').contains('instanceId:[0-9a-fA-F]\\{8\\}-[0-9a-fA-F]\\{4\\}-[0-9a-fA-F]\\{4\\}-[0-9a-fA-F]\\{4\\}-[0-9a-fA-F]\\{12\\}$')

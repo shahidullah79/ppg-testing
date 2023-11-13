@@ -51,6 +51,8 @@
     - lz4-devel
     - zstd
     - libzstd-devel
+  environment:
+    PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: Initialize Postgres RHEL
   command: /usr/pgsql-16/bin/initdb -A trust -k /var/lib/pgsql/16/data

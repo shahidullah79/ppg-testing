@@ -229,7 +229,7 @@ def test_pgaudit_package(host):
         os = host.system_info.distribution
         pkgn = ""
         if os.lower() in ["redhat", "centos", "ol", "rhel"]:
-            pkgn = "percona-pgaudit"
+            pkgn = f"percona-pgaudit{MAJOR_VER}"
             # pkgn = "percona-pgaudit14_12"
         elif os in ["debian", "ubuntu"]:
             pkgn = "percona-postgresql-{}-pgaudit".format(MAJOR_VER)
@@ -424,26 +424,26 @@ def test_postgis_package_version(host):
         postgis = host.package("percona-postgresql-postgis")
         assert pg_versions['postgis_package_version'] in postgis.version
     else:
-        postgis = host.package("percona-postgis33")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-client")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-client")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-debuginfo")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-debuginfo")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-devel")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-devel")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-docs")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-docs")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-gui")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-gui")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-llvmjit")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-llvmjit")
         assert pg_versions['postgis_package_version'] in postgis.version
-        postgis = host.package("percona-postgis33-utils")
+        postgis = host.package(f"percona-postgis33_{MAJOR_VER}-utils")
         assert pg_versions['postgis_package_version'] in postgis.version
         if host.system_info.release.startswith("8") or host.system_info.release.startswith("9"):
-            postgis = host.package("percona-postgis33-client-debuginfo")
+            postgis = host.package(f"percona-postgis33_{MAJOR_VER}-client-debuginfo")
             assert pg_versions['postgis_package_version'] in postgis.version
-            postgis = host.package("percona-postgis33-gui-debuginfo")
+            postgis = host.package(f"percona-postgis33_{MAJOR_VER}-gui-debuginfo")
             assert pg_versions['postgis_package_version'] in postgis.version
 
 
@@ -718,6 +718,6 @@ def test_pg_gather_package_version(host):
 
 
 def test_pg_gather_file_version(host):
-    result = host.run(f"head -4 /usr/bin/gather.sql | tail -1 | cut -d' ' -f3")
+    result = host.run(f"head -5 /usr/bin/gather.sql | tail -1 | cut -d' ' -f3")
     assert result.rc == 0, result.stderr
     assert pg_versions["pg_gather"]['sql_file_version'] in result.stdout.strip("\n"), result.stdout

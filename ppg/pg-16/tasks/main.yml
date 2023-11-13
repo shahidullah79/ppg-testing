@@ -1,4 +1,7 @@
 ---
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'VERSION') | replace('ppg-','') }}"
 
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml

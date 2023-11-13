@@ -10,7 +10,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 RPM_PACKAGES = [
     f'percona-postgresql{settings.MAJOR_VER}-server', 'percona-postgresql-common',
     f'percona-postgresql{settings.MAJOR_VER}-contrib', f'percona-pg_stat_monitor{settings.MAJOR_VER}',
-    'percona-pgaudit', f'percona-pg_repack{settings.MAJOR_VER}', f'percona-wal2json{settings.MAJOR_VER}'
+    f'percona-pgaudit{settings.MAJOR_VER}', f'percona-pg_repack{settings.MAJOR_VER}', f'percona-wal2json{settings.MAJOR_VER}'
 ]
 DEB_PACKAGES = [
     f'percona-postgresql-{settings.MAJOR_VER}', 'percona-postgresql-common',
