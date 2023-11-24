@@ -1838,7 +1838,7 @@ def get_settings(distro_type):
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
             "postgis_version": "3.3.4",
-            "postgis_package_version": "3.3.4"
+            "postgis_package_version": "3.3.4",
         },
         "ppg-15.0": {
             "version": "15.0",
