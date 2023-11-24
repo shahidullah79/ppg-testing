@@ -509,6 +509,6 @@ def get_ppg_versions(distro_type):
                                           distros=DISTROS, distro_type=distro_type),
             "ppg-16.0": get_pg16_versions(packages=["2:16.0-1", "1:253-1", '253-1'],
                                           distros=DISTROS, distro_type=distro_type),
-            "ppg-16.1": get_pg16_versions(packages=["2:16.1-1", "1:256-1", '256-1'],
+            "ppg-16.1": get_pg16_versions(packages=["2:16.1-2", "1:256-1", '256-1'],
                                           distros=DISTROS, distro_type=distro_type),
             }

@@ -57,8 +57,8 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-11.22"]["binaries"],
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0",
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
         "ppg-11.21": {
             "version": "11.21",
@@ -1035,8 +1035,8 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-12.17"]["binaries"],
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0",
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
         "ppg-13.0": {
              "version": "13.0",
@@ -1476,8 +1476,8 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-13.13"]["binaries"],
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0",
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
         "ppg-14.0": {
             "version": "14.0",
@@ -1837,8 +1837,8 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-14.10"]["binaries"],
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0"
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
         "ppg-15.0": {
             "version": "15.0",
@@ -2041,8 +2041,8 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-15.5"]["binaries"],
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0",
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
         "ppg-16.0": {
             "version": "16.0",
@@ -2113,7 +2113,7 @@ def get_settings(distro_type):
             "binaries": ppg_versions["ppg-16.1"]["binaries"],
             "PGSM_version": "2.0.3",
             "PGSM_package_version": "2.0.3",
-            "postgis_version": "3.4.0",
-            "postgis_package_version": "3.4.0",
+            "postgis_version": "3.3.4",
+            "postgis_package_version": "3.3.4",
         },
     }

@@ -66,6 +66,8 @@
     - percona-postgresql-pltcl-16
     - percona-postgresql-server-dev-16
     - percona-postgresql-server-dev-all
+  environment:
+    PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: Clone pgbackrest sources
   become_user: postgres
