@@ -11,7 +11,7 @@
     ansible.builtin.set_fact:
       postgis_rhel_package_name_prefix: "percona-postgis33_16"
     when: (pg_version_to_install | string is version('16.1', '>=', strict=True))
-
+  
   - name: Configure repository
     include_tasks: ../../../../tasks/enable_repo.yml
 
