@@ -26,6 +26,8 @@
       - percona-postgresql13-contrib
       - percona-postgresql13-libs
       - percona-postgresql13-server
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
   - name: initDB Postgres instance 1
     become_user: postgres

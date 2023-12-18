@@ -48,6 +48,8 @@
     - gcc
     - gcc-c++
     - git
+  environment:
+    PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: Enable gcc 7
   shell: echo "source /opt/rh/devtoolset-7/enable" | sudo tee -a /etc/profile;

@@ -723,6 +723,14 @@
       append: yes
     when: ansible_os_family == "Debian"
 
+  # - name: Remove dpkg package if present on RedHat
+  #   yum:
+  #     name: dpkg
+  #     state: absent
+  #   ignore_errors: true
+  #   when: ansible_os_family == "RedHat" and
+  #     (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
+
   - name: Pause for 1 minutes
     ansible.builtin.pause:
       minutes: 1

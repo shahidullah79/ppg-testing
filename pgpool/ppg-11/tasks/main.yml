@@ -26,6 +26,8 @@
       - percona-postgresql11-contrib
       - percona-postgresql11-libs
       - percona-postgresql11-server
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
   - name: initDB Postgres instance 1
     become_user: postgres

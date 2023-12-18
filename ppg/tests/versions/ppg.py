@@ -19,7 +19,9 @@ DEB116_PACKAGES_TEMPLATE = ["percona-postgresql-{}",
                             "percona-postgresql-client-{}-dbgsym",
                             "percona-postgresql-plperl-{}-dbgsym",
                             "percona-postgresql-plpython3-{}-dbgsym",
-                            "percona-postgresql-pltcl-{}-dbgsym"
+                            "percona-postgresql-pltcl-{}-dbgsym",
+                            "postgresql-common",
+                            "postgresql-client-common"
                             ]
 
 DEB_PACKAGES_TEMPLATE = ["percona-postgresql-{}",
@@ -40,7 +42,9 @@ DEB_PACKAGES_TEMPLATE = ["percona-postgresql-{}",
                          "percona-postgresql-client-{}-dbgsym",
                          "percona-postgresql-plperl-{}-dbgsym",
                          "percona-postgresql-plpython3-{}-dbgsym",
-                         "percona-postgresql-pltcl-{}-dbgsym"
+                         "percona-postgresql-pltcl-{}-dbgsym",
+                         "postgresql-common",
+                         "postgresql-client-common"
                          ]
 
 DEB12_PACKAGES_TEMPLATE = [
@@ -62,7 +66,9 @@ DEB12_PACKAGES_TEMPLATE = [
     "percona-postgresql-client-{}-dbgsym",
     "percona-postgresql-plperl-{}-dbgsym",
     "percona-postgresql-plpython3-{}-dbgsym",
-    "percona-postgresql-pltcl-{}-dbgsym"
+    "percona-postgresql-pltcl-{}-dbgsym",
+    "postgresql-common",
+    "postgresql-client-common"
 ]
 
 RPM_PACKAGES_TEMPLATE = ["percona-postgresql{}",
@@ -411,7 +417,7 @@ def get_ppg_versions(distro_type):
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-11.21": get_pg11_versions(packages=['2:11.21-1', '252-1', '11+252-1', '1:252-1'],
                                            distros=DISTROS, distro_type=distro_type),
-            "ppg-11.22": get_pg11_versions(packages=['2:11.22-1', '256-1', '11+252-1', '1:256-1'],
+            "ppg-11.22": get_pg11_versions(packages=['2:11.22-1', '256-2', '11+256-2', '1:256-2'],
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-12.2": get_pg12_versions(packages=["2:12-3.1", "12+215-1", '215-1'],
                                           distros=DISTROS, distro_type=distro_type),
@@ -443,7 +449,7 @@ def get_ppg_versions(distro_type):
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-12.16": get_pg12_versions(packages=["2:12.16-1", "12+226-1", "1:252-1", '252-1'],
                                            distros=DISTROS, distro_type=distro_type),
-            "ppg-12.17": get_pg12_versions(packages=["2:12.17-1", "12+226-1", "1:256-1", '256-1'],
+            "ppg-12.17": get_pg12_versions(packages=["2:12.17-2", "12+226-1", "1:256-2", '256-2'],
                                            distros=DISTROS, distro_type=distro_type),
             "ppg-13.0": get_pg13_versions(packages=["2:13-0.1", "13+221-1", '221-1'],
                                           distros=DISTROS, distro_type=distro_type),

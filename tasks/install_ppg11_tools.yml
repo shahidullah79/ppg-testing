@@ -16,6 +16,22 @@
 #        - "String::Util"
 #        - "Data::Str2Num"
 #    when: ansible_os_family == "RedHat" and ansible_distribution_major_version != "8"
+  - name: Setting facts so that they will be persisted in the fact cache
+    ansible.builtin.set_fact:
+      pgaudit_rhel_package_name: "percona-pgaudit"
+      postgis_rhel_package_name_prefix: "percona-postgis33"
+
+  - name: Setting facts so that they will be persisted in the fact cache
+    ansible.builtin.set_fact:
+      pgaudit_rhel_package_name: "percona-pgaudit11"
+      postgis_rhel_package_name_prefix: "percona-postgis33_11"
+    when: (pg_version_to_install | string is version('11.22', '>=', strict=True))
+
+  - debug:
+      msg: "Value of pgaudit_rhel_package_name is : {{ pgaudit_rhel_package_name }}"
+
+  - debug:
+      msg: "Value of postgis_rhel_package_name_prefix is : {{ postgis_rhel_package_name_prefix }}"
 
   - name: Install additional tools for pgbackrest test Debian
     apt:
@@ -59,7 +75,7 @@
 
   - name: Install pgaudit RHEL
     yum:
-      name: percona-pgaudit
+      name: "{{ pgaudit_rhel_package_name }}"
       allow_downgrade: yes
       state: latest
     when: ansible_os_family == "RedHat"
@@ -170,8 +186,7 @@
       packages:
         - percona-pgpool-II-pg11
         - percona-pgpool-II-pg11-extensions
-    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
-      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.19', '>=', strict=True))
+    when: (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.19', '>=', strict=True))
 
   - name: Install percona-pgpool Debian
     apt:
@@ -182,8 +197,7 @@
       packages:
         - percona-pgpool2
         - libpgpool2
-    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
-      (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.19', '>=', strict=True))
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.19', '>=', strict=True))
 
   - name: Install percona-wal2json11 RHEL
     yum:
@@ -209,8 +223,7 @@
       name: percona-pg_gather
       state: latest
       update_cache: yes
-    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
-     (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.21', '>=', strict=True))
+    when: (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.21', '>=', strict=True))
 
   - name: Install percona-pg_gather Debian
     apt:
@@ -220,8 +233,7 @@
     vars:
       packages:
         - percona-pg-gather
-    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
-      (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.21', '>=', strict=True))
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.21', '>=', strict=True))
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
@@ -686,16 +698,14 @@
       name: pgpool
       state: started
       enabled: yes
-    when: (ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
-      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.19', '>=', strict=True))
+    when: (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.19', '>=', strict=True))
 
   - name: Start pgpool service
     service:
       name: percona-pgpool2
       state: started
       enabled: yes
-    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
-      (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.19', '>=', strict=True))
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.19', '>=', strict=True))
 
   - name: Install percona-postgis RHEL
     yum:
@@ -704,19 +714,16 @@
       update_cache: yes
     vars:
       packages:
-      - percona-postgis33
-      - percona-postgis33-client
-      #- percona-postgis33-client-debuginfo
-      - percona-postgis33-debuginfo
-      - percona-postgis33-devel
-      - percona-postgis33-docs
-      - percona-postgis33-gui
-      #- percona-postgis33-gui-debuginfo
-      - percona-postgis33-llvmjit
-      - percona-postgis33-utils
+      - "{{postgis_rhel_package_name_prefix}}"
+      - "{{postgis_rhel_package_name_prefix}}-client"
+      - "{{postgis_rhel_package_name_prefix}}-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-devel"
+      - "{{postgis_rhel_package_name_prefix}}-docs"
+      - "{{postgis_rhel_package_name_prefix}}-gui"
+      - "{{postgis_rhel_package_name_prefix}}-llvmjit"
+      - "{{postgis_rhel_package_name_prefix}}-utils"
     when: ansible_distribution_major_version == "7" and
-      ((ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
-      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.20', '>=', strict=True)))
+      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.20', '>=', strict=True))
 
   - name: Enable llvm-toolset for RHEL8 to install PostGIS
     become: true
@@ -730,19 +737,18 @@
       update_cache: yes
     vars:
       packages:
-      - percona-postgis33
-      - percona-postgis33-client
-      - percona-postgis33-client-debuginfo
-      - percona-postgis33-debuginfo
-      - percona-postgis33-devel
-      - percona-postgis33-docs
-      - percona-postgis33-gui
-      - percona-postgis33-gui-debuginfo
-      - percona-postgis33-llvmjit
-      - percona-postgis33-utils
+      - "{{postgis_rhel_package_name_prefix}}"
+      - "{{postgis_rhel_package_name_prefix}}-client"
+      - "{{postgis_rhel_package_name_prefix}}-client-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-devel"
+      - "{{postgis_rhel_package_name_prefix}}-docs"
+      - "{{postgis_rhel_package_name_prefix}}-gui"
+      - "{{postgis_rhel_package_name_prefix}}-gui-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-llvmjit"
+      - "{{postgis_rhel_package_name_prefix}}-utils"
     when: (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9") and
-      ((ansible_os_family == "RedHat" and pg_version_to_install is not defined) or
-      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.20', '>=', strict=True)))
+      (ansible_os_family == "RedHat" and pg_version_to_install | string is version('11.20', '>=', strict=True))
 
   - name: Install percona-postgis Debian
     apt:
@@ -756,8 +762,7 @@
         - percona-postgresql-postgis-scripts
         - percona-postgresql-postgis
         - percona-postgis
-    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
-      (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.20', '>=', strict=True))
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.20', '>=', strict=True))
 
   - name: Install percona-postgis libsfcgal1 on Ubuntu-18
     apt:
@@ -767,8 +772,7 @@
     vars:
       packages:
         - libsfcgal1
-    when: (ansible_os_family == "Debian" and pg_version_to_install is not defined) or
-      (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.20', '>=', strict=True)) and
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('11.20', '>=', strict=True)) and
       ansible_distribution_major_version == "18"
 
   - name: Add user postgres to sudoers
@@ -777,6 +781,14 @@
       groups: sudo
       append: yes
     when: ansible_os_family == "Debian"
+
+  # - name: Remove dpkg package if present on RedHat
+  #   yum:
+  #     name: dpkg
+  #     state: absent
+  #   ignore_errors: true
+  #   when: ansible_os_family == "RedHat" and
+  #     (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
   - name: Pause for 1 minutes
     ansible.builtin.pause:

@@ -26,6 +26,8 @@
       - percona-postgresql12-contrib
       - percona-postgresql12-libs
       - percona-postgresql12-server
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
   - name: initDB Postgres instance 1
     become_user: postgres

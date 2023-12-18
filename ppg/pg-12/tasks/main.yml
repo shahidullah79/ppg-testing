@@ -1,4 +1,7 @@
 ---
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'VERSION') | replace('ppg-','') }}"
 
 - name: Configure repository
   include_tasks: ../../../../tasks/enable_repo.yml
@@ -39,3 +42,12 @@
   copy:
     src: ../../common/files/lib_version.c
     dest: /tmp/libpq_command_temp_dir
+
+- name: ping 
+  command: ping -c 3 repo.percona.com
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  register: results
+
+- debug:
+      var: results.stdout

@@ -77,6 +77,8 @@
       - percona-postgresql-plpython3-16-dbgsym
       - percona-postgresql-pltcl-16-dbgsym
   when: ansible_os_family == "Debian"
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: install Percona Platform for PostgreSQL deb packages
   apt:
@@ -114,6 +116,8 @@
       - percona-postgresql16-test
       - percona-postgresql16-debuginfo
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: install Percona Platform for PostgreSQL rpm packages for RHEL
   yum:
@@ -148,6 +152,8 @@
         - percona-postgresql16-server-debuginfo
   when: ansible_os_family == "RedHat" and
       (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
+  environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
 - name: Stop postgresql service for RHEL based
   service:

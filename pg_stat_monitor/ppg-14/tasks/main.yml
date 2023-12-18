@@ -73,6 +73,8 @@
       - percona-postgresql14-server
       - percona-postgresql14-test
     when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
   - name: Initialize Postgres RHEL
     become: true
