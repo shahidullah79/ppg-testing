@@ -1,13 +1,24 @@
 ---
-
 - name: Set Facts.
   set_fact:
-    PPG_VERSION: "{{ lookup('env', 'VERSION') }}"
     DOCKER_REPOSITORY: "{{ lookup('env', 'REPOSITORY') }}"
+    PPG_VERSION: "{{ lookup('env', 'SERVER_VERSION')}}"
+    TAG: "{{ lookup('env', 'DOCKER_TAG')}}"
     cacheable: true
 
-- debug:
-    msg: "Value of PPG_VERSION is : {{ PPG_VERSION }}"
+- name: Assign TAG based on architecture and version
+  set_fact:
+    TAG: >-
+      {{
+        TAG if ansible_architecture == 'x86_64' and not TAG|regex_search('multi')
+        else TAG|string + '-arm64' if ansible_architecture == 'aarch64' and not TAG|regex_search('multi')
+        else TAG
+      }}
+  when: "ansible_architecture == 'x86_64' or ansible_architecture == 'aarch64'"
+
+- name: Print PPG_VERSION and TAG
+  debug:
+    msg: "PPG_VERSION: {{ PPG_VERSION }}, TAG: {{ TAG }}"
 
 - name: Yum update
   become: true
@@ -57,10 +68,24 @@
     update_cache: yes
   when: ansible_os_family == "Debian"
 
+- name: run this on OSX type systems
+  debug: msg="hello from osx"
+  when: ansible_distribution == 'MacOSX'
+
+- name: Install brew
+  become: true
+  command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  when: ansible_os_family == "MacOSX"
+
+- name: Install Docker
+  become: true
+  command: brew cask install docker
+  when: ansible_os_family == "MacOSX"
+
 - name: show docker version
   command: docker -v
   register: results
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" or ansible_os_family == "MacOSX"
 
 - debug:
     var: results.stdout
@@ -140,6 +165,7 @@
   environment:
     VERSION: "{{ PPG_VERSION }}"
     DOCKER_REPOSITORY: "{{ DOCKER_REPOSITORY }}"
+    TAG: "{{ TAG }}"
   register: results
 
 - debug:
