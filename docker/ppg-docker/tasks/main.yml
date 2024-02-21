@@ -11,6 +11,7 @@
     TAG: >-
       {{
         TAG if ansible_architecture == 'x86_64' and not TAG|regex_search('multi')
+        else TAG if ansible_architecture == 'aarch64' and (not TAG|regex_search('multi') and TAG|regex_search('-arm64$'))
         else TAG|string + '-arm64' if ansible_architecture == 'aarch64' and not TAG|regex_search('multi')
         else TAG
       }}
