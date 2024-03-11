@@ -6,7 +6,7 @@
       state: present
 
   - name: Install pre-packages on Redhat
-    apt:
+    yum:
       name: "{{ packages }}"
       update_cache: yes
       state: latest
