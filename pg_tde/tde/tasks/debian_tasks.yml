@@ -1,0 +1,93 @@
+---
+  - name: Install pre-packages on Debian
+    apt:
+      name: "{{ packages }}"
+      update_cache: yes
+      state: latest
+    vars:
+      packages:
+        - make
+        - gcc
+        - autoconf
+        - libjson-c-dev
+        - libcurl4-openssl-dev
+
+  - name: install Percona Platform for PostgreSQL deb packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: yes
+      state: latest
+    vars:
+      postgres_version: "{{ major_version }}"
+      packages:
+      - percona-postgresql
+      - percona-postgresql-{{ postgres_version }}
+      - percona-postgresql-all
+      - percona-postgresql-client
+      - percona-postgresql-client-{{ postgres_version }}
+      - percona-postgresql-common
+      - percona-postgresql-contrib
+      - percona-postgresql-doc
+      - percona-postgresql-doc-{{ postgres_version }}
+      - percona-postgresql-plperl-{{ postgres_version }}
+      - percona-postgresql-plpython3-{{ postgres_version }}
+      - percona-postgresql-pltcl-{{ postgres_version }}
+      - percona-postgresql-server-dev-{{ postgres_version }}
+      - percona-postgresql-server-dev-all
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
+
+  - name: Clone pg_tde sources
+    git:
+      repo: "{{ repo }}"
+      version: "{{ version }}"
+      dest: /tmp/pg_tde
+    vars:
+      repo: "{{ lookup('env', 'TDE_REPO') }}"
+      version: "{{ lookup('env', 'TDE_BRANCH') }}"
+    become_user: postgres
+
+  - name: configure pg_tde from sources
+    shell: ./configure
+    args:
+      chdir: "/tmp/pg_tde"
+
+  - name: Build pg_tde from sources
+    make:
+      chdir: "/tmp/pg_tde"
+      params:
+        USE_PGXS: 1
+
+  - name: Install pg_tde from sources
+    make:
+      target: install
+      chdir: "/tmp/pg_tde"
+      params:
+        USE_PGXS: 1
+    when: not use_package_install
+
+  - name: Install pg_tde Debian/Ubuntu Package
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+        - percona-pgtde{{ major_version }}
+    when: use_package_install
+
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /etc/postgresql/{{ major_version }}/main/postgresql.conf
+      line: shared_preload_libraries = 'pg_tde'
+
+  - name: Stop postgresql service for Debian based
+    service:
+      name: postgresql
+      state: stopped
+
+  - name: Start postgresql service for Debian based
+    service:
+      name: postgresql
+      state: started
+      enabled: true
