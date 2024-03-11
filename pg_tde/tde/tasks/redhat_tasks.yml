@@ -32,6 +32,7 @@
         - autoconf
         - json-c-devel
         - libcurl-devel
+        - openssl-devel
         - perl-IPC-Run
 
   - name: Disable dnf module for RHEL8
