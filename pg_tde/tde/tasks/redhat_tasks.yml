@@ -5,19 +5,6 @@
       update_cache: yes
       state: present
 
-  - name: Install pre-packages on Redhat
-    yum:
-      name: "{{ packages }}"
-      update_cache: yes
-      state: latest
-    vars:
-      packages:
-        - make
-        - gcc
-        - autoconf
-        - json-c-devel
-        - libcurl-devel
-
   - name: Clean dnf RHEL8
     become: true
     command: dnf clean all -y
@@ -33,12 +20,19 @@
     command: dnf config-manager --set-enabled ol9_codeready_builder
     when: ansible_distribution_major_version == "9"
 
-  - name: Install Perl IPC Run on RHEL
-    become: true
+  - name: Install pre-packages on Redhat
     yum:
-      name: perl-IPC-Run
+      name: "{{ packages }}"
+      update_cache: yes
       state: latest
-      update_cache: yes   
+    vars:
+      packages:
+        - make
+        - gcc
+        - autoconf
+        - json-c-devel
+        - libcurl-devel
+        - perl-IPC-Run
 
   - name: Disable dnf module for RHEL8
     become: true
