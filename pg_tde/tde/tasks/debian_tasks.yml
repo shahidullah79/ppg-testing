@@ -11,6 +11,29 @@
         - autoconf
         - libjson-c-dev
         - libcurl4-openssl-dev
+        - libreadline6-dev
+        - systemtap-sdt-dev
+        - wget
+        - zlib1g-dev
+        - libssl-dev
+        - libpam0g-dev
+        - bison
+        - flex
+        - libipc-run-perl
+        - libcurl4-openssl-dev
+        - libhttp-server-simple-perl
+        - libtext-trim-perl
+
+  # - name: Install perl modules
+  #   shell: |
+  #     sudo /usr/bin/perl -MCPAN -e 'install IPC::RUN'
+  #     sudo /usr/bin/perl -MCPAN -e 'install Text::Trim'
+
+  - name: Install hashicorp repo and vault
+    shell: |
+      wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+      sudo apt update && sudo apt install -y vault
 
   - name: install Percona Platform for PostgreSQL deb packages
     apt:

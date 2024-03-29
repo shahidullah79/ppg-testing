@@ -23,12 +23,7 @@ provisioner:
     converge: ../../playbooks/playbook.yml
     verify: ../../playbooks/verify.yml
 verifier:
-  name: testinfra
-  directory: ../../../tests/
-  options:
-    verbose: true
-    s: true
-    junitxml: report.xml
+  name: ansible
 scenario:
   name: debian-12
   destroy_sequence:
