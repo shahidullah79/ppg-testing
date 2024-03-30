@@ -34,6 +34,15 @@
         - libcurl-devel
         - openssl-devel
         - perl-IPC-Run
+        - perl-App-cpanminus
+
+  - name: Install cpanm CGI::Session
+    become: true
+    command: cpanm CGI::Session
+
+  - name: Install HTTP::Server::Simple::CGI
+    become: true
+    command: cpanm HTTP::Server::Simple::CGI
 
   - name: Disable dnf module for RHEL8
     become: true
@@ -88,6 +97,18 @@
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     when: ansible_distribution_major_version != "7"
 
+  - name: yum install -y yum-utils
+    become: true
+    command: yum install -y yum-utils
+
+  - name: yum-config-manager hashicorp repo
+    become: true
+    command: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+
+  - name: yum -y install vault
+    become: true
+    command: yum -y install vault
+
   - name: Clone pg_tde sources
     git:
       repo: "{{ repo }}"
@@ -131,12 +152,6 @@
     lineinfile:
       path: /var/lib/pgsql/{{ major_version }}/data/postgresql.conf
       line: shared_preload_libraries = 'pg_tde'
-
-  - name: Restart Postgres RHEL
-    service:
-      name: postgresql-{{ major_version }}
-      state: restarted
-    register: out
 
   - name: Start Postgres RHEL
     service:
