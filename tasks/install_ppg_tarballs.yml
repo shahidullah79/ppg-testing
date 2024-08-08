@@ -1,0 +1,136 @@
+---
+  - name: setup epel release
+    yum:
+      name: epel-release
+      update_cache: yes
+      state: present
+    when: ansible_os_family == "RedHat"
+
+  - name: Clean dnf oracle linux
+    become: true
+    command: dnf clean all -y
+    when: ansible_os_family == "RedHat" and
+      (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
+
+  - name: Disable dnf postgresql for RHEL8
+    become: true
+    command: dnf module disable postgresql -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+
+  - name: Remove the tarball destination directory if it exists
+    become: true
+    ansible.builtin.command:
+      cmd: rm -rf "{{ dest_dir }}"
+    when: dest_dir is defined and dest_dir != ''
+
+  - name: Ensure tarball destination directory exists
+    become: true
+    ansible.builtin.file:
+      path: "{{ dest_dir }}"
+      state: directory
+
+  - name: Grant read/write permissions to 'postgres' user
+    ansible.builtin.file:
+      path: "{{ dest_dir }}"
+      owner: postgres
+      group: postgres
+      mode: '0755'
+
+  - name: Install Percona PG tarballs
+    unarchive:
+      src: "{{ tarball_url }}"
+      dest:  "{{dest_dir}}"
+      remote_src: true
+
+  - name: Copy Percona pl-languages to /opt
+    become: true
+    copy:
+      src: "{{ dest_dir }}/{{ item }}"
+      dest: "/opt/"
+      remote_src: yes
+      force: yes
+    with_items: 
+      - percona-python3
+      - percona-perl
+      - percona-tcl
+
+  - name: Remove existing abc.list.type file if it exists
+    file:
+      path: /tmp/abc.list.type
+      state: absent
+
+  - name: Find all ELF binaries and libraries in the specified subdirectories
+    shell: "find {{ item }} -type f -exec file {} \\; | grep ELF "
+    register: file_list
+    ignore_errors: yes
+    failed_when: false
+    with_items:
+      - "{{dest_dir}}/percona-haproxy"
+      - "{{dest_dir}}/percona-patroni"
+      - "{{dest_dir}}/percona-perl/bin"
+      - "{{dest_dir}}/percona-pgbackrest"
+      - "{{dest_dir}}/percona-pgbadger"
+      - "{{dest_dir}}/percona-pgbouncer"
+      - "{{dest_dir}}/percona-pgpool-II"
+      - "{{dest_dir}}/percona-postgresql{{major_version}}"
+      - "{{dest_dir}}/percona-python3/bin"
+      - "{{dest_dir}}/percona-tcl/bin"
+      - "{{dest_dir}}/percona-etcd/bin"
+
+  - name: Concatenate file lists from all subdirectories
+    shell: "echo '{{ file_list.results | map(attribute='stdout') | join('') }}' > /tmp/abc.list.type"
+    run_once: true
+
+  - name: Save concatenated file list to abc.list.type
+    copy:
+      content: "{{ file_list.results | map(attribute='stdout') | join('') }}"
+      dest: /tmp/abc.list.type
+
+  - name: Filter ELF files and check dependencies with ldd
+    shell: "(grep ELF /tmp/abc.list.type| awk -F: '{print $1}' | xargs ldd)> /tmp/check_dependency.log 2>&1"
+    register: ldd_output
+    ignore_errors: yes
+
+  - name: Parse check_dependency.log for missing dependencies
+    shell: |
+      awk '
+        /^\/.*:$/ { filename=$0; next }
+        /not found/ { print filename; print; print "" }
+      ' /tmp/check_dependency.log
+    register: missing_deps
+    ignore_errors: yes
+
+  # - name: Display missing dependencies (if any)
+  #   debug:
+  #     msg: "{{ missing_deps.stdout_lines }}"
+
+  # - name: Run tasks only on Debian systems
+  #   block:
+  #     - name: Find libreadline library
+  #       find:
+  #         paths: /lib/x86_64-linux-gnu/
+  #         patterns: "libreadline.so*"
+  #       register: readline_libs
+
+  #     - name: Debug found libraries
+  #       debug:
+  #         var: readline_libs.files
+
+  #     - name: Set the destination directory
+  #       set_fact:
+  #         destination_dir: "{{ dest_dir }}/percona-postgresql{{major_version}}/lib"
+
+  #     - name: Select the first found libreadline
+  #       set_fact:
+  #         selected_libreadline: "{{ readline_libs.files[0].path }}"
+  #       when: readline_libs.matched > 0
+
+  #     - name: Create symbolic link
+  #       file:
+  #         src: "{{ selected_libreadline }}"
+  #         dest: "{{ destination_dir }}/libreadline.so.7"
+  #         state: link
+  #       when: selected_libreadline is defined
+  #       #notify: Symlink created
+  #   when: ansible_facts['os_family'] == 'Debian'
