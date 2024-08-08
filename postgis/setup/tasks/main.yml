@@ -1,0 +1,165 @@
+---
+  - name: Set Facts
+    set_fact:
+      major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
+      cacheable: true
+
+  - name: Setting facts so that they will be persisted in the fact cache
+    ansible.builtin.set_fact:
+      postgis_rhel_package_name_prefix: "percona-postgis33_{{ major_version }}"
+
+  - name: Configure repository
+    include_tasks: ../../../../tasks/enable_repo.yml
+
+  - name: setup epel release
+    yum:
+      name: epel-release
+      update_cache: yes
+      state: present
+    when: ansible_os_family == "RedHat"
+
+  - name: Enable ol9_codeready_builder on oracle linux 9
+    become: true
+    command: dnf config-manager --set-enabled ol9_codeready_builder
+
+  - name: install Percona Platform for PostgreSQL rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - percona-postgresql-client-common
+      - percona-postgresql-common
+      - percona-postgresql{{ major_version }}
+      - percona-postgresql{{ major_version }}-contrib
+      - percona-postgresql{{ major_version }}-libs
+      - percona-postgresql{{ major_version }}-server
+    environment:
+      PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
+
+  - name: install Percona Platform for PostGis rpm packages
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - "{{postgis_rhel_package_name_prefix}}"
+      - "{{postgis_rhel_package_name_prefix}}-client"
+      - "{{postgis_rhel_package_name_prefix}}-client-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-devel"
+      - "{{postgis_rhel_package_name_prefix}}-docs"
+      - "{{postgis_rhel_package_name_prefix}}-gui"
+      - "{{postgis_rhel_package_name_prefix}}-gui-debuginfo"
+      - "{{postgis_rhel_package_name_prefix}}-llvmjit"
+      - "{{postgis_rhel_package_name_prefix}}-utils"
+
+  - name: Initialize Postgres RHEL
+    become: true
+    command: /usr/pgsql-{{ major_version }}/bin/postgresql-{{ major_version }}-setup initdb
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+  - name: Start Postgres RHEL
+    service:
+      name: postgresql-{{ major_version }}
+      state: started
+      enabled: yes
+
+  - name: Select available extensions
+    become_user: postgres
+    command: psql -c "SELECT name, default_version,installed_version FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address%';"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION postgis
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION postgis;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION postgis_raster
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION postgis_raster;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION postgis_sfcgal
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION postgis_sfcgal;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION fuzzystrmatch
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION fuzzystrmatch; "
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION address_standardizer
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION address_standardizer;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION address_standardizer_data_us
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION address_standardizer_data_us;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION postgis_tiger_geocoder
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION postgis_tiger_geocoder;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CREATE EXTENSION postgis_topology
+    become_user: postgres
+    command: psql -c "CREATE EXTENSION postgis_topology;"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: Display ppg version
+    become_user: postgres
+    shell: psql -c "select version()"
+    register: results
+
+  - debug:
+        var: results.stdout
+
+  - name: Select available extensions
+    become_user: postgres
+    command: psql -c "SELECT name, default_version,installed_version FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address%';"
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: Select available extensions
+    become_user: postgres
+    command: psql -c "SELECT PostGIS_Full_Version();"
+    register: results
+
+  - debug:
+      var: results.stdout

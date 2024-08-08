@@ -17,6 +17,12 @@
     command: dnf clean all -y
     when: ansible_distribution_major_version == "8"
 
+  - name: Install oracle-epel-release-el8 package
+    ansible.builtin.dnf:
+      name: oracle-epel-release-el8
+      state: present
+    when: ansible_facts['distribution'] == "OracleLinux" and ansible_facts['distribution_major_version'] == "8"
+
   - name: Enable ol8_codeready_builder on oracle linux 8
     become: true
     command: dnf config-manager --set-enabled ol8_codeready_builder
@@ -226,23 +232,6 @@
       - "{{postgis_rhel_package_name_prefix}}-utils"
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
-
-  # - name: Percona Platform for PostgreSQL rpm packages for RHEL and additional tools
-  #   yum:
-  #     name: "{{ packages }}"
-  #     state: latest
-  #     update_cache: yes
-  #     enablerepo: rpmfusion-*
-  #   vars:
-  #     packages:
-  #     - openssl-devel
-  #     - llvm-toolset-7-clang
-  #     - llvm5.0
-  #     - llvm-toolset-7
-  #     - readline-devel
-  #     - gcc
-  #     - gcc-c++
-  #   when: ansible_distribution_major_version == "7"
 
   - name: Initialize Postgres RHEL
     become: true

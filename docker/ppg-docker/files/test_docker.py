@@ -167,3 +167,84 @@ def test_telemetry_enabled(host):
     assert host.file('/usr/local/percona/telemetry_uuid').exists
     assert host.file('/usr/local/percona/telemetry_uuid').contains('PRODUCT_FAMILY_POSTGRESQL')
     assert host.file('/usr/local/percona/telemetry_uuid').contains('instanceId:[0-9a-fA-F]\\{8\\}-[0-9a-fA-F]\\{4\\}-[0-9a-fA-F]\\{4\\}-[0-9a-fA-F]\\{4\\}-[0-9a-fA-F]\\{12\\}$')
+
+#=========================================
+# Telemetry changes
+#=========================================
+# Define the packages you want to test
+telemetry_pkg_name = "percona-pg-telemetry"+MAJOR_VER
+telemetry_packages = [
+    telemetry_pkg_name,
+    "percona-telemetry-agent"
+]
+
+# Define log directory and files to be checked
+log_directory = "/var/log/percona/telemetry-agent/"
+log_files = [
+    "telemetry-agent-error.log",
+    "telemetry-agent.log"
+]
+
+# Paths for directories to be checked
+common_directories = [
+    "/usr/local/percona/telemetry/history/",
+    "/usr/local/percona/telemetry/pg/"
+]
+
+# Paths for percona-telemetry-agent based on the OS
+debian_percona_telemetry_agent = "/etc/default/percona-telemetry-agent"
+redhat_percona_telemetry_agent = "/etc/sysconfig/percona-telemetry-agent"
+
+@pytest.mark.parametrize("package", telemetry_packages)
+def test_rpm_package_is_installed(host, package):
+    dist = host.system_info.distribution
+    pkg = host.package(package)
+    assert pkg.is_installed
+
+def test_telemetry_agent_service_enabled(host):
+    service = host.service("percona-telemetry-agent")
+    #assert service.is_running
+    assert service.is_enabled
+
+def test_telemetry_log_directory_exists(host):
+    """Test if the directory exists."""
+    logdir = host.file(log_directory)
+    assert logdir.exists, f"Directory {log_directory} does not exist."
+
+@pytest.mark.parametrize("file_name", log_files)
+def test_telemetry_log_files_exist(host,file_name):
+    """Test if the required files exist within the directory."""
+    file_path = os.path.join(log_directory, file_name)
+    log_file_name = host.file(file_path)
+    assert log_file_name.exists, f"File {file_path} does not exist."
+
+def test_telemetry_extension_in_conf(host):
+    """Test if percona_pg_telemetry extension exists in postgresql.auto.conf."""
+    config_path = "/data/db/postgresql.auto.conf"
+    assert host.file(config_path).exists, f"{config_path} does not exists"
+    assert host.file(config_path).contains('percona_pg_telemetry'), f"'percona_pg_telemetry' not found in {config_path}."
+
+def get_telemetry_agent_conf_file(host):
+    """Determine the percona-telemetry-agent path based on the OS."""
+    dist = host.system_info.distribution
+    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+        return redhat_percona_telemetry_agent
+    else:
+        return debian_percona_telemetry_agent
+
+def test_telemetry_json_directories_exist(host):
+    """Test if the history and pg directories exist."""
+    for directory in common_directories:
+        assert host.file(directory).exists, f"Directory {directory} does not exist."
+
+# def test_json_files_exist():
+#     """Test if *.json files exist in the directories."""
+#     json_files = []
+#     for directory in common_directories:
+#         json_files.extend(glob.glob(os.path.join(directory, "*.json")))
+#     assert len(json_files) > 0, "No .json files found in the specified directories."
+
+def test_telemetry_agent_conf_exists(host):
+    """Test if the percona-telemetry-agent conf file exists."""
+    agent_path = get_telemetry_agent_conf_file(host)
+    assert host.file(agent_path).exists, f"{agent_path} does not exist."
