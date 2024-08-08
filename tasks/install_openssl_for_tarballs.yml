@@ -1,0 +1,22 @@
+---
+- name: Install Openssl
+  package:
+    name: openssl
+    state: present
+  become: yes
+
+- name: Check if openssl binary exists
+  stat:
+    path: /usr/bin/openssl
+  register: openssl_check
+
+- name: Get OpenSSL version
+  command: openssl version
+  register: openssl_version
+  changed_when: false
+  when: openssl_check.stat.exists
+
+- name: Check Openssl Version
+  debug:
+    msg: "OpenSSL version is {{openssl_version.stdout }}"
+  when: openssl_check.stat.exists

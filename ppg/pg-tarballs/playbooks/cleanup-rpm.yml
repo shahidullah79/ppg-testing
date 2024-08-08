@@ -1,0 +1,8 @@
+---
+- name: Cleanup
+  hosts: all
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Do clean up stuff
+      command: echo "Do Cleanup stuff if needed."

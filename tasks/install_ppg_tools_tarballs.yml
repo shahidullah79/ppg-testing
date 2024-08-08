@@ -1,0 +1,242 @@
+---
+  - name: Install additional tools for pgbackrest test Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+        - libxml-checker-perl
+        - libyaml-perl
+        - texlive-latex-base
+        - texlive-latex-extra
+        - texlive-fonts-recommended
+        - lcov
+        - rsync
+        - zlib1g-dev
+        - libssl-dev
+        - libxml2-dev
+        - libpq-dev
+        - pkg-config
+        - valgrind
+        - liblz4-dev
+        - liblz4-tool
+        - zstd
+        - libzstd-dev
+        - bzip2
+        - libbz2-dev
+#        - libsharyanto-string-util-perl
+        - libipc-run-perl
+        - libtext-csv-xs-perl
+    when: ansible_os_family == "Debian"
+
+  - name: Create pgbackrest directory
+    file:
+      path: /etc/pgbackrest/
+      state: directory
+
+  - name: Create pgbackrest var/lib directory
+    file:
+      path: /var/lib/pgbackrest/
+      owner: postgres
+      group: postgres
+      state: directory
+
+  - name: Create pgbackrest var/log directory
+    file:
+      path: /var/log/pgbackrest/
+      owner: postgres
+      group: postgres
+      state: directory
+
+  - name: Create pgbackrest configuration
+    blockinfile:
+      path: /etc/pgbackrest/pgbackrest.conf
+      create: yes
+      block: |
+        [global]
+        repo1-path=/var/lib/pgbackrest
+
+        [testing]
+        pg1-path={{data_dir}}
+        pg1-port={{server_port}}
+
+  - name: Configure backup config
+    blockinfile:
+      path: "{{data_dir}}/postgresql.conf"
+      block: |
+        archive_mode = on
+        archive_command = '/opt/pgdistro/percona-pgbackrest/bin/pgbackrest --stanza=testing archive-push %p'
+        max_wal_senders = 10
+        wal_level = logical
+        logging_collector = on
+        log_directory = pg_log
+        log_filename = postgresql-main.log
+
+  - name: Restart Postgres
+    become: true
+    become_user: postgres
+    command: "pg_ctl -D {{data_dir}} restart"
+    environment:
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{dest_dir}}/percona-postgresql{{major_version}}/bin"
+
+  - name: Enable llvm-toolset for RHEL8 to install PostGIS
+    become: true
+    command: dnf module enable llvm-toolset -y
+    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+  - name: Add extensions to postgresql.conf
+    lineinfile:
+      path: "{{data_dir}}/postgresql.conf"
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
+
+  - name: Remove pg_hba.conf
+    file:
+      path: "{{data_dir}}/pg_hba.conf"
+      state: absent
+
+  - name: Edit pg_hba.conf
+    blockinfile:
+      path: "{{data_dir}}/pg_hba.conf"
+      create: yes
+      owner: postgres
+      block: |
+        local   all             all                                     trust
+        host    all             all             127.0.0.1/32            trust
+        host    all             all             ::1/128                 trust
+        local   replication     all                                     trust
+        host    replication     all             127.0.0.1/32            trust
+        host    replication     all             ::1/128                 trust
+    when: (ansible_os_family == "RedHat") or (ansible_os_family == "Debian")
+
+  - name: Restart Postgres
+    become: true
+    become_user: postgres
+    command: "pg_ctl -D {{data_dir}} restart"
+    environment:
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{dest_dir}}/percona-postgresql{{major_version}}/bin"
+
+  - name: Start local ETCD server in the background
+    ansible.builtin.command:
+      cmd: "{{dest_dir}}/percona-etcd/bin/etcd"
+    async: 120
+    poll: 0
+    register: etcd_server
+
+  # - name: Wait for ETCD to start
+  #   ansible.builtin.wait_for:
+  #     port: 2379
+  #     host: localhost
+  #     timeout: 60
+
+  - name: Create /etc/patroni directory
+    file:
+      path: /etc/patroni
+      state: directory
+
+  - name: Create test patroni directory
+    file:
+      path: /var/lib/pgsql/patroni_test/patroni_test/
+      state: directory
+      owner: postgres
+      group: postgres
+
+  - name: "Copy {{item}} for patroni service"
+    copy:
+      src: "{{item}}"
+      dest: "/var/lib/pgsql/patroni_test/{{item}}"
+      owner: postgres
+      group: postgres
+      mode: 0644
+    with_items:
+      - postgresql0.yml
+      - postgresql1.yml
+      - postgresql2.yml
+
+  - name: Update PostgreSQL bin_dir in configuration files
+    become: true
+    lineinfile:
+      path: "/var/lib/pgsql/patroni_test/{{ item }}"
+      regexp: '^ *bin_dir:'
+      line: '  bin_dir: "{{ dest_dir }}/postgresql{{ major_version }}/bin/"'
+    with_items:
+      - postgresql0.yml
+      - postgresql1.yml
+      - postgresql2.yml
+
+  - name: "Copy {{item}} file Debian"
+    copy:
+      src: "{{item}}"
+      dest: "/lib/systemd/system/{{item}}"
+      owner: postgres
+      group: postgres
+      mode: 0644
+    with_items:
+      - patroni0.service
+      - patroni1.service
+      - patroni2.service
+    when: ansible_os_family == "Debian"
+
+  - name: "Copy {{item}} file file RHEL"
+    copy:
+      src: "{{item}}"
+      dest: "/usr/lib/systemd/system/{{item}}"
+      owner: postgres
+      group: postgres
+      mode: 0644
+    with_items:
+      - patroni0.service
+      - patroni1.service
+      - patroni2.service
+    when: ansible_os_family == "RedHat"
+
+  - name: Start patroni0
+    service:
+      name: patroni0
+      state: started
+      enabled: yes
+
+  - name: Start patroni1
+    service:
+      name: patroni1
+      state: started
+      enabled: yes
+
+  - name: Start patroni2
+    service:
+      name: patroni2
+      state: started
+      enabled: yes
+
+  - name: Create haproxy directory
+    file:
+      path: /etc/haproxy/
+      state: directory
+      owner: root
+      group: root
+
+  - name: Copy haproxy.cfg
+    copy:
+      src: haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg
+      owner: root
+      group: root
+      mode: 0644
+
+  # this testcase is failing due to libcrypto.so.1 not found
+  - name: Start haproxy
+    shell: haproxy -f  /etc/haproxy/haproxy.cfg -D
+    environment:
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{dest_dir}}/percona-haproxy/sbin"
+
+  # - name: Remove dpkg package if present on RedHat
+  #   yum:
+  #     name: dpkg
+  #     state: absent
+  #   ignore_errors: true
+  #   when: ansible_os_family == "RedHat" and
+  #     (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
+
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      minutes: 1
+

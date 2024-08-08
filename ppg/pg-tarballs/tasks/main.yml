@@ -1,0 +1,123 @@
+---
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'VERSION') | replace('ppg-','') }}"
+
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    server_version: "{{ lookup('env', 'VERSION') }}"
+    major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
+    tarball_url:  "{{ lookup('env', 'TARBALL_URL') }}"
+    dest_dir: "/opt/pgdistro"
+    data_dir_path: "/usr/local/pgsql"
+    user_name: 'postgres'
+    database_name: 'postgres'
+    server_port: 5432
+    ssl_version: "{{ lookup('env', 'SSL_VERSION') }}"
+
+- name: Set Data directory
+  ansible.builtin.set_fact:
+    data_dir: "{{data_dir_path}}/data{{major_version}}"
+
+- name: Tarball's SSL version
+  debug:
+    msg: "Tarball version is {{ ssl_version }}"
+
+- name: Tarball's URL
+  debug:
+    msg: "Tarball version is {{ tarball_url }}"
+
+- name: Install pre-packages
+  ignore_errors: True
+  package:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  with_items:
+    - sudo
+    - vim
+    - zstd
+    - tar
+    - file
+    - wget
+    - curl
+
+- name: install Percona Platform for PostgreSQL {{major_version}} packages
+  include_tasks: ../../../../tasks/install_openssl_for_tarballs.yml
+
+- name: Gather groups information
+  become: true
+  command: getent group
+  register: groups_info
+
+- name: Set groups_list fact
+  set_fact:
+    groups_list: "{{ groups_info.stdout_lines | map('regex_replace', '^([^:]+):.*', '\\1') | list }}"
+
+- name: Ensure postgres user is present
+  user:
+    name: postgres       # Specify the username to create
+    state: present       # Ensure the user exists
+    shell: /bin/bash     # Set the user's shell (optional)
+    groups: "{{ 'wheel' if 'wheel' in groups_list else 'sudo' }}"
+  when: groups_list is defined and ('wheel' in groups_list or 'sudo' in groups_list)
+
+- name: Install Percona Platform for PostgreSQL {{major_version}} packages
+  include_tasks: ../../../../tasks/install_ppg_tarballs.yml
+
+- name: Ensure data directory exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ data_dir }}"
+    state: directory
+
+- name: Grant read/write permissions to 'postgres' user
+  ansible.builtin.file:
+    path: "{{ data_dir }}"
+    owner: postgres
+    group: postgres
+    mode: '0755'
+
+- name: Initialize Postgres
+  become: true
+  command: "initdb -A trust -k {{data_dir}} "
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{dest_dir}}/percona-postgresql{{major_version}}/bin"
+  become_user: postgres
+
+- name: Start Postgres Server
+  become: true
+  become_user: postgres
+  command: "pg_ctl -D {{data_dir}} -l /tmp/data{{major_version}}.log start -o '-p {{server_port}}'"
+  environment:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{dest_dir}}/percona-postgresql{{major_version}}/bin"
+
+- name: Install PPG tools
+  include_tasks: ../../../../tasks/install_ppg_tools_tarballs.yml
+
+- name: Install GCC Deb
+  apt:
+    name: gcc
+  when: ansible_os_family == "Debian"
+
+- name: Install GCC RHEL
+  yum:
+    name: gcc
+  when: ansible_os_family == "RedHat"
+
+- name: Create temporary directory for compilation
+  become: true
+  ansible.builtin.file:
+    path: "/tmp/libpq_command_temp_dir"
+    state: directory
+
+- name: Copy libpq source file
+  copy:
+    src: ../../common/files/lib_version.c
+    dest: /tmp/libpq_command_temp_dir
+
+- name: Delete dpkg-query for RHEL
+  yum:
+    name: dpkg
+    state: absent
+  when: ansible_os_family == "RedHat"
