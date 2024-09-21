@@ -116,27 +116,27 @@
 
 - name: Check if telemetry-agent-error.log exists
   ansible.builtin.stat:
-    path: /var/log/percona/telemetry-agent-error.log
+    path: /var/log/percona/telemetry-agent/telemetry-agent-error.log
   register: telemetry_error_log
 
 - name: Fail if telemetry-agent-error.log does not exist
   ansible.builtin.fail:
-    msg: "The telemetry-agent-error.log file does not exist at /var/log/percona/."
+    msg: "The telemetry-agent-error.log file does not exist at /var/log/percona/telemetry-agent/."
   when: not telemetry_error_log.stat.exists
 
 - name: Check if telemetry-agent.log exists
   ansible.builtin.stat:
-    path: /var/log/percona/telemetry-agent.log
+    path: /var/log/percona/telemetry-agent/telemetry-agent.log
   register: telemetry_log
 
 - name: Fail if telemetry-agent.log does not exist
   ansible.builtin.fail:
-    msg: "The telemetry-agent.log file does not exist at /var/log/percona/."
+    msg: "The telemetry-agent.log file does not exist at /var/log/percona/telemetry-agent/."
   when: not telemetry_log.stat.exists
 
 - name: Print confirmation if both log files exist
   ansible.builtin.debug:
-    msg: "Both telemetry-agent-error.log and telemetry-agent.log exist in /var/log/percona/."
+    msg: "Both telemetry-agent-error.log and telemetry-agent.log exist in /var/log/percona/telemetry-agent/."
   when: telemetry_error_log.stat.exists and telemetry_log.stat.exists
 
 - name: Check if "{{ telemetry_conf_path }}" file exists
