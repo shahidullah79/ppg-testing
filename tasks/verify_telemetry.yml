@@ -1,0 +1,280 @@
+---
+- name: Setting facts so that they will be persisted in the fact cache
+  ansible.builtin.set_fact:
+    pg_version_to_install: "{{ lookup('env', 'VERSION') | replace('ppg-','') }}"
+
+- name: Extract major version
+  ansible.builtin.set_fact:
+    major_version: "{{ pg_version_to_install.split('.')[0] }}"
+
+- name: Set service name based on the operating system
+  set_fact:
+    postgresql_service_name: "{{ 'postgresql-' + major_version if ansible_facts['os_family'] == 'RedHat' else 'postgresql' }}"
+
+
+- name: Set PostgreSQL configuration file path based on the operating system
+  set_fact:
+    postgresql_conf_path: "{{ '/var/lib/pgsql/' + major_version + '/data/postgresql.conf' if ansible_facts['os_family'] == 'RedHat' else '/etc/postgresql/'+ major_version + '/main/postgresql.conf' }}"
+
+- name: Set percona-telemetry-agent configuration file path based on the operating system
+  set_fact:
+    telemetry_conf_path: "{{ '/etc/sysconfig/percona-telemetry-agent' if ansible_facts['os_family'] == 'RedHat' else '/etc/default/percona-telemetry-agent' }}"
+
+- name: Set package name based on the major version
+  set_fact:
+    telemetry_package_name: "percona-pg-telemetry{{ major_version }}"
+
+- name: Check "{{telemetry_package_name}}" is installed on RedHat
+  ansible.builtin.command:
+    cmd: rpm -q "{{ telemetry_package_name }}"
+  register: telemetry_status
+  ignore_errors: yes
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Check percona-telemetry-agent is installed on RedHat
+  ansible.builtin.command:
+    cmd: rpm -q percona-telemetry-agent
+  register: telemetry_agent_status
+  ignore_errors: yes
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Print results for "{{telemetry_package_name}}" on RedHat 
+  ansible.builtin.debug:
+    msg: "{{ telemetry_package_name }} package installation: {{ telemetry_status.stdout }}"
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Print results for percona-telemetry-agent on RedHat
+  ansible.builtin.debug:
+    msg: "percona-telemetry-agent package installation: {{ telemetry_agent_status.stdout }}"
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Check if "{{telemetry_package_name}}" is installed on Debian/Ubuntu
+  ansible.builtin.shell: dpkg -l | grep "{{ telemetry_package_name }}"
+  register: telemetry_status
+  ignore_errors: yes
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Check if percona-telemetry-agent is installed on Debian/Ubuntu
+  ansible.builtin.shell: dpkg -l | grep percona-telemetry-agent
+  register: telemetry_agent_status
+  ignore_errors: yes
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Fail if "{{telemetry_package_name}}" is not installed on Debian/Ubuntu
+  ansible.builtin.fail:
+    msg: "Package {{ telemetry_package_name }} is not installed."
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - telemetry_status.rc != 0
+
+- name: Fail if percona-telemetry-agent is not installed on Debian/Ubuntu
+  ansible.builtin.fail:
+    msg: "Package percona-telemetry-agent is not installed."
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - telemetry_agent_status.rc != 0
+
+- name: Print results for "{{telemetry_package_name}}" on Debian
+  ansible.builtin.debug:
+    msg: "{{ telemetry_package_name }} package installation: {{ telemetry_status.stdout }}"
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Print results for percona-telemetry-agent on Debian
+  ansible.builtin.debug:
+    msg: "percona-telemetry-agent package installation: {{ telemetry_agent_status.stdout }}"
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Check if telemetry-agent service is running
+  ansible.builtin.systemd:
+    name: percona-telemetry-agent
+    state: started
+  register: telemetry_agent_service
+
+- name: Validate that percona-telemetry-agent is running
+  ansible.builtin.fail:
+    msg: "The percona-telemetry-agent service is not running!"
+  when: telemetry_agent_service.status['ActiveState'] != 'active'
+
+- name: Print the status of telemetry-agent service
+  ansible.builtin.debug:
+    msg: "The percona-telemetry-agent service is {{ telemetry_agent_service.status['ActiveState'] }}."
+
+- name: Check if "{{ postgresql_service_name }}" is running
+  ansible.builtin.systemd:
+    name: "{{ postgresql_service_name }}"
+    state: started
+  register: postgresql_service
+
+- name: Validate that "{{ postgresql_service_name }}" is running
+  ansible.builtin.fail:
+    msg: "The {{ postgresql_service_name }} service is not running!"
+  when: postgresql_service.status['ActiveState'] != 'active'
+
+- name: Print the status of "{{ postgresql_service_name }}"
+  ansible.builtin.debug:
+    msg: "The {{ postgresql_service_name }} service is {{ postgresql_service.status['ActiveState'] }}."
+
+- name: Check if telemetry-agent-error.log exists
+  ansible.builtin.stat:
+    path: /var/log/percona/telemetry-agent/telemetry-agent-error.log
+  register: telemetry_error_log
+
+- name: Fail if telemetry-agent-error.log does not exist
+  ansible.builtin.fail:
+    msg: "The telemetry-agent-error.log file does not exist at /var/log/percona/telemetry-agent/."
+  when: not telemetry_error_log.stat.exists
+
+- name: Check if telemetry-agent.log exists
+  ansible.builtin.stat:
+    path: /var/log/percona/telemetry-agent/telemetry-agent.log
+  register: telemetry_log
+
+- name: Fail if telemetry-agent.log does not exist
+  ansible.builtin.fail:
+    msg: "The telemetry-agent.log file does not exist at /var/log/percona/telemetry-agent/."
+  when: not telemetry_log.stat.exists
+
+- name: Print confirmation if both log files exist
+  ansible.builtin.debug:
+    msg: "Both telemetry-agent-error.log and telemetry-agent.log exist in /var/log/percona/telemetry-agent/."
+  when: telemetry_error_log.stat.exists and telemetry_log.stat.exists
+
+- name: Check if "{{ telemetry_conf_path }}" file exists
+  ansible.builtin.stat:
+    path: "{{ telemetry_conf_path }}"
+  register: percona_telemetry_agent_file
+
+- name: Check if /usr/local/percona/telemetry/history/ directory exists
+  ansible.builtin.stat:
+    path: /usr/local/percona/telemetry/history/
+  register: telemetry_history_dir
+
+- name: Check if /usr/local/percona/telemetry/pg/ directory exists
+  ansible.builtin.stat:
+    path: /usr/local/percona/telemetry/pg/
+  register: telemetry_pg_dir
+
+- name: Validate "{{ telemetry_conf_path }}" file existence
+  ansible.builtin.fail:
+    msg: "The file {{ telemetry_conf_path }} does not exist."
+  when: not percona_telemetry_agent_file.stat.exists
+
+- name: Validate /usr/local/percona/telemetry/history/ directory existence
+  ansible.builtin.fail:
+    msg: "The directory /usr/local/percona/telemetry/history/ does not exist."
+  when: not telemetry_history_dir.stat.exists
+
+- name: Validate /usr/local/percona/telemetry/pg/ directory existence
+  ansible.builtin.fail:
+    msg: "The directory /usr/local/percona/telemetry/pg/ does not exist."
+  when: not telemetry_pg_dir.stat.exists
+
+- name: Print confirmation if all files and directories exist
+  ansible.builtin.debug:
+    msg: "All specified files and directories exist."
+  when: percona_telemetry_agent_file.stat.exists and telemetry_history_dir.stat.exists and telemetry_pg_dir.stat.exists
+
+- name: Stop "{{ postgresql_service_name }}"
+  ansible.builtin.systemd:
+    name: "{{ postgresql_service_name }}"
+    state: stopped
+  become: yes
+
+- name: Stop telemetry-agent service
+  ansible.builtin.systemd:
+    name: percona-telemetry-agent
+    state: stopped
+  become: yes
+
+# - name: Append shared_preload_libraries to postgresql.conf
+#   ansible.builtin.lineinfile:
+#     path: "{{ postgresql_conf_path }}"
+#     line: "shared_preload_libraries = 'percona_pg_telemetry'"
+#     insertafter: EOF
+#   become: yes
+
+- name: Change TELEMETRY_URL to DEV
+  become: yes
+  ansible.builtin.replace:
+    path: "{{ telemetry_conf_path }}"
+    regexp: 'check\.percona\.com'
+    replace: 'check-dev.percona.com'
+    backup: yes  # Backup the file before changing
+
+- name: Change TELEMETRY_CHECK_INTERVAL to 60
+  become: yes
+  ansible.builtin.lineinfile:
+    path: "{{ telemetry_conf_path }}"
+    regexp: '^PERCONA_TELEMETRY_CHECK_INTERVAL='
+    line: 'PERCONA_TELEMETRY_CHECK_INTERVAL=60'
+    backup: yes  # Backup the file before changing
+
+- name: Print confirmation that the changes have been made
+  ansible.builtin.debug:
+    msg: "The percona-telemetry-agent configuration file has been updated."
+
+- name: Start "{{ postgresql_service_name }}"
+  ansible.builtin.systemd:
+    name: "{{ postgresql_service_name }}"
+    state: started
+  become: yes
+
+- name: Start telemetry-agent service
+  ansible.builtin.systemd:
+    name: percona-telemetry-agent
+    state: started
+  become: yes
+
+- name: Check if telemetry-agent service is running
+  ansible.builtin.systemd:
+    name: percona-telemetry-agent
+    state: started
+  register: telemetry_agent_service
+
+- name: Validate that percona-telemetry-agent is running
+  ansible.builtin.fail:
+    msg: "The percona-telemetry-agent service is not running!"
+  when: telemetry_agent_service.status['ActiveState'] != 'active'
+
+- name: Print the status of telemetry-agent service
+  ansible.builtin.debug:
+    msg: "The percona-telemetry-agent service is {{ telemetry_agent_service.status['ActiveState'] }}."
+
+- name: Check if "{{ postgresql_service_name }}" is running
+  ansible.builtin.systemd:
+    name: "{{ postgresql_service_name }}"
+    state: started
+  register: postgresql_service
+
+- name: Validate that "{{ postgresql_service_name }}" is running
+  ansible.builtin.fail:
+    msg: "The {{ postgresql_service_name }} service is not running!"
+  when: postgresql_service.status['ActiveState'] != 'active'
+
+- name: Print the status of "{{ postgresql_service_name }}"
+  ansible.builtin.debug:
+    msg: "The {{ postgresql_service_name }} service is {{ postgresql_service.status['ActiveState'] }}."
+
+- name: Find all *.json files in /usr/local/percona/telemetry/pg/
+  ansible.builtin.find:
+    paths: /usr/local/percona/telemetry/pg/
+    patterns: "*.json"
+    file_type: file
+  register: found_json_files
+
+- name: Fail if no JSON files are found
+  ansible.builtin.fail:
+    msg: "No JSON files found in /usr/local/percona/telemetry/pg/."
+  when: found_json_files.matched == 0
+
+- name: Check if the JSON files are not empty
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  loop: "{{ found_json_files.files }}"
+  register: json_file_stats
+
+- name: Fail if any JSON file is empty
+  fail:
+    msg: "The following JSON file is empty: {{ item.stat.path }}"
+  loop: "{{ json_file_stats.results }}"
+  when: item.stat.size == 0

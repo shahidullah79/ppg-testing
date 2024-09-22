@@ -63,4 +63,9 @@ pgbouncer = {
     "14.12": {"version": "1.22.1", "binary_version": "1.22.1"},
     "15.7": {"version": "1.22.1", "binary_version": "1.22.1"},
     "16.3": {"version": "1.22.1", "binary_version": "1.22.1"},
+    "12.20": {"version": "1.23.1", "binary_version": "1.23.1"},
+    "13.16": {"version": "1.23.1", "binary_version": "1.23.1"},
+    "14.13": {"version": "1.23.1", "binary_version": "1.23.1"},
+    "15.8": {"version": "1.23.1", "binary_version": "1.23.1"},
+    "16.4": {"version": "1.23.1", "binary_version": "1.23.1"},
 }

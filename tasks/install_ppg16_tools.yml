@@ -309,6 +309,29 @@
         - libpgpool2
     when: ansible_os_family == "Debian"
 
+#==========================================
+
+  - name: setup epel release
+    become: True
+    ansible.builtin.yum:
+      name: epel-release
+      update_cache: yes
+      state: absent
+    when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
+
+  - name: Install oracle-epel-release-el8 package
+    ansible.builtin.dnf:
+      name: oracle-epel-release-el8
+      state: present
+    when: ansible_facts['distribution'] == "OracleLinux" and ansible_facts['distribution_major_version'] == "8"
+
+  - name: Enable codeready_builder on oracle linux 8
+    become: true
+    command: dnf config-manager --set-enabled ol8_codeready_builder
+    when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
+
+#==========================================
+
   - name: Install percona-postgis RHEL
     yum:
       name: "{{ packages }}"
@@ -413,13 +436,29 @@
     lineinfile:
       path: /etc/postgresql/16/main/postgresql.conf
       line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
-    when: ansible_os_family == "Debian"
+    when: (ansible_os_family == "Debian") and
+      (pg_version_to_install | string is version('16.3', '<=', strict=True))
 
   - name: Add extensions to postgresql.conf for RHEL
     lineinfile:
       path: /var/lib/pgsql/16/data/postgresql.conf
       line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user'
-    when: ansible_os_family == "RedHat"
+    when: (ansible_os_family == "RedHat") and
+      (pg_version_to_install | string is version('16.3', '<=', strict=True))
+
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /etc/postgresql/16/main/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user, percona_pg_telemetry'
+    when: (ansible_os_family == "Debian") and
+      (pg_version_to_install | string is version('16.4', '>=', strict=True))
+
+  - name: Add extensions to postgresql.conf for RHEL
+    lineinfile:
+      path: /var/lib/pgsql/16/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_stat_monitor, pgaudit, set_user, percona_pg_telemetry'
+    when: (ansible_os_family == "RedHat") and
+      (pg_version_to_install | string is version('16.4', '>=', strict=True))
 
   - name: Remove pg_hba.conf debian
     file:

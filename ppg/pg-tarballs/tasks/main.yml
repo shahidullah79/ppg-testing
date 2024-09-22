@@ -15,6 +15,16 @@
     server_port: 5432
     ssl_version: "{{ lookup('env', 'SSL_VERSION') }}"
 
+- name: task to run for aarch64 architecture
+  shell: echo {{ tarball_url }} | sed  's:x86_64:aarch64:'
+  register: aarch_url
+  when: ansible_architecture == 'aarch64'
+
+- name: task to run for aarch64 architecture
+  ansible.builtin.set_fact:
+    tarball_url: "{{ aarch_url.stdout }}"
+  when: ansible_architecture == 'aarch64'
+
 - name: Set Data directory
   ansible.builtin.set_fact:
     data_dir: "{{data_dir_path}}/data{{major_version}}"
