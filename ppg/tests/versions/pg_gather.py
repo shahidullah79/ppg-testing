@@ -26,4 +26,5 @@ pg_gather = {
     "14.13": {"version": "27", "sql_file_version": "27"},
     "15.8": {"version": "27", "sql_file_version": "27"},
     "16.4": {"version": "27", "sql_file_version": "27"},
+    "17.0": {"version": "27", "sql_file_version": "27"},
 }

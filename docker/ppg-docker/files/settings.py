@@ -27,6 +27,7 @@ pgrepack = {
     "14.13": {"version": "1.5.0","binary_version": "pg_repack 1.5.0"},
     "15.8": {"version": "1.5.0","binary_version": "pg_repack 1.5.0"},
     "16.4": {"version": "1.5.0","binary_version": "pg_repack 1.5.0"},
+    "17.0": {"version": "1.5.1","binary_version": "pg_repack 1.5.1"},
 }
 
 pgaudit = {
@@ -56,6 +57,7 @@ pgaudit = {
     "14.13": {"version": "1.6.2"},
     "15.8": {"version": "1.7.0"},
     "16.4": {"version": "16.0"},
+    "17.0": {"version": "17.0"},
 }
 
 pg_stat_monitor = {
@@ -85,6 +87,7 @@ pg_stat_monitor = {
     "14.13": {"version": "2.1.0"},
     "15.8": {"version": "2.1.0"},
     "16.4": {"version": "2.1.0"},
+    "17.0": {"version": "2.1.0"},
 }
 
 set_user = {
@@ -114,6 +117,7 @@ set_user = {
     "14.13": {"version": "4.0.1"},
     "15.8": {"version": "4.0.1"},
     "16.4": {"version": "4.0.1"},
+    "17.0": {"version": "4.1.0"},
 }
 
 wal2json = {
@@ -143,6 +147,7 @@ wal2json = {
     "14.13": {"version": "2.6"},
     "15.8": {"version": "2.6"},
     "16.4": {"version": "2.6"},
+    "17.0": {"version": "2.6"},
 }
 
 
@@ -764,6 +769,28 @@ ppg_versions = {
             "libpq": "Version of libpq: 160004",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "16"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "16"),
+            "extensions": DOCKER_LIST_EXTENSIONS,
+            "binaries": ['clusterdb', 'createdb', 'createuser',
+                        'dropdb', 'dropuser', 'pg_basebackup',
+                        'pg_config', 'pg_dump', 'pg_dumpall',
+                        'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                        'pg_restore', 'pg_verifybackup', 'psql',
+                        'reindexdb', 'vacuumdb']
+        },
+        "17.0": {
+            "version": "17.0",
+            "percona-version": "17.0.1",
+            "percona-postgresql-common": "264",
+            "percona-postgresql-client-common": "264",
+            "libpq_version": "170000",
+            "percona-pgaudit17": pgaudit["17.0"],
+            "percona-pg_repack17": pgrepack["17.0"],
+            "percona-wal2json17": wal2json["17.0"],
+            "percona-pgaudit17_set_user": set_user["17.0"],
+            "percona-pg_stat_monitor17" : pg_stat_monitor["17.0"],
+            "libpq": "Version of libpq: 170000",
+            "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "17.0"),
+            "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "17.0"),
             "extensions": DOCKER_LIST_EXTENSIONS,
             "binaries": ['clusterdb', 'createdb', 'createuser',
                         'dropdb', 'dropuser', 'pg_basebackup',

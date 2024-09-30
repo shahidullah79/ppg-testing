@@ -42,7 +42,10 @@ def test_myimage(host):
     # 'host' now binds to the container
     if MAJOR_VER in ["11"]:
         pytest.skip("Skipping for ppg 11")
-    assert host.check_output('psql -V') == f'psql (PostgreSQL) {MAJOR_MINOR_VER} - Percona Distribution'
+    if MAJOR_VER in ["17"]:
+        assert f"psql (PostgreSQL) {MAJOR_MINOR_VER} - Percona Server for PostgreSQL {pg_docker_versions['percona-version']}" in host.check_output('psql -V')
+    else:
+        assert f"psql (PostgreSQL) {MAJOR_MINOR_VER} - Percona Distribution" in host.check_output('psql -V')
 
 def test_wait_docker_load(host):
     dist = host.system_info.distribution
@@ -109,11 +112,17 @@ def test_postgres_client_version(host):
 @pytest.mark.parametrize("extension", DOCKER_EXTENSIONS)
 def test_extenstions_list(extension_list, host, extension):
     dist = host.system_info.distribution
+    # Skip adminpack extension for PostgreSQL 17
+    if int(MAJOR_VER) >= 17 and extension == 'adminpack':
+        pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
     assert extension in extension_list
 
 @pytest.mark.parametrize("extension", DOCKER_EXTENSIONS)
 def test_enable_extension(host, extension):
     dist = host.system_info.distribution
+    # Skip adminpack extension for PostgreSQL 17
+    if int(MAJOR_VER) >= 17 and extension == 'adminpack':
+        pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
     install_extension = host.run("psql -c 'CREATE EXTENSION \"{}\";'".format(extension))
     assert install_extension.rc == 0, install_extension.stderr
     assert install_extension.stdout.strip("\n") == "CREATE EXTENSION", install_extension.stderr
@@ -126,6 +135,9 @@ def test_enable_extension(host, extension):
 @pytest.mark.parametrize("extension", DOCKER_EXTENSIONS[::-1])
 def test_drop_extension(host, extension):
     dist = host.system_info.distribution
+    # Skip adminpack extension for PostgreSQL 17
+    if int(MAJOR_VER) >= 17 and extension == 'adminpack':
+        pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
     drop_extension = host.run("psql -c 'DROP EXTENSION \"{}\";'".format(extension))
     assert drop_extension.rc == 0, drop_extension.stderr
     assert drop_extension.stdout.strip("\n") == "DROP EXTENSION", drop_extension.stdout

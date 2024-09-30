@@ -221,7 +221,10 @@ def test_postgres_client_version(host):
 def test_postgres_client_string(host):
     if settings.MAJOR_VER in ["11"]:
         pytest.skip("Skipping for ppg 11")
-    assert f"psql (PostgreSQL) {pg_versions['version']} - Percona Distribution" in host.check_output('psql -V')
+    if settings.MAJOR_VER in ["17"]:
+        assert f"psql (PostgreSQL) {pg_versions['version']} - Percona Server for PostgreSQL {pg_versions['percona-version']}" in host.check_output('psql -V')
+    else:
+        assert f"psql (PostgreSQL) {pg_versions['version']} - Percona Distribution" in host.check_output('psql -V')
 
 
 def test_start_stop_postgresql(start_stop_postgresql):
@@ -267,6 +270,9 @@ def test_extenstions_list(extension_list, host, extension):
         if extension in ['plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
                             'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
             pytest.skip("Skipping extension " + extension + " for DEB based in pg: " + os.getenv("VERSION"))
+    # Skip adminpack extension for PostgreSQL 17
+    if settings.MAJOR_VER in ["17"] and extension == 'adminpack':
+        pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
     assert extension in extension_list
 
 
@@ -302,6 +308,9 @@ def test_enable_extension(host, extension):
         'postgis_topology-3','address_standardizer_data_us','postgis_tiger_geocoder','postgis_raster','postgis_topology',
         'postgis_sfcgal','address_standardizer-3','postgis-3','address_standardizer','postgis','address_standardizer_data_us-3']:
             pytest.skip("Skipping extension " + extension + " due to multiple dependencies. Already being checked in test_tools.py.")
+    # Skip adminpack extension for PostgreSQL 17
+    if settings.MAJOR_VER in ["17"] and extension == 'adminpack':
+        pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
     with host.sudo("postgres"):
         install_extension = host.run("psql -c 'CREATE EXTENSION \"{}\";'".format(extension))
         assert install_extension.rc == 0, install_extension.stderr
@@ -345,6 +354,9 @@ def test_drop_extension(host, extension):
         'postgis_topology-3','address_standardizer_data_us','postgis_tiger_geocoder','postgis_raster','postgis_topology',
         'postgis_sfcgal','address_standardizer-3','postgis-3','address_standardizer','postgis','address_standardizer_data_us-3']:
             pytest.skip("Skipping extension " + extension + " due to multiple dependencies. Already being checked in test_tools.py.")
+    # Skip adminpack extension for PostgreSQL 17
+    if settings.MAJOR_VER in ["17"] and extension == 'adminpack':
+        pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
     with host.sudo("postgres"):
         drop_extension = host.run("psql -c 'DROP EXTENSION \"{}\";'".format(extension))
         assert drop_extension.rc == 0, drop_extension.stderr
@@ -401,7 +413,7 @@ def test_language(host, language):
         # if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
         #     if "python3" in language:
         #         pytest.skip("Skipping python3 language for Centos or RHEL")
-        if dist.lower() in rpm_dists and language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["12", "13" , "14", "15", "16"]:
+        if dist.lower() in rpm_dists and language in ['plpythonu', "plpython2u"] and  int(settings.MAJOR_VER) >= 12: # settings.MAJOR_VER in ["12", "13" , "14", "15", "16","17"]:
             pytest.skip("Skipping python2 extensions for RHEL on Major version 16")
         if dist.lower() in deb_dists and language in ['plpythonu', "plpython2u"]:
             pytest.skip("Skipping python2 extensions for DEB based")
