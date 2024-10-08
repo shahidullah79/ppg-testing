@@ -81,4 +81,5 @@ patroni = {
     "ppg-14.13": {"version": "3.3.2","binary_version": "patroni 3.3.2"},
     "ppg-15.8": {"version": "3.3.2","binary_version": "patroni 3.3.2"},
     "ppg-16.4": {"version": "3.3.2","binary_version": "patroni 3.3.2"},
+    "ppg-17.0": {"version": "4.0.2","binary_version": "patroni 4.0.2"},
 }
