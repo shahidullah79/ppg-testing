@@ -4,13 +4,13 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: pgtde-debian12-${BUILD_NUMBER}
+  - name: pgtde-ol8-arm-${BUILD_NUMBER}
     region: eu-central-1
-    image: ami-0584590e5f0e97daa
+    image: ami-02d0bbe49c30e7652
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t2.xlarge
-    ssh_user: admin
-    root_device_name: /dev/xvda
+    instance_type: t4g.xlarge
+    ssh_user: ec2-user
+    root_device_name: /dev/sda1
     instance_tags:
       iit-billing-tag: jenkins-pg-worker
 provisioner:
