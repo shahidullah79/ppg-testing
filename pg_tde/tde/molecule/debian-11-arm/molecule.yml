@@ -25,7 +25,6 @@ provisioner:
 verifier:
   name: ansible
 scenario:
-  name: debian-11
   destroy_sequence:
     - destroy
   cleanup_sequence:
