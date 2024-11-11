@@ -4,6 +4,6 @@
   become: true
   become_method: sudo
   roles:
-    - role: setup
+    - role: server_tests
   environment:
     PG_TEST_PORT_DIR: /tmp/postgres
