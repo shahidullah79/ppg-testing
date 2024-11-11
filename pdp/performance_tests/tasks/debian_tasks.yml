@@ -235,7 +235,7 @@
       LANG: C.UTF-8
       LC_CTYPE: C
       LC_ALL: C
-    when: RUN_HEAP
+    when: run_heap
     register: results
 
   - debug: var=results.stdout_lines
