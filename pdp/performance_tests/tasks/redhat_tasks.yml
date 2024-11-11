@@ -90,38 +90,6 @@
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     when: ansible_distribution_major_version == "9"
 
-  - name: LLVM Version
-    command: llvm-config --version
-    ignore_errors: true
-    register: results
-
-  - debug:
-      var: results.stdout
-
-  - name: CLANG Version
-    command: clang --version
-    ignore_errors: true
-    register: results
-
-  - debug:
-      var: results.stdout
-
-  - name: Debug 1
-    command: rpm -qi systemtap-sdt-devel
-    ignore_errors: true
-    register: results
-
-  - debug:
-      var: results.stdout
-
-  - name: Debug 2
-    command: yum -v search systemtap-sdt-devel
-    ignore_errors: true
-    register: results
-
-  - debug:
-      var: results.stdout
-
   - name: install tools
     yum:
       name: "{{ packages }}"
@@ -176,7 +144,7 @@
     become: true
     command: cpanm HTTP::Server::Simple::CGI
 
-  - name: Debug 3
+  - name: Debug 1
     command: rpm -qi systemtap-sdt-devel
     ignore_errors: true
     register: results
@@ -184,7 +152,7 @@
   - debug:
       var: results.stdout
 
-  - name: Debug 4
+  - name: Debug 2
     command: yum -v search systemtap-sdt-devel
     ignore_errors: true
     register: results
@@ -192,7 +160,7 @@
   - debug:
       var: results.stdout
 
-  - name: Debug 5
+  - name: Debug 3
     command: yum install -y systemtap-sdt-devel --allowerasing
     ignore_errors: true
     register: results
@@ -239,7 +207,6 @@
       repo: "{{ lookup('env', 'PDP_REPO') }}"
       version: "{{ lookup('env', 'PDP_BRANCH') }}"
     become_user: postgres
-    when: with_tde_heap
 
   - name: Checkout user provided pg_tde branch
     command: git checkout {{ branch }}
@@ -248,31 +215,13 @@
     vars:
       branch: "{{ lookup('env', 'tde_branch') }}"
     become_user: postgres
-    when: with_tde_heap and change_tde_branch
+    when: change_tde_branch
 
   - name: Configure pg_tde from sources without pg_tde
     ansible.builtin.command: ./configure
     become_user: postgres
     args:
       chdir: /tmp/postgres/contrib/pg_tde
-    when: with_tde_heap
-
-  - name: Clone Postgres/PDP sources
-    git:
-      repo: "{{ repo }}"
-      version: "{{ version }}"
-      dest: /tmp/postgres
-    vars:
-      repo: "{{ lookup('env', 'PDP_REPO') }}"
-      version: "{{ lookup('env', 'PDP_BRANCH') }}"
-    become_user: postgres
-    when: not with_tde_heap
-
-  - name: Remove pg_tde from source tree contrib/pg_tde
-    command: rm -fr contrib/pg_tde*
-    args:
-      chdir: /tmp/postgres
-    when: not with_tde_heap
 
   - name: Configure Postgres/PDP from sources
     command: ./configure '--enable-rpath' '--prefix=/opt/pgsql' '--enable-tap-tests' '--enable-depend' \
@@ -315,41 +264,20 @@
 
   - debug: var=cat.stdout_lines
 
-  - name: Build Postgres/PDP (world) from sources
+  - name: Build Postgres/PDP (world-bin) from sources
     make:
       chdir: "/tmp/postgres"
       jobs: 4 
-      target: world
+      target: world-bin
     become_user: postgres 
-    when: testsuite == 'installcheck-world'
     register: results
 
   - debug: var=results.stdout_lines
 
-  - name: Install Postgres/PDP (install-world) from build binaries
+  - name: Install Postgres/PDP (install-world-bin) from build binaries
     make:
       chdir: "/tmp/postgres"
-      target: install-world 
-    when: testsuite == 'installcheck-world'
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - name: Build Postgres/PDP from sources
-    make:
-      chdir: "/tmp/postgres"
-      jobs: 4
-    become_user: postgres 
-    when: testsuite == 'installcheck'
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - name: Install Postgres/PDP (install only) from build binaries
-    make:
-      chdir: "/tmp/postgres"
-      target: install 
-    when: testsuite == 'installcheck'
+      target: install-world-bin
     register: results
 
   - debug: var=results.stdout_lines
@@ -359,7 +287,6 @@
       chdir: "/tmp/postgres/contrib/pg_tde"
       jobs: 4
     become_user: postgres
-    when: with_tde_heap
     register: results
 
   - debug: var=results.stdout_lines
@@ -368,7 +295,6 @@
     make:
       chdir: "/tmp/postgres/contrib/pg_tde"
       target: install
-    when: with_tde_heap
     register: results
 
   - debug: var=results.stdout_lines
@@ -389,17 +315,28 @@
 
   - debug: var=results.stdout_lines
 
-  - name: Add extensions to postgresql.conf for Debian
-    lineinfile:
-      path: /opt/pgsql/data/postgresql.conf
-      line: shared_preload_libraries = 'pg_tde'
-    when: with_tde_heap
+  # - name: Add extensions to postgresql.conf for Debian
+  #   lineinfile:
+  #     path: /opt/pgsql/data/postgresql.conf
+  #     line: shared_preload_libraries = 'pg_tde'
 
   # - name: Set default Access Method - heap
   #   lineinfile:
   #     path: /opt/pgsql/data/postgresql.conf
   #     line: default_table_access_method = 'heap'
   #   when: access_method == 'heap'
+
+  - name: yum install -y yum-utils
+    become: true
+    command: yum install -y yum-utils
+
+  - name: yum-config-manager hashicorp repo
+    become: true
+    command: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+
+  - name: yum -y install vault
+    become: true
+    command: yum -y install vault
 
   - name: Start Server
     become_user: postgres
@@ -413,134 +350,33 @@
 
   - debug: var=results.stdout_lines
 
-  # - name: Set default Access Method - tde_heap
-  #   lineinfile:
-  #     path: /opt/pgsql/data/postgresql.conf
-  #     line: default_table_access_method = 'tde_heap'
-  #   when: with_tde_heap and access_method == 'tde_heap'
-
-  # - name: Set default Access Method - tde_heap_basic
-  #   lineinfile:
-  #     path: /opt/pgsql/data/postgresql.conf
-  #     line: default_table_access_method = 'tde_heap_basic'
-  #   when: with_tde_heap and access_method == 'tde_heap_basic'
-
-  - name: Run installcheck-world - Server
-    become_user: postgres
-    make:
-      chdir: "/tmp/postgres"
-      target: installcheck-world
-    environment:
-      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
-      LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    when: testsuite == 'installcheck-world'
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - name: Run installcheck - Server
-    become_user: postgres
-    make:
-      chdir: "/tmp/postgres"
-      target: installcheck
-    environment:
-      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
-      LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    when: testsuite == 'installcheck'
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - name: Display regression.diffs contents
-    command: cat /tmp/postgres/src/test/regress/regression.diffs
-    register: command_output
-    when: output.stat.exists
-
-  - name: Print to console
-    debug:
-      msg: "{{command_output.stdout_lines}}"
-    when: output.stat.exists
-
-  - name: yum install -y yum-utils
-    become: true
-    command: yum install -y yum-utils
-    when: with_tde_heap
-
-  - name: yum-config-manager hashicorp repo
-    become: true
-    command: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-    when: with_tde_heap
-
-  - name: yum -y install vault
-    become: true
-    command: yum -y install vault
-    when: with_tde_heap
-
-  - name: Remove multiple extensions tap test case from pg_tde
-    become_user: postgres
-    command: rm -f /tmp/postgres/contrib/pg_tde/t/005_multiple_extensions.pl
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - name: Start pg_tde tests - installcheck
+  - name: Run performance tests for HEAP access method
     shell: | 
-      TV=$(mktemp)
-      { exec >$TV; vault server -dev; } &
-      sleep 10
-      export ROOT_TOKEN=$(cat $TV | grep "Root Token" | cut -d ":" -f 2 | xargs echo -n)
-      echo "Root token: $ROOT_TOKEN"
-      export ROOT_TOKEN=$ROOT_TOKEN && make installcheck
+      psql -c "DROP DATABASE IF EXISTS performance_db;" -U postgres
+      psql -c "CREATE DATABASE performance_db;" -U postgres
+      psql -d performance_db -c "ALTER SYSTEM  SET default_table_access_method='heap';"
+      psql -d performance_db -c "SELECT pg_reload_conf();"
+      # Initialize pgbench with the current access method
+      pgbench -i -s {{ scale }} -d performance_db -U postgres
+      # Run the benchmark
+      pgbench -c {{ clients }} -j {{ threads }} -T {{ duration}} -M prepared -d performance_db -U postgres
+      sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
     become_user: postgres
     args:
       executable: /bin/bash
-      chdir: "/tmp/postgres/contrib/pg_tde"
+      chdir: "/tmp/postgres"
+    vars:
+      scale: "{{ lookup('env', 'SCALE') }}"
+      clients: "{{ lookup('env', 'CLIENTS') }}"
+      threads: "{{ lookup('env', 'THREADS') }}"
+      duration: "{{ lookup('env', 'DURATION') }}"
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
       LANG: C.UTF-8
       LC_CTYPE: C
       LC_ALL: C
-      PG_TEST_PORT_DIR: "/tmp/pg_tde"
-    when: with_tde_heap and testsuite == 'installcheck'
+    when: RUN_HEAP
     register: results
 
   - debug: var=results.stdout_lines
-
-  - name: Start pg_tde tests - installcheck-world
-    shell: | 
-      TV=$(mktemp)
-      { exec >$TV; vault server -dev; } &
-      sleep 10
-      export ROOT_TOKEN=$(cat $TV | grep "Root Token" | cut -d ":" -f 2 | xargs echo -n)
-      echo "Root token: $ROOT_TOKEN"
-      export ROOT_TOKEN=$ROOT_TOKEN && make installcheck
-    become_user: postgres
-    args:
-      executable: /bin/bash
-      chdir: "/tmp/postgres/contrib/pg_tde"
-    environment:
-      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
-      LD_LIBRARY_PATH: "/opt/pgsql/lib"
-      LANG: C.UTF-8
-      LC_CTYPE: C
-      LC_ALL: C
-      PG_TEST_PORT_DIR: "/tmp/pg_tde"
-    when: with_tde_heap and testsuite == 'installcheck-world'
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - stat:
-      path: /tmp/postgres/contrib/pg_tde/regression.diffs
-    register: output
-
-  - name: Display regression.diffs contents
-    command: cat /tmp/postgres/contrib/pg_tde/regression.diffs
-    register: command_output
-    when: output.stat.exists
-
-  - name: Print to console
-    debug:
-      msg: "{{command_output.stdout_lines}}"
-    when: output.stat.exists

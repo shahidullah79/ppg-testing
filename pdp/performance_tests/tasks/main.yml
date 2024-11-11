@@ -4,7 +4,6 @@
       major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
       repo: "{{ lookup('env', 'PDP_REPO') }}"
       version: "{{ lookup('env', 'PDP_BRANCH') }}"
-      install_server_from_pacakges: "{{ lookup('env', 'INSTALL_SERVER_FROM_PACKAGES') }}"
       pgbench_scale: "{{ lookup('env', 'PGBENCH_SCALE') }}"
       pgbench_duration: "{{ lookup('env', 'PGBENCH_DURATION') }}"
       pgbench_clients: "{{ lookup('env', 'PGBENCH_CLIENTS') }}"
@@ -16,15 +15,12 @@
       tde_branch: "{{ lookup('env', 'TDE_BRANCH') }}"
       cacheable: true
 
-  - name: Configure repository
-    include_tasks: ../../../../tasks/enable_repo.yml
-
-  - name: Include Redhat tasks file 
+  - name: Include Redhat tasks file
     include_tasks: 
       file: "redhat_tasks.yml"
     when: ansible_os_family == 'RedHat'
 
-  - name: Include Debian tasks file 
+  - name: Include Debian tasks file
     include_tasks: 
       file: "debian_tasks.yml"
     when: ansible_os_family == 'Debian'
