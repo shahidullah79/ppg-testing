@@ -157,7 +157,6 @@
       chdir: "/tmp/postgres/contrib/pg_tde"
       jobs: 4
     become_user: postgres
-    when: with_tde_heap
     register: results
 
   - debug: var=results.stdout_lines
@@ -166,7 +165,6 @@
     make:
       chdir: "/tmp/postgres/contrib/pg_tde"
       target: install
-    when: with_tde_heap
     register: results
 
   - debug: var=results.stdout_lines
