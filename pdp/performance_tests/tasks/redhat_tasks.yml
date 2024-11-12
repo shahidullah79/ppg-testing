@@ -363,14 +363,11 @@
       echo "Command: pgbench -i -s $scale -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
       echo "Command: pgbench -c $clients -j $threads -T $duration -M prepared -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
       echo "---------------------------------" | tee -a /tmp/access_method_benchmark_report.txt
-
       psql -c "DROP DATABASE IF EXISTS performance_db;" -U postgres
       psql -c "CREATE DATABASE performance_db;" -U postgres
       psql -d performance_db -c "ALTER SYSTEM  SET default_table_access_method='heap';"
       psql -d performance_db -c "SELECT pg_reload_conf();"
-      # Initialize pgbench with the current access method
       pgbench -i -s $scale -d performance_db -U postgres
-      # Run the benchmark
       pgbench -c $clients -j $threads -T $duration -M prepared -d performance_db -U postgres | tee -a /tmp/access_method_benchmark_report.txt
       echo "" >> tee -a /tmp/access_method_benchmark_report.txt
       echo "---------------------------------" >> tee -a /tmp/access_method_benchmark_report.txt
