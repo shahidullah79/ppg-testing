@@ -69,6 +69,12 @@
       uid: 1040
       group: admin
 
+  - name: Make sudo without password for postgres user
+    copy:
+      dest: /etc/sudoers.d/postgres
+      content: "postgres ALL=(ALL) NOPASSWD:ALL"
+      mode: 0440
+
   - name: Creates directory
     ansible.builtin.file:
       path: /opt/pgsql
@@ -216,9 +222,9 @@
       psql -d performance_db -c "ALTER SYSTEM  SET default_table_access_method='heap';"
       psql -d performance_db -c "SELECT pg_reload_conf();"
       # Initialize pgbench with the current access method
-      pgbench -i -s {{ scale }} -d performance_db -U postgres
+      pgbench -i -s $scale -d performance_db -U postgres
       # Run the benchmark
-      pgbench -c {{ clients }} -j {{ threads }} -T {{ duration}} -M prepared -d performance_db -U postgres
+      pgbench -c $clients -j $threads -T $duration -M prepared -d performance_db -U postgres
       sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
     become_user: postgres
     args:
