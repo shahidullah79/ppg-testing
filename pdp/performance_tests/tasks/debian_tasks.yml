@@ -238,10 +238,10 @@
       executable: /bin/bash
       chdir: "/tmp/postgres"
     vars:
-      scale: "{{ lookup('env', 'pgbench_scale') }}"
-      clients: "{{ lookup('env', 'pgbench_clients') }}"
-      threads: "{{ lookup('env', 'pgbench_threads') }}"
-      duration: "{{ lookup('env', 'pgbench_duration') }}"
+      scale: "{{pgbench_scale}}"
+      clients: "{{pgbench_clients}}"
+      threads: "{{pgbench_threads}}"
+      duration: "{{pgbench_duration}}"
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
