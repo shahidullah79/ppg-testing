@@ -363,11 +363,13 @@
     register: output
 
   - name: Display regression.diffs contents
+    ignore_errors: yes
     command: cat /tmp/postgres/contrib/pg_tde/regression.diffs
     register: command_output
     when: output.stat.exists
 
   - name: Print to console
+    ignore_errors: yes
     debug:
       msg: "{{command_output.stdout_lines}}"
     when: output.stat.exists
