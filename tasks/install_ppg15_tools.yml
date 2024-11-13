@@ -534,12 +534,28 @@
       - python3-etcd
     when: ansible_os_family == "RedHat"
 
-  - name: Restart etcd RHEL
-    service:
-      name: etcd
-      state: restarted
-      enabled: yes
-    when: ansible_os_family == "RedHat"
+  - name: Install pgvector packages RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - percona-pgvector_15
+      - percona-pgvector_15-debuginfo
+      - percona-pgvector_15-debugsource
+      - percona-pgvector_15-llvmjit
+    when: (ansible_os_family == "RedHat" and pg_version_to_install | string is version('15.10', '>=', strict=True))
+
+  - name: Install pgvector packages Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - percona-postgresql-15-pgvector
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('15.10', '>=', strict=True))
 
   - name: Install patroni related packages Debian
     apt:
