@@ -451,12 +451,18 @@
 
   - debug: var=results.stdout_lines
 
-  - name: Display regression.diffs contents
+  - stat:
+      path: /tmp/postgres/src/test/regress/regression.diffs
+    register: output
+
+  - name: Get Server - regression.diffs contents
+    ignore_errors: yes
     command: cat /tmp/postgres/src/test/regress/regression.diffs
     register: command_output
     when: output.stat.exists
 
-  - name: Print to console
+  - name: Print to console Server - regression.diffs contents
+    ignore_errors: yes
     debug:
       msg: "{{command_output.stdout_lines}}"
     when: output.stat.exists
@@ -535,13 +541,13 @@
       path: /tmp/postgres/contrib/pg_tde/regression.diffs
     register: output
 
-  - name: Display regression.diffs contents
+  - name: Get pg_tde - regression.diffs contents
     ignore_errors: yes
     command: cat /tmp/postgres/contrib/pg_tde/regression.diffs
     register: command_output
     when: output.stat.exists
 
-  - name: Print to console
+  - name: Print to console pg_tde - regression.diffs contents
     ignore_errors: yes
     debug:
       msg: "{{command_output.stdout_lines}}"
