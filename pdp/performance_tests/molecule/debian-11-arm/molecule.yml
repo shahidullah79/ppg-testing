@@ -8,7 +8,7 @@ platforms:
     region: eu-central-1
     image: ami-079862e16fe3822d0
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t4g.xlarge
+    instance_type: t4g.2xlarge
     ssh_user: admin
     root_device_name: /dev/xvda
     instance_tags:

@@ -8,7 +8,7 @@ platforms:
     region: eu-central-1
     image: ami-0f18276190490b6e3
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t2.xlarge
+    instance_type: t2.2xlarge
     ssh_user: ec2-user
     root_device_name: /dev/sda1
     instance_tags:
