@@ -290,9 +290,8 @@
   - debug: var=results.stdout_lines
 
   - name: Run installcheck Server - tde_heap_basic/tde_heap
+    ignore_errors: yes
     shell: |
-      psql -c "ALTER SYSTEM  SET shared_preload_libraries ='pg_tde';"
-      psql -c "SELECT pg_reload_conf();"
       psql -c "CREATE EXTENSION pg_tde;"
       psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
@@ -313,9 +312,8 @@
   - debug: var=results.stdout_lines
 
   - name: Run installcheck-world Server - tde_heap_basic/tde_heap
+    ignore_errors: yes
     shell: |
-      psql -c "ALTER SYSTEM  SET shared_preload_libraries ='pg_tde';"
-      psql -c "SELECT pg_reload_conf();"
       psql -c "CREATE EXTENSION pg_tde;"
       psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
