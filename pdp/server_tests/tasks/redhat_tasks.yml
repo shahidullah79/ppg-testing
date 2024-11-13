@@ -425,7 +425,7 @@
   #     line: default_table_access_method = 'tde_heap_basic'
   #   when: with_tde_heap and access_method == 'tde_heap_basic'
 
-  - name: Run installcheck-world - Server
+  - name: Run installcheck-world Server - heap
     become_user: postgres
     make:
       chdir: "/tmp/postgres"
@@ -433,12 +433,12 @@
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    when: testsuite == 'installcheck-world'
+    when: testsuite == 'installcheck-world' and access_method == 'heap'
     register: results
 
   - debug: var=results.stdout_lines
 
-  - name: Run installcheck - Server
+  - name: Run installcheck Server - heap
     become_user: postgres
     make:
       chdir: "/tmp/postgres"
@@ -446,7 +446,53 @@
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    when: testsuite == 'installcheck'
+    when: testsuite == 'installcheck' and access_method == 'heap'
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Run installcheck Server - tde_heap_basic/tde_heap
+    shell: |
+      psql -c "ALTER SYSTEM  SET shared_preload_libraries ='pg_tde';"
+      psql -c "SELECT pg_reload_conf();"
+      psql -c "CREATE EXTENSION pg_tde;"
+      psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
+      psql -c "SELECT pg_reload_conf();"
+      make installcheck
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      method: "{{access_method}}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    when: testsuite == 'installcheck' and
+      (access_method == 'tde_heap_basic' or access_method == 'tde_heap')
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Run installcheck-world Server - tde_heap_basic/tde_heap
+    shell: |
+      psql -c "ALTER SYSTEM  SET shared_preload_libraries ='pg_tde';"
+      psql -c "SELECT pg_reload_conf();"
+      psql -c "CREATE EXTENSION pg_tde;"
+      psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
+      psql -c "SELECT pg_reload_conf();"
+      make installcheck-world
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      method: "{{access_method}}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    when: testsuite == 'installcheck-world' and
+      (access_method == 'tde_heap_basic' or access_method == 'tde_heap')
     register: results
 
   - debug: var=results.stdout_lines
