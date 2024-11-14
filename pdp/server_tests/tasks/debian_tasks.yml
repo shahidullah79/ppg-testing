@@ -294,7 +294,9 @@
     shell: |
       psql -c "CREATE EXTENSION pg_tde;"
       psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
-      psql -c "SELECT pg_reload_conf();"
+      psql -c "SELECT pg_reload_conf();
+      psql -c "SELECT pg_tde_add_key_provider_file('file-vault','/tmp/pg_tde_test_keyring.per');"
+      psql -c "SELECT pg_tde_set_principal_key('test-db-master-key','file-vault');"
       make installcheck
     become_user: postgres
     args:
@@ -317,6 +319,8 @@
       psql -c "CREATE EXTENSION pg_tde;"
       psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
+      psql -c "SELECT pg_tde_add_key_provider_file('file-vault','/tmp/pg_tde_test_keyring.per');"
+      psql -c "SELECT pg_tde_set_principal_key('test-db-master-key','file-vault');"
       make installcheck-world
     become_user: postgres
     args:
