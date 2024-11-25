@@ -293,7 +293,7 @@
     ignore_errors: yes
     shell: |
       psql -c "CREATE EXTENSION pg_tde;"
-      psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
+      psql -c "ALTER SYSTEM SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
       psql -c "SELECT pg_tde_add_key_provider_file('file-vault','/tmp/pg_tde_test_keyring.per');"
       psql -c "SELECT pg_tde_set_principal_key('test-db-master-key','file-vault');"
@@ -303,7 +303,7 @@
       executable: /bin/bash
       chdir: "/tmp/postgres"
     vars:
-      method: "{{access_method}}"
+      method: "{{ access_method }}"
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
@@ -317,7 +317,7 @@
     ignore_errors: yes
     shell: |
       psql -c "CREATE EXTENSION pg_tde;"
-      psql -c "ALTER SYSTEM  SET default_table_access_method='{{ method }}';"
+      psql -c "ALTER SYSTEM SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
       psql -c "SELECT pg_tde_add_key_provider_file('file-vault','/tmp/pg_tde_test_keyring.per');"
       psql -c "SELECT pg_tde_set_principal_key('test-db-master-key','file-vault');"
@@ -327,7 +327,7 @@
       executable: /bin/bash
       chdir: "/tmp/postgres"
     vars:
-      method: "{{access_method}}"
+      method: "{{ access_method }}"
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
