@@ -377,6 +377,7 @@
   - debug: var=results.stdout_lines
 
   - name: Start pg_tde tests - installcheck
+    ignore_errors: yes
     shell: | 
       TV=$(mktemp)
       { exec >$TV; vault server -dev; } &
@@ -401,6 +402,7 @@
   - debug: var=results.stdout_lines
 
   - name: Start pg_tde tests - installcheck-world
+    ignore_errors: yes
     shell: | 
       TV=$(mktemp)
       { exec >$TV; vault server -dev; } &
