@@ -251,12 +251,6 @@
 
   - debug: var=results.stdout_lines
 
-  - name: Add extensions to postgresql.conf for Debian
-    lineinfile:
-      path: /opt/pgsql/data/postgresql.conf
-      line: shared_preload_libraries = 'pg_tde'
-    when: with_tde_heap
-
   - name: Restart Server
     become_user: postgres
     command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
@@ -310,6 +304,8 @@
   - name: Run installcheck Server - tde_heap_basic/tde_heap
     ignore_errors: yes
     shell: |
+      psql -d $DB_NAME -c "ALTER SYSTEM SET shared_preload_libraries ='pg_tde';"
+      psql -d $DB_NAME -c "SELECT pg_reload_conf();"
       psql -c "CREATE EXTENSION pg_tde;"
       psql -c "ALTER SYSTEM SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
@@ -334,6 +330,8 @@
   - name: Run installcheck-world Server - tde_heap_basic/tde_heap
     ignore_errors: yes
     shell: |
+      psql -d $DB_NAME -c "ALTER SYSTEM SET shared_preload_libraries ='pg_tde';"
+      psql -d $DB_NAME -c "SELECT pg_reload_conf();"
       psql -c "CREATE EXTENSION pg_tde;"
       psql -c "ALTER SYSTEM SET default_table_access_method='{{ method }}';"
       psql -c "SELECT pg_reload_conf();"
@@ -378,6 +376,23 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /opt/pgsql/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_tde'
+    when: with_tde_heap
+
+  - name: Restart Server
+    become_user: postgres
+    command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
+    args:
+      chdir: /opt/pgsql/bin
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    register: results
+
+  - debug: var=results.stdout_lines
   - name: Start pg_tde tests - installcheck
     ignore_errors: yes
     shell: | 
