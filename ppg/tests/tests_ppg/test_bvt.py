@@ -477,3 +477,20 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
     provides = set(result.stdout.split())
     assert result.rc == 0, result.stderr
     assert vanila_package in provides, result.stdout
+
+
+def test_llvm(host):
+    with host.sudo("postgres"):
+        result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
+        assert result.rc == 0, result.stderr
+        result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
+        assert result.rc == 0, result.stderr
+        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f out.txt")
+        assert result.rc == 0, result.stderr
+        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
+        assert result.rc == 0, result.stderr
+        result = host.run("cd && wget https://github.com/Percona-QA/ppg-testing/blob/main/misc_tasks/llvm_analysis.sql")
+        assert result.rc == 0, result.stderr
+        result = host.run("cd && psql -X -f llvm_analysis.sql > output.txt")
+        assert result.rc == 0, result.stderr
+        pytest.print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
