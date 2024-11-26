@@ -493,4 +493,4 @@ def test_llvm(host):
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f llvm_analysis.sql > output.txt")
         assert result.rc == 0, result.stderr
-        pytest.print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
+        print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
