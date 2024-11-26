@@ -733,3 +733,48 @@ def test_pg_gather_file_version(host):
     result = host.run(f"head -5 /usr/bin/gather.sql | tail -1 | cut -d' ' -f3")
     assert result.rc == 0, result.stderr
     assert pg_versions["pg_gather"]['sql_file_version'] in result.stdout.strip("\n"), result.stdout
+
+
+def test_pgvector_package_version(host):
+    dist = host.system_info.distribution
+    ppg_version=float(pg_versions['version'])
+
+    if ppg_version <= 12.22:
+        pytest.skip("pgvector not available on " + pg_versions['version'])
+
+    if dist.lower() in ["ubuntu", "debian"]:
+        pgvector = host.package(f"percona-postgresql-{MAJOR_VER}-pgvector")
+    else:
+        pgvector = host.package(f"percona-pgvector_{MAJOR_VER}")
+    assert pgvector.is_installed
+    assert pg_versions["pgvector"]['version'] in pgvector.version, pgvector.version
+
+
+def test_pgvector(host):
+    ppg_version=float(pg_versions['version'])
+
+    if ppg_version <= 12.22:
+        pytest.skip("pgvector not available on " + pg_versions['version'])
+
+    with host.sudo("postgres"):
+        install_extension = host.run("psql -c 'CREATE EXTENSION \"vector\";'")
+        try:
+            assert install_extension.rc == 0, install_extension.stdout
+            assert install_extension.stdout.strip("\n") == "CREATE EXTENSION"
+        except AssertionError:
+            pytest.fail("Return code {}. Stderror: {}. Stdout {}".format(install_extension.rc,
+                                                                         install_extension.stderr,
+                                                                         install_extension.stdout))
+            extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $3}'")
+            assert extensions.rc == 0
+            assert "vector" in set(extensions.stdout.split())
+
+    with host.sudo("postgres"):
+        extension_version = host.run("psql -c \"select extversion from pg_extension where extname = 'vector';\" | awk 'NR==3{print $1}'")
+        try:
+            assert extension_version.rc == 0, extension_version.stdout
+            assert pg_versions["pgvector"]['extension_version'] in extension_version.stdout.strip("\n"), extension_version.stdout
+        except AssertionError:
+            pytest.fail("Return code {}. Stderror: {}. Stdout {}".format(extension_version.rc,
+                                                                            extension_version.stderr,
+                                                                            extension_version.stdout))

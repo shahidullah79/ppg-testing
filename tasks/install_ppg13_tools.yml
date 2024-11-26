@@ -563,6 +563,29 @@
       enabled: yes
     when: ansible_os_family == "RedHat"
 
+  - name: Install pgvector packages RHEL
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - percona-pgvector_13
+      - percona-pgvector_13-debuginfo
+      - percona-pgvector_13-debugsource
+      - percona-pgvector_13-llvmjit
+    when: (ansible_os_family == "RedHat" and pg_version_to_install | string is version('13.18', '>=', strict=True))
+
+  - name: Install pgvector packages Debian
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - percona-postgresql-13-pgvector
+    when: (ansible_os_family == "Debian" and pg_version_to_install | string is version('13.18', '>=', strict=True))
+
   - name: Install patroni related packages Debian
     apt:
       name: "{{ packages }}"
