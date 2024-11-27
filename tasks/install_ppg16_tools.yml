@@ -781,16 +781,6 @@
   #     (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
   - name: Copy llvm_analysis.sql to tmp
-    ignore_errors: true
-    copy:
-      src:  "{{ playbook_dir }}/../../../../misc_tasks/llvm_analysis.sql"
-      dest: /tmp/llvm_analysis.sql
-      owner: postgres
-      group: postgres
-      mode: 0755
-
-  - name: Copy llvm_analysis.sql to tmp
-    ignore_errors: true
     copy:
       src:  "{{ playbook_dir }}/../../../misc_tasks/llvm_analysis.sql"
       dest: /tmp/llvm_analysis.sql

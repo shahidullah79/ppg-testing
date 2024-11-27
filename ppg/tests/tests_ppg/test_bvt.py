@@ -23,6 +23,23 @@ BINARIES = pg_versions['binaries']
 
 
 @pytest.fixture()
+def file_contains_string(file_path, search_string):
+    try:
+        with open(file_path, 'r') as file:
+            # Read the file line by line
+            for line in file:
+                if search_string in line:
+                    return True
+        return False
+    except FileNotFoundError:
+        print(f"The file {file_path} does not exist.")
+        return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+
+@pytest.fixture()
 def postgres_unit_file(host):
     cmd = "sudo systemctl list-units| grep postgresql"
     return host.check_output(cmd)
@@ -492,3 +509,6 @@ def test_llvm(host):
         result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
+        assert file_contains_string('output.txt','JIT') == True
+        assert file_contains_string('output.txt','Functions') == True
+        assert file_contains_string('output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
