@@ -489,8 +489,6 @@ def test_llvm(host):
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && wget https://github.com/Percona-QA/ppg-testing/blob/main/misc_tasks/llvm_analysis.sql")
-        assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f llvm_analysis.sql > output.txt")
+        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
