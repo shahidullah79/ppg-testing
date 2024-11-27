@@ -22,7 +22,7 @@ SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", "ppg-11.17",
 BINARIES = pg_versions['binaries']
 
 
-@pytest.fixture()
+@pytest.mark.skip(reason="helper function")
 def file_contains_string(file_path, search_string):
     try:
         with open(file_path, 'r') as file:
@@ -495,7 +495,7 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
     assert result.rc == 0, result.stderr
     assert vanila_package in provides, result.stdout
 
-
+@pytest.mark.upgrade
 def test_llvm(host):
     with host.sudo("postgres"):
         result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
