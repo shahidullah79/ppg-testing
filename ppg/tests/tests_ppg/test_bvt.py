@@ -27,7 +27,9 @@ def file_contains_string(file_path, search_string):
     try:
         with open(file_path, 'r') as file:
             # Read the file line by line
+            print('File Found')
             for line in file:
+                print(line)
                 if search_string in line:
                     return True
         return False
