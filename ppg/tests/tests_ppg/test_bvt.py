@@ -524,3 +524,5 @@ def test_llvm(host):
         assert file_contains_string('/tmp/llvm_query_output.txt','JIT') == True
         assert file_contains_string('/tmp/llvm_query_output.txt','Functions') == True
         assert file_contains_string('/tmp/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        files = os.listdir('/tmp/llvm_query_output.txt')
+        print(files)
