@@ -509,11 +509,11 @@ def test_llvm(host):
         print(files)
         result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f /usr/bin/gather.sql > " + data_dir + "/out.txt")
+        result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f " + data_dir + "/out.txt")
+        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f /out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > " + data_dir + "/Report.html")
+        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
         result = host.run("cd && pwd")
         assert result.rc == 0, result.stderr
         print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
@@ -521,7 +521,7 @@ def test_llvm(host):
         print(cwd)
         files = os.listdir()
         print(files)
-        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > " + data_dir + "/llvm_query_output.txt")
+        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         cwd = os.getcwd()
@@ -530,13 +530,13 @@ def test_llvm(host):
         print(files)
         # print(os.path.expanduser('~'))
         # home_dir = os.path.expanduser('~')
-        if os.path.exists(data_dir + "/llvm_query_output.txt"):
+        if os.path.exists("/var/lib/postgresql/llvm_query_output.txt"):
             print("llvm_query_output.txt exists")
         else:
             print("llvm_query_output.txt DOES NOT exists")
 
-        assert file_contains_string(f'{data_dir}/llvm_query_output.txt','JIT') == True
-        assert file_contains_string(f'{data_dir}/llvm_query_output.txt','Functions') == True
-        assert file_contains_string(f'{data_dir}/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
-        files = os.listdir(data_dir)
+        assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','JIT') == True
+        assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','Functions') == True
+        assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        files = os.listdir('/var/lib/postgresql/llvm_query_output.txt')
         print(files)
