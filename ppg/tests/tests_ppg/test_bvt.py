@@ -500,15 +500,15 @@ def test_llvm(host):
     with host.sudo("postgres"):
         result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
+        result = host.run("cd && psql -X -f /usr/bin/gather.sql > /tmp/out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f out.txt")
+        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f /tmp/out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
+        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > /tmp/Report.html")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > output.txt")
+        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > /tmp/llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        assert file_contains_string('output.txt','JIT') == True
-        assert file_contains_string('output.txt','Functions') == True
-        assert file_contains_string('output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        assert file_contains_string('/tmp/llvm_query_output.txt','JIT') == True
+        assert file_contains_string('/tmp/llvm_query_output.txt','Functions') == True
+        assert file_contains_string('/tmp/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
