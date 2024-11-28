@@ -521,6 +521,13 @@ def test_llvm(host):
         print(cwd)
         files = os.listdir()
         print(files)
+        files = os.listdir('/tmp')
+        print(files)
+        if os.path.exists('/tmp/llvm_query_output.txt'):
+            print("/tmp/llvm_query_output.txt exists")
+        else:
+            print("/tmp/llvm_query_output.txt DOES NOT exists")
+
         assert file_contains_string('/tmp/llvm_query_output.txt','JIT') == True
         assert file_contains_string('/tmp/llvm_query_output.txt','Functions') == True
         assert file_contains_string('/tmp/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
