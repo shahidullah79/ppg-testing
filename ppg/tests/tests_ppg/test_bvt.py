@@ -498,6 +498,10 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
 @pytest.mark.upgrade
 def test_llvm(host):
     with host.sudo("postgres"):
+        cwd = os.getcwd()
+        print(cwd)
+        files = os.listdir()
+        print(files)
         result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f /usr/bin/gather.sql > /tmp/out.txt")
@@ -506,9 +510,17 @@ def test_llvm(host):
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f pg_gather/gather_report.sql > /tmp/Report.html")
         assert result.rc == 0, result.stderr
+        cwd = os.getcwd()
+        print(cwd)
+        files = os.listdir()
+        print(files)
         result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > /tmp/llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
+        cwd = os.getcwd()
+        print(cwd)
+        files = os.listdir()
+        print(files)
         assert file_contains_string('/tmp/llvm_query_output.txt','JIT') == True
         assert file_contains_string('/tmp/llvm_query_output.txt','Functions') == True
         assert file_contains_string('/tmp/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
