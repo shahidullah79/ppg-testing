@@ -514,7 +514,9 @@ def test_llvm(host):
         result = host.run("cd && psql -f pg_gather/gather_schema.sql -f " + data_dir + "/out.txt")
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f pg_gather/gather_report.sql > " + data_dir + "/Report.html")
+        result = host.run("cd && pwd")
         assert result.rc == 0, result.stderr
+        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         cwd = os.getcwd()
         print(cwd)
         files = os.listdir()
@@ -533,8 +535,8 @@ def test_llvm(host):
         else:
             print("llvm_query_output.txt DOES NOT exists")
 
-        assert file_contains_string(data_dir + '/llvm_query_output.txt','JIT') == True
-        assert file_contains_string(data_dir + '/llvm_query_output.txt','Functions') == True
-        assert file_contains_string(data_dir + '/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        assert file_contains_string(f'{data_dir}/llvm_query_output.txt','JIT') == True
+        assert file_contains_string(f'{data_dir}/llvm_query_output.txt','Functions') == True
+        assert file_contains_string(f'{data_dir}/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
         files = os.listdir(data_dir)
         print(files)
