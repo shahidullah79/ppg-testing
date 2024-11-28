@@ -526,19 +526,15 @@ def test_llvm(host):
         result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        result = host.run("cd && ls -lh")
+        result = host.run("cd && pwd && ls -lh")
         assert result.rc == 0, result.stderr
         print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         # print(os.path.expanduser('~'))
         # home_dir = os.path.expanduser('~')
-        if os.path.exists("/var/lib/postgresql/llvm_query_output.txt"):
+        if os.path.exists("/var/lib/postgresql"):
             print("llvm_query_output.txt exists")
         else:
             print("llvm_query_output.txt DOES NOT exists")
-        files = os.listdir('/var/lib/postgresql')
-        print(files)
-        assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','JIT') == True
+        assert file_contains_string("/var/lib/postgresql/llvm_query_output.txt","JIT") == True
         assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','Functions') == True
         assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
-        files = os.listdir('/var/lib/postgresql/llvm_query_output.txt')
-        print(files)
