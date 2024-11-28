@@ -511,7 +511,7 @@ def test_llvm(host):
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f /out.txt")
+        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f out.txt")
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
         result = host.run("cd && pwd")
