@@ -522,15 +522,15 @@ def test_llvm(host):
         print(cwd)
         files = os.listdir()
         print(files)
-        files = os.listdir('~')
-        print(files)
-        if os.path.exists('~/llvm_query_output.txt'):
+        print(os.path.expanduser('~'))
+        home_dir = os.path.expanduser('~')
+        if os.path.exists(home_dir + '/llvm_query_output.txt'):
             print("~/llvm_query_output.txt exists")
         else:
             print("~/llvm_query_output.txt DOES NOT exists")
 
-        assert file_contains_string('~/llvm_query_output.txt','JIT') == True
-        assert file_contains_string('~/llvm_query_output.txt','Functions') == True
-        assert file_contains_string('~/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
-        files = os.listdir('~/llvm_query_output.txt')
+        assert file_contains_string(home_dir + '/llvm_query_output.txt','JIT') == True
+        assert file_contains_string(home_dir + '/llvm_query_output.txt','Functions') == True
+        assert file_contains_string(home_dir + '/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        files = os.listdir(home_dir)
         print(files)
