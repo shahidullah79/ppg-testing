@@ -495,6 +495,7 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
     assert result.rc == 0, result.stderr
     assert vanila_package in provides, result.stdout
 
+
 @pytest.mark.upgrade
 def test_llvm(host):
     with host.sudo("postgres"):
@@ -514,7 +515,7 @@ def test_llvm(host):
         print(cwd)
         files = os.listdir()
         print(files)
-        result = host.run("cd && psql -X -f ~/llvm_analysis.sql > llvm_query_output.txt")
+        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         cwd = os.getcwd()
