@@ -499,38 +499,42 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
 @pytest.mark.upgrade
 def test_llvm(host):
     with host.sudo("postgres"):
+        dist = host.system_info.distribution
+        data_dir = f"/var/lib/postgresql/{settings.MAJOR_VER}/main"
+        if dist.lower() in ["redhat", "centos", "ol", "rhel"]:
+            data_dir = f"/var/lib/pgsql/{settings.MAJOR_VER}/data"
         cwd = os.getcwd()
         print(cwd)
         files = os.listdir()
         print(files)
         result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
+        result = host.run("cd && psql -X -f /usr/bin/gather.sql > " + data_dir + "/out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f out.txt")
+        result = host.run("cd && psql -f pg_gather/gather_schema.sql -f " + data_dir + "/out.txt")
         assert result.rc == 0, result.stderr
-        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
+        result = host.run("cd && psql -X -f pg_gather/gather_report.sql > " + data_dir + "/Report.html")
         assert result.rc == 0, result.stderr
         cwd = os.getcwd()
         print(cwd)
         files = os.listdir()
         print(files)
-        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > llvm_query_output.txt")
+        result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > " + data_dir + "/llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         cwd = os.getcwd()
         print(cwd)
         files = os.listdir()
         print(files)
-        print(os.path.expanduser('~'))
-        home_dir = os.path.expanduser('~')
-        if os.path.exists(home_dir + '/llvm_query_output.txt'):
-            print("~/llvm_query_output.txt exists")
+        # print(os.path.expanduser('~'))
+        # home_dir = os.path.expanduser('~')
+        if os.path.exists(data_dir + "/llvm_query_output.txt"):
+            print("llvm_query_output.txt exists")
         else:
-            print("~/llvm_query_output.txt DOES NOT exists")
+            print("llvm_query_output.txt DOES NOT exists")
 
-        assert file_contains_string(home_dir + '/llvm_query_output.txt','JIT') == True
-        assert file_contains_string(home_dir + '/llvm_query_output.txt','Functions') == True
-        assert file_contains_string(home_dir + '/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
-        files = os.listdir(home_dir)
+        assert file_contains_string(data_dir + '/llvm_query_output.txt','JIT') == True
+        assert file_contains_string(data_dir + '/llvm_query_output.txt','Functions') == True
+        assert file_contains_string(data_dir + '/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        files = os.listdir(data_dir)
         print(files)
