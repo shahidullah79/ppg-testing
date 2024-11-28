@@ -520,18 +520,15 @@ def test_llvm(host):
         result = host.run("cd && ls -lh")
         assert result.rc == 0, result.stderr
         print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        
-        cwd = os.getcwd()
-        print(cwd)
-        files = os.listdir()
-        print(files)
+        result = host.run("cd && ls -lh /tmp")
+        assert result.rc == 0, result.stderr
+        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > llvm_query_output.txt")
         assert result.rc == 0, result.stderr
         print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        cwd = os.getcwd()
-        print(cwd)
-        files = os.listdir()
-        print(files)
+        result = host.run("cd && ls -lh")
+        assert result.rc == 0, result.stderr
+        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         # print(os.path.expanduser('~'))
         # home_dir = os.path.expanduser('~')
         if os.path.exists("/var/lib/postgresql/llvm_query_output.txt"):
