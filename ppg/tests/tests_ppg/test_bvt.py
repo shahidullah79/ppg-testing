@@ -22,25 +22,6 @@ SKIPPED_DEBIAN = ["ppg-11.8", "ppg-11.9", "ppg-11.10", "ppg-11.12", "ppg-11.17",
 BINARIES = pg_versions['binaries']
 
 
-# @pytest.mark.skip(reason="helper function")
-# def file_contains_string(file_path, search_string):
-#     try:
-#         with open(file_path, 'r') as file:
-#             # Read the file line by line
-#             print('File Found')
-#             for line in file:
-#                 print(line)
-#                 if search_string in line:
-#                     return True
-#         return False
-#     except FileNotFoundError:
-#         print(f"The file {file_path} does not exist.")
-#         return False
-#     except Exception as e:
-#         print(f"An error occurred: {e}")
-#         return False
-
-
 @pytest.fixture()
 def postgres_unit_file(host):
     cmd = "sudo systemctl list-units| grep postgresql"
