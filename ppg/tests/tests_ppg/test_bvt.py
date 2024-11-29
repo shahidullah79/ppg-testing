@@ -502,13 +502,6 @@ def test_rpm7_package_provides(host, percona_package, vanila_package):
 def test_llvm(host):
     with host.sudo("postgres"):
         dist = host.system_info.distribution
-        data_dir = f"/var/lib/postgresql/{settings.MAJOR_VER}/main"
-        if dist.lower() in ["redhat", "centos", "ol", "rhel"]:
-            data_dir = f"/var/lib/pgsql/{settings.MAJOR_VER}/data"
-        cwd = os.getcwd()
-        print(cwd)
-        files = os.listdir()
-        print(files)
         result = host.run("cd && git clone https://github.com/jobinau/pg_gather.git")
         assert result.rc == 0, result.stderr
         result = host.run("cd && psql -X -f /usr/bin/gather.sql > out.txt")
@@ -518,74 +511,14 @@ def test_llvm(host):
         result = host.run("cd && psql -X -f pg_gather/gather_report.sql > Report.html")
         result = host.run("cd && pwd")
         assert result.rc == 0, result.stderr
-        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        result = host.run("cd && ls -lh")
-        assert result.rc == 0, result.stderr
-        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        result = host.run("cd && ls -lh /tmp")
-        assert result.rc == 0, result.stderr
-        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
         result = host.run("cd && psql -X -f /tmp/llvm_analysis.sql > llvm_query_output.txt")
         assert result.rc == 0, result.stderr
-        print("Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        result = host.run("cd && pwd && ls -lh")
+        result = host.run("cd && grep -i JIT llvm_query_output.txt")
         assert result.rc == 0, result.stderr
-        print("Dir: Return code {}. Stderror: {}. Stdout {}".format(result.rc, result.stderr,result.stdout))
-        # print(os.path.expanduser('~'))
-        # home_dir = os.path.expanduser('~')
-        if os.path.exists("/var/lib/postgresql"):
-            print("llvm_query_output.txt exists")
-        else:
-            print("llvm_query_output.txt DOES NOT exists")
-
-        try:
-            with open('/var/lib/postgresql/llvm_query_output.txt', 'r') as file:
-                # Read the file line by line
-                print('File Found')
-                for line in file:
-                    print(line)
-                    if 'JIT' in line:
-                        assert True
-            return False
-        except FileNotFoundError:
-            print(f"The file /var/lib/postgresql/llvm_query_output.txt does not exist.")
-            assert False
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            assert False
-
-        try:
-            with open('/var/lib/postgresql/llvm_query_output.txt', 'r') as file:
-                # Read the file line by line
-                print('File Found')
-                for line in file:
-                    print(line)
-                    if 'Functions' in line:
-                        assert True
-            return False
-        except FileNotFoundError:
-            print(f"The file /var/lib/postgresql/llvm_query_output.txt does not exist.")
-            assert False
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            assert False
-
-        try:
-            with open('/var/lib/postgresql/llvm_query_output.txt', 'r') as file:
-                # Read the file line by line
-                print('File Found')
-                for line in file:
-                    print(line)
-                    if 'Options: Inlining true, Optimization true, Expressions true, Deforming true' in line:
-                        assert True
-            return False
-        except FileNotFoundError:
-            print(f"The file /var/lib/postgresql/llvm_query_output.txt does not exist.")
-            assert False
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            assert False
-
-        # assert file_contains_string("/var/lib/postgresql/llvm_query_output.txt","JIT") == True
-        # assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','Functions') == True
-        # assert file_contains_string('/var/lib/postgresql/llvm_query_output.txt','Options: Inlining true, Optimization true, Expressions true, Deforming true') == True
+        assert 'JIT' in result.stdout
+        result = host.run("cd && grep -i Functions llvm_query_output.txt")
+        assert result.rc == 0, result.stderr
+        assert 'Functions' in result.stdout
+        result = host.run("cd && grep -i 'Options: Inlining true, Optimization true, Expressions true, Deforming true' llvm_query_output.txt")
+        assert result.rc == 0, result.stderr
+        assert 'Options' in result.stdout
