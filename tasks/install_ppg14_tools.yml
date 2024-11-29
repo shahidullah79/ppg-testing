@@ -796,6 +796,21 @@
   #   when: ansible_os_family == "RedHat" and
   #     (ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9")
 
+  - name: Copy llvm_analysis.sql to tmp
+    copy:
+      src:  "{{ playbook_dir }}/../../../misc_tasks/llvm_analysis.sql"
+      dest: /tmp/llvm_analysis.sql
+      owner: postgres
+      group: postgres
+      mode: 0755
+
+  - name: install git for RHEL
+      yum:
+        name: git
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "RedHat"
+
   - name: Pause for 1 minutes
     ansible.builtin.pause:
       minutes: 1
