@@ -788,12 +788,12 @@
       group: postgres
       mode: 0755
 
-- name: install git for RHEL
-    yum:
-      name: git
-      state: latest
-      update_cache: yes
-    when: ansible_os_family == "RedHat"
+  - name: install git for RHEL
+      yum:
+        name: git
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "RedHat"
 
   - name: Pause for 1 minutes
     ansible.builtin.pause:
