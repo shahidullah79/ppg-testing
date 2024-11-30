@@ -5,6 +5,7 @@ import testinfra
 import sys
 import settings
 import time
+import glob
 
 MAJOR_VER = os.getenv('VERSION').split('.')[0]
 MAJOR_MINOR_VER = os.getenv('VERSION')
