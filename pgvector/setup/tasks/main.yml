@@ -129,8 +129,8 @@
       version: "{{ version }}"
       dest: /tmp/pgvector
     vars:
-      repo: "{{ lookup('env', 'PGVECTOR_REPO') }}"
-      version: "{{ lookup('env', 'PGVECTOR_BRANCH') }}"
+      repo: "{{ lookup('env', 'COMPONENT_REPO') }}"
+      version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
     become_user: postgres
 
   - name: Build pgvector from sources
