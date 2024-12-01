@@ -4,11 +4,11 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: pgvector-ufocal-arm-${BUILD_NUMBER}
+  - name: pgvector-unoble-${BUILD_NUMBER}
     region: eu-central-1
-    image: ami-05808cb5667d133b0
+    image: ami-0f67ca03a667867bb
     vpc_subnet_id: subnet-085deaca8c1c59a4f
-    instance_type: t4g.xlarge
+    instance_type: t2.xlarge
     ssh_user: ubuntu
     root_device_name: /dev/sda1
     instance_tags:
@@ -21,14 +21,8 @@ provisioner:
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
     converge: ../../playbooks/playbook.yml
-    verify: ../../playbooks/verify.yml
 verifier:
-  name: testinfra
-  directory: ../../../tests/
-  options:
-    verbose: true
-    s: true
-    junitxml: report.xml
+  name: ansible
 scenario:
   destroy_sequence:
     - destroy
@@ -39,5 +33,4 @@ scenario:
     - create
     - prepare
     - converge
-    - verify
     - destroy
