@@ -157,7 +157,6 @@
       packages:
         - percona-pg-stat-monitor{{ major_version }}
         - percona-pg-stat-monitor{{ major_version }}-dbgsym
-    when: use_package_install
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
