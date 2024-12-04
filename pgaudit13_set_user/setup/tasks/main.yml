@@ -97,12 +97,12 @@
       params:
         USE_PGXS: 1
 
-  # - name: Install set_user from sources
-  #   make:
-  #     target: install
-  #     chdir: "/tmp/set_user"
-  #     params:
-  #       USE_PGXS: 1
+  - name: Install set_user from sources
+    make:
+      target: install
+      chdir: "/tmp/set_user"
+      params:
+        USE_PGXS: 1
 
   - name: Add extensions to postgresql.conf for RHEL
     lineinfile:
