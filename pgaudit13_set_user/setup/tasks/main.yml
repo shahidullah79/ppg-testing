@@ -144,7 +144,6 @@
   - debug: var=results.stdout_lines
 
   - name: Test set_user
-    ignore_errors: yes
     make:
       target: installcheck
       chdir: "/tmp/set_user"
