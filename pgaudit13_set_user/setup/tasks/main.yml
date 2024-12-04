@@ -68,7 +68,7 @@
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
-  - name: Install pgaudit Debian
+  - name: Install set_user Debian
     apt:
       name: "{{ packages }}"
       state: latest
@@ -76,8 +76,8 @@
     vars:
       postgres_version: "{{ major_version }}"
       packages:
-        - percona-postgresql-{{ postgres_version }}-pgaudit
-        - percona-postgresql-{{ postgres_version }}-pgaudit-dbgsym
+        - percona-pgaudit{{ postgres_version }}-set-user
+        - percona-pgaudit{{ postgres_version }}-set-user-dbgsym
     environment:
       PERCONA_TELEMETRY_URL: "https://check-dev.percona.com/v1/telemetry/GenericReport"
 
@@ -108,18 +108,26 @@
     lineinfile:
       path: /etc/postgresql/{{ major_version }}/main/postgresql.conf
       line: shared_preload_libraries = 'set_user'
+    register: results
 
+  - debug:
+      var: results.stdout
 
   - name: Stop postgresql service for Debian based
     service:
       name: postgresql
       state: stopped
+    register: results
+
+  - debug:
+      var: results.stdout
 
   - name: Start postgresql service for Debian based
     service:
       name: postgresql
       state: started
       enabled: true
+    register: results
 
   - debug:
       var: results.stdout
