@@ -142,3 +142,17 @@
     register: installcheck
 
   - debug: var=installcheck.stdout_lines
+
+  - stat:
+      path: /tmp/set_user/regression.diffs
+    register: output
+
+  - name: Display regression.diffs contents
+    command: cat /tmp/set_user/regression.diffs
+    register: command_output
+    when: output.stat.exists
+
+  - name: Print to console
+    debug:
+      msg: "{{command_output.stdout_lines}}"
+    when: output.stat.exists
