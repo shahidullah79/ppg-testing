@@ -104,10 +104,24 @@
       params:
         USE_PGXS: 1
 
-  - name: Add extensions to postgresql.conf for RHEL
+  - name: Add extensions to postgresql.conf for DEB
     lineinfile:
       path: /etc/postgresql/{{ major_version }}/main/postgresql.conf
       line: shared_preload_libraries = 'set_user'
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Remove default log_line_prefix
+    command: sed 's:log_line_prefix.*::' /etc/postgresql/{{ major_version }}/main/postgresql.conf
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Add log_line_prefix to postgresql.conf for DEB
+    lineinfile:
+      path: /etc/postgresql/{{ major_version }}/main/postgresql.conf
+      line: log_line_prefix = '%m [%p] '
     register: results
 
   - debug: var=results.stdout_lines
