@@ -5,5 +5,3 @@
   become_method: sudo
   roles:
     - role: setup
-  environment:
-    PG_TEST_PORT_DIR: /tmp/setuser
