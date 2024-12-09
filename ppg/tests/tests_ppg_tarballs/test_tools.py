@@ -539,3 +539,34 @@ def test_pg_gather_file_version(host,get_server_bin_path):
 
 # def test_pgaudit(pgaudit):
 #     assert "AUDIT" in pgaudit
+
+def test_pgvector(host):
+    ppg_version=float(pg_versions['version'])
+
+    if ppg_version <= 12.22:
+        pytest.skip("pgvector not available on " + pg_versions['version'])
+
+    with host.sudo("postgres"):
+        command = get_psql_binary_path + " -c \'CREATE EXTENSION IF NOT EXISTS vector;\'"
+        install_extension = host.run(command)
+        try:
+            assert install_extension.rc == 0, install_extension.stdout
+            assert install_extension.stdout.strip("\n") == "CREATE EXTENSION"
+        except AssertionError:
+            pytest.fail("Return code {}. Stderror: {}. Stdout {}".format(install_extension.rc,
+                                                                         install_extension.stderr,
+                                                                         install_extension.stdout))
+            extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $3}'")
+            assert extensions.rc == 0
+            assert "vector" in set(extensions.stdout.split())
+
+    with host.sudo("postgres"):
+        command = get_psql_binary_path + " -c \"select extversion from pg_extension where extname = 'vector';\" | awk 'NR==3{print $1}'"
+        extension_version = host.run(command)
+        try:
+            assert extension_version.rc == 0, extension_version.stdout
+            assert pg_versions["pgvector"]['extension_version'] in extension_version.stdout.strip("\n"), extension_version.stdout
+        except AssertionError:
+            pytest.fail("Return code {}. Stderror: {}. Stdout {}".format(extension_version.rc,
+                                                                            extension_version.stderr,
+                                                                            extension_version.stdout))
