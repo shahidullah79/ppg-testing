@@ -540,7 +540,7 @@ def test_pg_gather_file_version(host,get_server_bin_path):
 # def test_pgaudit(pgaudit):
 #     assert "AUDIT" in pgaudit
 
-def test_pgvector(host):
+def test_pgvector(host, get_psql_binary_path):
     ppg_version=float(pg_versions['version'])
 
     if ppg_version <= 12.22:
