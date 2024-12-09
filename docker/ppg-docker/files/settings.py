@@ -406,7 +406,6 @@ ppg_versions = {
             "percona-wal2json12": wal2json["12.22"],
             "percona-pgaudit12_set_user": set_user["12.22"],
             "percona-pg_stat_monitor12" : pg_stat_monitor["12.22"],
-            "percona-pgvector_12" : pgvector["12.22"],
             "libpq": "Version of libpq: 120022",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "12"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "12"),
