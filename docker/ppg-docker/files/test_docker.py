@@ -163,7 +163,7 @@ def test_rpm_package_is_installed(host, package):
     if package in ["percona-postgresql-client-common", "percona-postgresql-common"]:
         assert pkg.version == pg_docker_versions[package]
     elif package in [f"percona-pgaudit{MAJOR_VER}", f"percona-wal2json{MAJOR_VER}", f"percona-pg_stat_monitor{MAJOR_VER}",
-        f"percona-pgaudit{MAJOR_VER}_set_user", f"percona-pg_repack{MAJOR_VER}"]:
+        f"percona-pgaudit{MAJOR_VER}_set_user", f"percona-pg_repack{MAJOR_VER}", f"percona-pgvector_{MAJOR_VER}"]:
         assert pkg.version == pg_docker_versions[package]['version']
     else:
         assert pkg.version == pg_docker_versions['version']

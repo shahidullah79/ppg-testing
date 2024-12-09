@@ -180,6 +180,13 @@ wal2json = {
     "17.2": {"version": "2.6"},
 }
 
+pgvector = {
+    "13.18": {"version": "0.8.0", "extension_version": "0.8.0"},
+    "14.15": {"version": "0.8.0", "extension_version": "0.8.0"},
+    "15.10": {"version": "0.8.0", "extension_version": "0.8.0"},
+    "16.6": {"version": "0.8.0", "extension_version": "0.8.0"},
+    "17.2": {"version": "0.8.0", "extension_version": "0.8.0"},
+}
 
 DOCKER_LIST_EXTENSIONS = ["hstore",
                 "adminpack",
@@ -224,7 +231,8 @@ DOCKER_LIST_EXTENSIONS = ["hstore",
                 "tsm_system_time",
                 "unaccent",
                 "uuid-ossp",
-                "pg_stat_monitor"
+                "pg_stat_monitor",
+                "vector"
                 ]
 
 DOCKER_RPM_PACKAGES_TEMPLATE = ["percona-postgresql{}",
@@ -239,6 +247,7 @@ DOCKER_RPM_PACKAGES_TEMPLATE = ["percona-postgresql{}",
                              "percona-pgaudit{}",
                              "percona-pgaudit{}_set_user",
                              "percona-pg_repack{}",
+                             "percona-pgvector_{}"
                              ]
 
 
@@ -397,6 +406,7 @@ ppg_versions = {
             "percona-wal2json12": wal2json["12.22"],
             "percona-pgaudit12_set_user": set_user["12.22"],
             "percona-pg_stat_monitor12" : pg_stat_monitor["12.22"],
+            "percona-pgvector_12" : pgvector["12.22"],
             "libpq": "Version of libpq: 120022",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "12"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "12"),
@@ -522,6 +532,7 @@ ppg_versions = {
             "percona-wal2json13": wal2json["13.18"],
             "percona-pgaudit13_set_user": set_user["13.18"],
             "percona-pg_stat_monitor13" : pg_stat_monitor["13.18"],
+            "percona-pgvector_13" : pgvector["13.18"],
             "libpq": "Version of libpq: 130018",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "13"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "13"),
@@ -648,6 +659,7 @@ ppg_versions = {
             "percona-wal2json14": wal2json["14.15"],
             "percona-pgaudit14_set_user": set_user["14.15"],
             "percona-pg_stat_monitor14" : pg_stat_monitor["14.15"],
+            "percona-pgvector_14" : pgvector["14.15"],
             "libpq": "Version of libpq: 140015",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "14"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "14"),
@@ -774,6 +786,7 @@ ppg_versions = {
             "percona-wal2json15": wal2json["15.10"],
             "percona-pgaudit15_set_user": set_user["15.10"],
             "percona-pg_stat_monitor15" : pg_stat_monitor["15.10"],
+            "percona-pgvector_15" : pgvector["15.10"],
             "libpq": "Version of libpq: 150010",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "15"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "15"),
@@ -900,6 +913,7 @@ ppg_versions = {
             "percona-wal2json16": wal2json["16.6"],
             "percona-pgaudit16_set_user": set_user["16.6"],
             "percona-pg_stat_monitor16" : pg_stat_monitor["16.6"],
+            "percona-pgvector_16" : pgvector["16.6"],
             "libpq": "Version of libpq: 160006",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "16"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "16"),
@@ -944,6 +958,7 @@ ppg_versions = {
             "percona-wal2json17": wal2json["17.2"],
             "percona-pgaudit17_set_user": set_user["17.2"],
             "percona-pg_stat_monitor17" : pg_stat_monitor["17.2"],
+            "percona-pgvector_17" : pgvector["17.2"],
             "libpq": "Version of libpq: 170002",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "17.2"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "17.2"),
