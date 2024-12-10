@@ -113,6 +113,9 @@ def test_postgres_client_version(host):
 @pytest.mark.parametrize("extension", DOCKER_EXTENSIONS)
 def test_extenstions_list(extension_list, host, extension):
     dist = host.system_info.distribution
+    # Skip vector extension for PostgreSQL 12
+    if int(MAJOR_VER) == 12 and extension == 'vector':
+        pytest.skip("Skipping vector extension as it is not supported in PostgreSQL 12")
     # Skip adminpack extension for PostgreSQL 17
     if int(MAJOR_VER) >= 17 and extension == 'adminpack':
         pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
@@ -121,6 +124,9 @@ def test_extenstions_list(extension_list, host, extension):
 @pytest.mark.parametrize("extension", DOCKER_EXTENSIONS)
 def test_enable_extension(host, extension):
     dist = host.system_info.distribution
+    # Skip vector extension for PostgreSQL 12
+    if int(MAJOR_VER) == 12 and extension == 'vector':
+        pytest.skip("Skipping vector extension as it is not supported in PostgreSQL 12")
     # Skip adminpack extension for PostgreSQL 17
     if int(MAJOR_VER) >= 17 and extension == 'adminpack':
         pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
@@ -136,6 +142,9 @@ def test_enable_extension(host, extension):
 @pytest.mark.parametrize("extension", DOCKER_EXTENSIONS[::-1])
 def test_drop_extension(host, extension):
     dist = host.system_info.distribution
+    # Skip vector extension for PostgreSQL 12
+    if int(MAJOR_VER) == 12 and extension == 'vector':
+        pytest.skip("Skipping vector extension as it is not supported in PostgreSQL 12")
     # Skip adminpack extension for PostgreSQL 17
     if int(MAJOR_VER) >= 17 and extension == 'adminpack':
         pytest.skip("Skipping adminpack extension as it is dropped in PostgreSQL 17")
