@@ -11,7 +11,7 @@
       run_heap: "{{ lookup('env', 'RUN_HEAP') }}"
       run_tde_heap: "{{ lookup('env', 'RUN_TDE_HEAP') }}"
       run_tde_heap_basic: "{{ lookup('env', 'RUN_TDE_HEAP_BASIC') }}"
-      change_tde_branch: "{{ lookup('env', 'CHANGE_TDE_BRANCH') }}"
+      #change_tde_branch: "{{ lookup('env', 'CHANGE_TDE_BRANCH') }}"
       tde_branch: "{{ lookup('env', 'TDE_BRANCH') }}"
       cacheable: true
 
