@@ -214,20 +214,20 @@
       version: "{{ lookup('env', 'PDP_BRANCH') }}"
     become_user: postgres
 
-  - name: Checkout user provided pg_tde branch
-    command: git checkout {{ branch }}
-    args:
-      chdir: /tmp/postgres/contrib/pg_tde
-    vars:
-      branch: "{{ lookup('env', 'tde_branch') }}"
-    become_user: postgres
-    when: change_tde_branch
+  # - name: Checkout user provided pg_tde branch
+  #   command: git checkout {{ branch }}
+  #   args:
+  #     chdir: /tmp/postgres/contrib/pg_tde
+  #   vars:
+  #     branch: "{{ lookup('env', 'tde_branch') }}"
+  #   become_user: postgres
+  #   when: change_tde_branch
 
-  - name: Configure pg_tde from sources without pg_tde
-    ansible.builtin.command: ./configure
-    become_user: postgres
-    args:
-      chdir: /tmp/postgres/contrib/pg_tde
+  # - name: Configure pg_tde from sources without pg_tde
+  #   ansible.builtin.command: ./configure
+  #   become_user: postgres
+  #   args:
+  #     chdir: /tmp/postgres/contrib/pg_tde
 
   - name: Configure Postgres/PDP from sources
     command: ./configure '--enable-rpath' '--prefix=/opt/pgsql' '--enable-tap-tests' '--enable-depend' \
