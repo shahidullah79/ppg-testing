@@ -342,16 +342,16 @@
   # - debug: var=results.stdout_lines
 
   - name: Remove double quote
-    ansible.builtin.lineinfile:
+    ansible.builtin.replace:
       path: /tmp/access_method_benchmark_report.txt
-      state: absent
       regexp: '\"'
+      replace: ''
 
   - name: Remove comma
-    ansible.builtin.lineinfile:
+    ansible.builtin.replace:
       path: /tmp/access_method_benchmark_report.txt
-      state: absent
-      regexp: '\,'
+      regexp: ','
+      replace: ''
 
   - stat:
       path: /tmp/access_method_benchmark_report.txt
