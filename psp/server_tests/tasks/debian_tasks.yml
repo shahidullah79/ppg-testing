@@ -192,6 +192,46 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Copy pg_config to /usr/bin
+    become: true 
+    command: sudo cp /opt/pgsql/bin/pg_config /usr/bin
+
+  - name: initdb cluster
+    become_user: postgres
+    command: ./initdb -D /opt/pgsql/data
+    args:
+      chdir: /opt/pgsql/bin
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  # - name: Add extensions to postgresql.conf for Debian
+  #   lineinfile:
+  #     path: /opt/pgsql/data/postgresql.conf
+  #     line: shared_preload_libraries = 'pg_tde'
+  #   when: with_tde_heap
+
+  # - name: Set default Access Method - heap
+  #   lineinfile:
+  #     path: /opt/pgsql/data/postgresql.conf
+  #     line: default_table_access_method = 'heap'
+  #   when: access_method == 'heap'
+
+  - name: Start Server
+    become_user: postgres
+    command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile start
+    args:
+      chdir: /opt/pgsql/bin
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    register: results
+
+  - debug: var=results.stdout_lines
+
   - name: Build pg_tde from sources
     make:
       chdir: "/tmp/postgres/contrib/pg_tde"
@@ -211,37 +251,9 @@
 
   - debug: var=results.stdout_lines
 
-  - name: Copy pg_config to /usr/bin
-    become: true 
-    command: sudo cp /opt/pgsql/bin/pg_config /usr/bin
-
-  - name: initdb cluster
+  - name: Restart Server
     become_user: postgres
-    command: ./initdb -D /opt/pgsql/data
-    args:
-      chdir: /opt/pgsql/bin
-    environment:
-      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
-      LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    register: results
-
-  - debug: var=results.stdout_lines
-
-  - name: Add extensions to postgresql.conf for Debian
-    lineinfile:
-      path: /opt/pgsql/data/postgresql.conf
-      line: shared_preload_libraries = 'pg_tde'
-    when: with_tde_heap
-
-  # - name: Set default Access Method - heap
-  #   lineinfile:
-  #     path: /opt/pgsql/data/postgresql.conf
-  #     line: default_table_access_method = 'heap'
-  #   when: access_method == 'heap'
-
-  - name: Start Server
-    become_user: postgres
-    command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile start
+    command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
     args:
       chdir: /opt/pgsql/bin
     environment:
@@ -263,7 +275,7 @@
   #     line: default_table_access_method = 'tde_heap_basic'
   #   when: with_tde_heap and access_method == 'tde_heap_basic'
 
-  - name: Run installcheck-world - Server
+  - name: Run installcheck-world Server - heap
     become_user: postgres
     make:
       chdir: "/tmp/postgres"
@@ -271,12 +283,12 @@
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    when: testsuite == 'installcheck-world'
+    when: testsuite == 'installcheck-world' and access_method == 'heap'
     register: results
 
   - debug: var=results.stdout_lines
 
-  - name: Run installcheck - Server
+  - name: Run installcheck Server - heap
     become_user: postgres
     make:
       chdir: "/tmp/postgres"
@@ -284,7 +296,59 @@
     environment:
       PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
       LD_LIBRARY_PATH: "/opt/pgsql/lib"
-    when: testsuite == 'installcheck'
+    when: testsuite == 'installcheck' and access_method == 'heap'
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Run installcheck Server - tde_heap_basic/tde_heap
+    ignore_errors: yes
+    shell: |
+      psql -d $DB_NAME -c "ALTER SYSTEM SET shared_preload_libraries ='pg_tde';"
+      psql -d $DB_NAME -c "SELECT pg_reload_conf();"
+      psql -c "CREATE EXTENSION pg_tde;"
+      psql -c "ALTER SYSTEM SET default_table_access_method='{{ method }}';"
+      psql -c "SELECT pg_reload_conf();"
+      psql -c "SELECT pg_tde_add_key_provider_file('file-vault','/tmp/pg_tde_test_keyring.per');"
+      psql -c "SELECT pg_tde_set_principal_key('test-db-master-key','file-vault');"
+      make installcheck
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      method: "{{ access_method }}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    when: testsuite == 'installcheck' and
+      (access_method == 'tde_heap_basic' or access_method == 'tde_heap')
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Run installcheck-world Server - tde_heap_basic/tde_heap
+    ignore_errors: yes
+    shell: |
+      psql -d $DB_NAME -c "ALTER SYSTEM SET shared_preload_libraries ='pg_tde';"
+      psql -d $DB_NAME -c "SELECT pg_reload_conf();"
+      psql -c "CREATE EXTENSION pg_tde;"
+      psql -c "ALTER SYSTEM SET default_table_access_method='{{ method }}';"
+      psql -c "SELECT pg_reload_conf();"
+      psql -c "SELECT pg_tde_add_key_provider_file('file-vault','/tmp/pg_tde_test_keyring.per');"
+      psql -c "SELECT pg_tde_set_principal_key('test-db-master-key','file-vault');"
+      make installcheck-world
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      method: "{{ access_method }}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    when: testsuite == 'installcheck-world' and
+      (access_method == 'tde_heap_basic' or access_method == 'tde_heap')
     register: results
 
   - debug: var=results.stdout_lines
@@ -293,12 +357,14 @@
       path: /tmp/postgres/src/test/regress/regression.diffs
     register: output
 
-  - name: Display regression.diffs contents
+  - name: Get Server - regression.diffs contents
+    ignore_errors: yes
     command: cat /tmp/postgres/src/test/regress/regression.diffs
     register: command_output
     when: output.stat.exists
 
-  - name: Print to console
+  - name: Print to console Server - regression.diffs contents
+    ignore_errors: yes
     debug:
       msg: "{{command_output.stdout_lines}}"
     when: output.stat.exists
@@ -310,7 +376,25 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /opt/pgsql/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_tde'
+    when: with_tde_heap
+
+  - name: Restart Server
+    become_user: postgres
+    command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
+    args:
+      chdir: /opt/pgsql/bin
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+    register: results
+
+  - debug: var=results.stdout_lines
   - name: Start pg_tde tests - installcheck
+    ignore_errors: yes
     shell: | 
       TV=$(mktemp)
       { exec >$TV; vault server -dev; } &
@@ -335,6 +419,7 @@
   - debug: var=results.stdout_lines
 
   - name: Start pg_tde tests - installcheck-world
+    ignore_errors: yes
     shell: | 
       TV=$(mktemp)
       { exec >$TV; vault server -dev; } &
@@ -362,12 +447,14 @@
       path: /tmp/postgres/contrib/pg_tde/regression.diffs
     register: output
 
-  - name: Display regression.diffs contents
+  - name: Get pg_tde - regression.diffs contents
+    ignore_errors: yes
     command: cat /tmp/postgres/contrib/pg_tde/regression.diffs
     register: command_output
     when: output.stat.exists
 
-  - name: Print to console
+  - name: Print to console pg_tde - regression.diffs contents
+    ignore_errors: yes
     debug:
       msg: "{{command_output.stdout_lines}}"
     when: output.stat.exists
