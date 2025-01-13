@@ -208,6 +208,32 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Print Date, repo and git commit to result file
+    shell: | 
+      echo "Performance Benchmark Report" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "****************************" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Date: $(date)" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Repo: {{ repo }}" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Branch: {{ version }}" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "commit: " | tee -a /tmp/access_method_benchmark_report.txt
+      git log -1 | tee -a /tmp/access_method_benchmark_report.txt
+      echo "****************************" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "" | tee -a /tmp/access_method_benchmark_report.txt
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      repo: "{{ lookup('env', 'PSP_REPO') }}"
+      version: "{{ lookup('env', 'PSP_BRANCH') }}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+    register: results
+
+  - debug: var=results.stdout_lines
+
   - name: Run performance tests for HEAP access method
     shell: | 
       echo "=============================================" | tee -a /tmp/access_method_benchmark_report.txt
@@ -488,9 +514,9 @@
 
   - name: Run performance tests for TDE_HEAP_BASIC access method with pg_tde loaded
     shell: | 
-      echo "=================================================================================" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "Access method: TDE_HEAP_BASIC  with pg_tde loaded in server and extension created" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "=================================================================================" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "================================================================================" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Access method: TDE_HEAP_BASIC with pg_tde loaded in server and extension created" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "================================================================================" | tee -a /tmp/access_method_benchmark_report.txt
       echo "Command: pgbench -i -s {{ scale }} -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
       echo "Command: pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
       echo "---------------------------------" | tee -a /tmp/access_method_benchmark_report.txt
