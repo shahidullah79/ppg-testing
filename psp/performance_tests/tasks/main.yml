@@ -2,8 +2,8 @@
   - name: Setting facts so that they will be persisted in the fact cache
     set_fact:
       major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
-      repo: "{{ lookup('env', 'PDP_REPO') }}"
-      version: "{{ lookup('env', 'PDP_BRANCH') }}"
+      repo: "{{ lookup('env', 'PSP_REPO') }}"
+      version: "{{ lookup('env', 'PSP_BRANCH') }}"
       pgbench_scale: "{{ lookup('env', 'PGBENCH_SCALE') }}"
       pgbench_duration: "{{ lookup('env', 'PGBENCH_DURATION') }}"
       pgbench_clients: "{{ lookup('env', 'PGBENCH_CLIENTS') }}"
@@ -11,8 +11,9 @@
       run_heap: "{{ lookup('env', 'RUN_HEAP') }}"
       run_tde_heap: "{{ lookup('env', 'RUN_TDE_HEAP') }}"
       run_tde_heap_basic: "{{ lookup('env', 'RUN_TDE_HEAP_BASIC') }}"
+      load_tde: "{{ lookup('env', 'LOAD_TDE') }}"
       #change_tde_branch: "{{ lookup('env', 'CHANGE_TDE_BRANCH') }}"
-      tde_branch: "{{ lookup('env', 'TDE_BRANCH') }}"
+      #tde_branch: "{{ lookup('env', 'TDE_BRANCH') }}"
       cacheable: true
 
   - name: Include Redhat tasks file
@@ -28,7 +29,7 @@
        # // choice name: 'PLATFORM'
        # // choice name: 'REPO'
        # string name: 'VERSION' 
-       # string name: 'PDP_REPO' 
+       # string name: 'PSP_REPO' 
        # string name: 'PDP_BRANCH' 
        # booleanParam name: 'INSTALL_SERVER_FROM_PACKAGES' 
        # string name: 'PGBENCH_SCALE'

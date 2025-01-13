@@ -203,15 +203,14 @@
     ignore_errors: true
     register: results
 
-  - name: Clone Postgres/PDP sources with pg_tde
+  - name: Clone Postgres/PSP sources with pg_tde
     git:
       repo: "{{ repo }}"
       version: "{{ version }}"
       dest: /tmp/postgres
-      track_submodules: true
     vars:
-      repo: "{{ lookup('env', 'PDP_REPO') }}"
-      version: "{{ lookup('env', 'PDP_BRANCH') }}"
+      repo: "{{ lookup('env', 'PSP_REPO') }}"
+      version: "{{ lookup('env', 'PSP_BRANCH') }}"
     become_user: postgres
 
   # - name: Checkout user provided pg_tde branch
@@ -229,7 +228,7 @@
   #   args:
   #     chdir: /tmp/postgres/contrib/pg_tde
 
-  - name: Configure Postgres/PDP from sources
+  - name: Configure Postgres/PSP from sources
     command: ./configure '--enable-rpath' '--prefix=/opt/pgsql' '--enable-tap-tests' '--enable-depend' \
      '--includedir=/opt/pgsql/include' '--mandir=/opt/pgsql/share/man' '--datadir=/opt/pgsql/share' \
      '--libdir=/opt/pgsql/lib' '--with-lz4' '--with-extra-version= - Percona Distribution' '--with-zstd' \
@@ -246,7 +245,7 @@
     register: results
     when: ansible_architecture == 'x86_64'
 
-  - name: Configure Postgres/PDP from sources
+  - name: Configure Postgres/PSP from sources
     command: ./configure '--enable-rpath' '--prefix=/opt/pgsql' '--enable-tap-tests' '--enable-depend' \
      '--includedir=/opt/pgsql/include' '--mandir=/opt/pgsql/share/man' '--datadir=/opt/pgsql/share' \
      '--libdir=/opt/pgsql/lib' '--with-lz4' '--with-extra-version= - Percona Distribution' '--with-zstd' \
@@ -270,7 +269,7 @@
 
   - debug: var=cat.stdout_lines
 
-  - name: Build Postgres/PDP (world-bin) from sources
+  - name: Build Postgres/PSP (world-bin) from sources
     make:
       chdir: "/tmp/postgres"
       jobs: 4 
@@ -280,7 +279,7 @@
 
   - debug: var=results.stdout_lines
 
-  - name: Install Postgres/PDP (install-world-bin) from build binaries
+  - name: Install Postgres/PSP (install-world-bin) from build binaries
     make:
       chdir: "/tmp/postgres"
       target: install-world-bin
@@ -321,10 +320,11 @@
 
   - debug: var=results.stdout_lines
 
-  # - name: Add extensions to postgresql.conf for Debian
-  #   lineinfile:
-  #     path: /opt/pgsql/data/postgresql.conf
-  #     line: shared_preload_libraries = 'pg_tde'
+  - name: Add extensions to postgresql.conf for Debian
+    lineinfile:
+      path: /opt/pgsql/data/postgresql.conf
+      line: shared_preload_libraries = 'pg_tde'
+    when: load_tde
 
   # - name: Set default Access Method - heap
   #   lineinfile:
