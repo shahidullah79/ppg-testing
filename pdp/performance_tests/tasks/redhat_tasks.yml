@@ -359,7 +359,7 @@
   - name: Run performance tests for HEAP access method
     shell: | 
       echo "===========================" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "Testing access method: heap" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Testing access method: HEAP" | tee -a /tmp/access_method_benchmark_report.txt
       echo "===========================" | tee -a /tmp/access_method_benchmark_report.txt
       echo "Command: pgbench -i -s {{ scale }} -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
       echo "Command: pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
@@ -368,14 +368,14 @@
       psql -c "CREATE DATABASE performance_db;" -U postgres
       psql -d performance_db -c "ALTER SYSTEM SET default_table_access_method='heap';"
       psql -d performance_db -c "SELECT pg_reload_conf();"
-      echo "---------------------------------" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "---------------------------------"
       pgbench -i -s {{ scale }} -d performance_db -U postgres 2>&1
       pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres 2>&1 | tee -a /tmp/access_method_benchmark_report.txt
       echo "" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "----End of heap access method----" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "" | tee -a /tmp/access_method_benchmark_report.txt
-      echo "" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "----End of HEAP access method----" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
       sync
       sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
     become_user: postgres
@@ -397,6 +397,102 @@
     register: results
 
   - debug: var=results.stdout_lines
+
+  - name: Run performance tests for TDE_HEAP access method
+    shell: | 
+      echo "===========================" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Testing access method: TDE_HEAP" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "===========================" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Command: pgbench -i -s {{ scale }} -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Command: pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "---------------------------------" | tee -a /tmp/access_method_benchmark_report.txt
+      psql -c "DROP DATABASE IF EXISTS performance_db;" -U postgres
+      psql -c "CREATE DATABASE performance_db;" -U postgres
+      psql -d performance_db -c "ALTER SYSTEM SET default_table_access_method='tde_heap';"
+      psql -d performance_db -c "SELECT pg_reload_conf();"
+      echo "---------------------------------"
+      pgbench -i -s {{ scale }} -d performance_db -U postgres 2>&1
+      pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres 2>&1 | tee -a /tmp/access_method_benchmark_report.txt
+      echo "" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "----End of TDE_HEAP access method----" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      sync
+      sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      scale: "{{pgbench_scale}}"
+      clients: "{{pgbench_clients}}"
+      threads: "{{pgbench_threads}}"
+      duration: "{{pgbench_duration}}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+      LANG: C.UTF-8
+      LC_CTYPE: C
+      LC_ALL: C
+    when: run_tde_heap
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Run performance tests for TDE_HEAP_BASIC access method
+    shell: | 
+      echo "===========================" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Testing access method: TDE_HEAP_BASIC" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "===========================" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Command: pgbench -i -s {{ scale }} -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "Command: pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "---------------------------------" | tee -a /tmp/access_method_benchmark_report.txt
+      psql -c "DROP DATABASE IF EXISTS performance_db;" -U postgres
+      psql -c "CREATE DATABASE performance_db;" -U postgres
+      psql -d performance_db -c "ALTER SYSTEM SET default_table_access_method='tde_heap_basic';"
+      psql -d performance_db -c "SELECT pg_reload_conf();"
+      echo "---------------------------------"
+      pgbench -i -s {{ scale }} -d performance_db -U postgres 2>&1
+      pgbench -c {{ clients }} -j {{ threads }} -T {{ duration }} -M prepared -d performance_db -U postgres 2>&1 | tee -a /tmp/access_method_benchmark_report.txt
+      echo "" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "----End of TDE_HEAP_BASIC access method----" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" | tee -a /tmp/access_method_benchmark_report.txt
+      sync
+      sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres"
+    vars:
+      scale: "{{pgbench_scale}}"
+      clients: "{{pgbench_clients}}"
+      threads: "{{pgbench_threads}}"
+      duration: "{{pgbench_duration}}"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+      LANG: C.UTF-8
+      LC_CTYPE: C
+      LC_ALL: C
+    when: run_tde_heap_basic
+    register: results
+
+  - debug: var=results.stdout_lines
+
+  - name: Remove double quote
+    ansible.builtin.replace:
+      path: /tmp/access_method_benchmark_report.txt
+      regexp: '\"'
+      replace: ''
+
+  - name: Remove comma
+    ansible.builtin.replace:
+      path: /tmp/access_method_benchmark_report.txt
+      regexp: ','
+      replace: ''
 
   - stat:
       path: /tmp/access_method_benchmark_report.txt
