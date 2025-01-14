@@ -276,6 +276,10 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      seconds: 30
+
   - name: Restart Server
     become_user: postgres
     command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
@@ -330,6 +334,10 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      seconds: 30
+
   - name: Restart Server
     become_user: postgres
     command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
@@ -383,6 +391,10 @@
     register: results
 
   - debug: var=results.stdout_lines
+
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      seconds: 30
 
   - name: Add extensions to postgresql.conf for Debian
     lineinfile:
@@ -444,6 +456,10 @@
 
   - debug: var=results.stdout_lines
 
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      seconds: 30
+
   - name: Restart Server
     become_user: postgres
     command: ./pg_ctl -D /opt/pgsql/data -l /tmp/postgres/logfile restart
@@ -499,6 +515,10 @@
     register: results
 
   - debug: var=results.stdout_lines
+
+  - name: Pause for 1 minutes
+    ansible.builtin.pause:
+      seconds: 30
 
   - name: Restart Server
     become_user: postgres
