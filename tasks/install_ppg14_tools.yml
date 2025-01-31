@@ -320,15 +320,15 @@
       state: absent
     when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
-  - name: Install oracle-epel-release-el8 package
+  - name: Install epel-release package
     ansible.builtin.dnf:
-      name: oracle-epel-release-el8
+      name: epel-release
       state: present
-    when: ansible_facts['distribution'] == "OracleLinux" and ansible_facts['distribution_major_version'] == "8"
+    when: ansible_facts['distribution'] == "Rocky" and ansible_facts['distribution_major_version'] == "8"
 
-  - name: Enable codeready_builder on oracle linux 8
+  - name: Enable codeready_builder on rocky linux 8
     become: true
-    command: dnf config-manager --set-enabled ol8_codeready_builder
+    command: dnf config-manager --set-enabled powertools
     when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
 #==========================================

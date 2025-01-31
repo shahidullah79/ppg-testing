@@ -34,6 +34,11 @@ pgrepack = {
     "15.10": {"version": "1.5.1","binary_version": "pg_repack 1.5.1"},
     "16.6": {"version": "1.5.1","binary_version": "pg_repack 1.5.1"},
     "17.2": {"version": "1.5.1","binary_version": "pg_repack 1.5.1"},
+    "13.20": {"version": "1.5.2","binary_version": "pg_repack 1.5.2"},
+    "14.17": {"version": "1.5.2","binary_version": "pg_repack 1.5.2"},
+    "15.12": {"version": "1.5.2","binary_version": "pg_repack 1.5.2"},
+    "16.8": {"version": "1.5.2","binary_version": "pg_repack 1.5.2"},
+    "17.4": {"version": "1.5.2","binary_version": "pg_repack 1.5.2"},
 }
 
 pgaudit = {
@@ -70,6 +75,11 @@ pgaudit = {
     "15.10": {"version": "1.7.0"},
     "16.6": {"version": "16.0"},
     "17.2": {"version": "17.0"},
+    "13.20": {"version": "1.5.2"},
+    "14.17": {"version": "1.6.2"},
+    "15.12": {"version": "1.7.0"},
+    "16.8": {"version": "16.0"},
+    "17.4": {"version": "17.1"},
 }
 
 pg_stat_monitor = {
@@ -106,6 +116,11 @@ pg_stat_monitor = {
     "15.10": {"version": "2.1.0"},
     "16.6": {"version": "2.1.0"},
     "17.2": {"version": "2.1.0"},
+    "13.20": {"version": "2.1.1"},
+    "14.17": {"version": "2.1.1"},
+    "15.12": {"version": "2.1.1"},
+    "16.8": {"version": "2.1.1"},
+    "17.4": {"version": "2.1.1"},
 }
 
 set_user = {
@@ -142,6 +157,11 @@ set_user = {
     "15.10": {"version": "4.1.0"},
     "16.6": {"version": "4.1.0"},
     "17.2": {"version": "4.1.0"},
+    "13.20": {"version": "4.1.0"},
+    "14.17": {"version": "4.1.0"},
+    "15.12": {"version": "4.1.0"},
+    "16.8": {"version": "4.1.0"},
+    "17.4": {"version": "4.1.0"},
 }
 
 wal2json = {
@@ -178,8 +198,20 @@ wal2json = {
     "15.10": {"version": "2.6"},
     "16.6": {"version": "2.6"},
     "17.2": {"version": "2.6"},
+    "13.20": {"version": "2.6"},
+    "14.17": {"version": "2.6"},
+    "15.12": {"version": "2.6"},
+    "16.8": {"version": "2.6"},
+    "17.4": {"version": "2.6"},
 }
 
+pg_telemetry = {
+            "13.20": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.0"},
+            "14.17": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.0"},
+            "15.12": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.0"},
+            "16.8": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.0"},
+            "17.4": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.0"},
+}
 
 DOCKER_LIST_EXTENSIONS = ["hstore",
                 "adminpack",
@@ -533,6 +565,28 @@ ppg_versions = {
                         'pg_restore', 'pg_verifybackup', 'psql',
                         'reindexdb', 'vacuumdb']
         },
+        "13.20": {
+            "version": "13.20",
+            "percona-postgresql-common": "267",
+            "percona-postgresql-client-common": "267",
+            "libpq_version": "130020",
+            "percona-pgaudit13": pgaudit["13.20"],
+            "percona-pg_repack13": pgrepack["13.20"],
+            "percona-wal2json13": wal2json["13.20"],
+            "percona-pgaudit13_set_user": set_user["13.20"],
+            "percona-pg_stat_monitor13" : pg_stat_monitor["13.20"],
+            "percona-pg-telemetry" : pg_telemetry["13.20"],
+            "libpq": "Version of libpq: 130020",
+            "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "13"),
+            "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "13"),
+            "extensions": DOCKER_LIST_EXTENSIONS,
+            "binaries": ['clusterdb', 'createdb', 'createuser',
+                        'dropdb', 'dropuser', 'pg_basebackup',
+                        'pg_config', 'pg_dump', 'pg_dumpall',
+                        'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                        'pg_restore', 'pg_verifybackup', 'psql',
+                        'reindexdb', 'vacuumdb']
+        },
         "14.9": {
             "version": "14.9",
             "percona-postgresql-common": "252",
@@ -649,6 +703,28 @@ ppg_versions = {
             "percona-pgaudit14_set_user": set_user["14.15"],
             "percona-pg_stat_monitor14" : pg_stat_monitor["14.15"],
             "libpq": "Version of libpq: 140015",
+            "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "14"),
+            "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "14"),
+            "extensions": DOCKER_LIST_EXTENSIONS,
+            "binaries": ['clusterdb', 'createdb', 'createuser',
+                        'dropdb', 'dropuser', 'pg_basebackup',
+                        'pg_config', 'pg_dump', 'pg_dumpall',
+                        'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                        'pg_restore', 'pg_verifybackup', 'psql',
+                        'reindexdb', 'vacuumdb']
+        },
+        "14.17": {
+            "version": "14.17",
+            "percona-postgresql-common": "267",
+            "percona-postgresql-client-common": "267",
+            "libpq_version": "140017",
+            "percona-pgaudit14": pgaudit["14.17"],
+            "percona-pg_repack14": pgrepack["14.17"],
+            "percona-wal2json14": wal2json["14.17"],
+            "percona-pgaudit14_set_user": set_user["14.17"],
+            "percona-pg_stat_monitor14" : pg_stat_monitor["14.17"],
+            "percona-pg-telemetry" : pg_telemetry["14.17"],
+            "libpq": "Version of libpq: 140017",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "14"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "14"),
             "extensions": DOCKER_LIST_EXTENSIONS,
@@ -785,6 +861,28 @@ ppg_versions = {
                         'pg_restore', 'pg_verifybackup', 'psql',
                         'reindexdb', 'vacuumdb']
         },
+        "15.12": {
+            "version": "15.12",
+            "percona-postgresql-common": "267",
+            "percona-postgresql-client-common": "267",
+            "libpq_version": "150012",
+            "percona-pgaudit15": pgaudit["15.12"],
+            "percona-pg_repack15": pgrepack["15.12"],
+            "percona-wal2json15": wal2json["15.12"],
+            "percona-pgaudit15_set_user": set_user["15.12"],
+            "percona-pg_stat_monitor15" : pg_stat_monitor["15.12"],
+            "percona-pg-telemetry" : pg_telemetry["15.12"],
+            "libpq": "Version of libpq: 150012",
+            "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "15"),
+            "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "15"),
+            "extensions": DOCKER_LIST_EXTENSIONS,
+            "binaries": ['clusterdb', 'createdb', 'createuser',
+                        'dropdb', 'dropuser', 'pg_basebackup',
+                        'pg_config', 'pg_dump', 'pg_dumpall',
+                        'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                        'pg_restore', 'pg_verifybackup', 'psql',
+                        'reindexdb', 'vacuumdb']
+        },
         "16.0": {
             "version": "16.0",
             "percona-postgresql-common": "253",
@@ -911,6 +1009,28 @@ ppg_versions = {
                         'pg_restore', 'pg_verifybackup', 'psql',
                         'reindexdb', 'vacuumdb']
         },
+        "16.8": {
+            "version": "16.8",
+            "percona-postgresql-common": "267",
+            "percona-postgresql-client-common": "267",
+            "libpq_version": "160008",
+            "percona-pgaudit16": pgaudit["16.8"],
+            "percona-pg_repack16": pgrepack["16.8"],
+            "percona-wal2json16": wal2json["16.8"],
+            "percona-pgaudit16_set_user": set_user["16.8"],
+            "percona-pg_stat_monitor16" : pg_stat_monitor["16.8"],
+            "percona-pg-telemetry" : pg_telemetry["16.8"],
+            "libpq": "Version of libpq: 160008",
+            "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "16"),
+            "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "16"),
+            "extensions": DOCKER_LIST_EXTENSIONS,
+            "binaries": ['clusterdb', 'createdb', 'createuser',
+                        'dropdb', 'dropuser', 'pg_basebackup',
+                        'pg_config', 'pg_dump', 'pg_dumpall',
+                        'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                        'pg_restore', 'pg_verifybackup', 'psql',
+                        'reindexdb', 'vacuumdb']
+        },
         "17.0": {
             "version": "17.0",
             "percona-version": "17.0.1",
@@ -947,6 +1067,29 @@ ppg_versions = {
             "libpq": "Version of libpq: 170002",
             "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "17.2"),
             "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "17.2"),
+            "extensions": DOCKER_LIST_EXTENSIONS,
+            "binaries": ['clusterdb', 'createdb', 'createuser',
+                        'dropdb', 'dropuser', 'pg_basebackup',
+                        'pg_config', 'pg_dump', 'pg_dumpall',
+                        'pg_isready', 'pg_receivewal', 'pg_recvlogical',
+                        'pg_restore', 'pg_verifybackup', 'psql',
+                        'reindexdb', 'vacuumdb']
+        },
+        "17.4": {
+            "version": "17.4",
+            "percona-version": "17.4.1",
+            "percona-postgresql-common": "267",
+            "percona-postgresql-client-common": "267",
+            "libpq_version": "170004",
+            "percona-pgaudit17": pgaudit["17.4"],
+            "percona-pg_repack17": pgrepack["17.4"],
+            "percona-wal2json17": wal2json["17.4"],
+            "percona-pgaudit17_set_user": set_user["17.4"],
+            "percona-pg_stat_monitor17" : pg_stat_monitor["17.4"],
+            "percona-pg-telemetry" : pg_telemetry["17.4"],
+            "libpq": "Version of libpq: 170004",
+            "rpm_packages": fill_template_form(DOCKER_RPM_PACKAGES_TEMPLATE, "17.4"),
+            "rhel_files": fill_template_form(DOCKER_RHEL_FILES_TEMPLATE, "17.4"),
             "extensions": DOCKER_LIST_EXTENSIONS,
             "binaries": ['clusterdb', 'createdb', 'createuser',
                         'dropdb', 'dropuser', 'pg_basebackup',

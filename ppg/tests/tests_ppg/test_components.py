@@ -33,7 +33,7 @@ $$ LANGUAGE plperl;
 @pytest.fixture()
 def python3_function(host):
     os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if os.lower() in ["redhat", "centos", "rhel", "rocky"]:
         pytest.skip("Skipping python3 extensions for Centos or RHEL")
     with host.sudo("postgres"):
         install_extension = host.run("psql -c 'CREATE EXTENSION IF NOT EXISTS \"plpython3u\";'")
@@ -75,7 +75,7 @@ def build_libpq_programm(host):
     pg_include = host.check_output(pg_include_cmd)
     lib_dir_cmd = "pg_config --libdir"
     host.check_output(lib_dir_cmd)
-    if os in ["redhat", "centos", "rhel", "ol"]:
+    if os in ["redhat", "centos", "rhel", "rocky"]:
         return host.run(
             "export LIBPQ_DIR=/usr/pgsql-{}/  && export LIBRARY_PATH=/usr/pgsql-{}/lib/ &&"
             "gcc -o lib_version /tmp/libpq_command_temp_dir/lib_version.c -I{} -lpq -std=c99".format(
@@ -87,7 +87,7 @@ def build_libpq_programm(host):
 @pytest.mark.parametrize("package", PACKAGES)
 def test_deb_package_is_installed(host, package):
     os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if os.lower() in ["redhat", "centos", "rhel", "rocky"]:
         pytest.skip("This test only for Debian based platforms")
     pkg = host.package(package)
     assert pkg.is_installed

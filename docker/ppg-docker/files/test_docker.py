@@ -5,6 +5,7 @@ import testinfra
 import sys
 import settings
 import time
+import glob
 
 MAJOR_VER = os.getenv('VERSION').split('.')[0]
 MAJOR_MINOR_VER = os.getenv('VERSION')
@@ -56,7 +57,7 @@ def test_wait_docker_load(host):
 def postgresql_binary(host):
     dist = host.system_info.distribution
     pg_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/postgres"
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         pg_bin = f"/usr/pgsql-{MAJOR_VER}/bin/postgres"
     return host.file(pg_bin)
 
@@ -73,7 +74,7 @@ def extension_list(host):
 # def test_postgresql_is_running_and_enabled(host):
 #     dist = host.system_info.distribution
 #     service_name = "postgresql"
-#     if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+#     if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
 #         service_name = f"postgresql-{MAJOR_VER}"
 #     service = host.service(service_name)
 #     assert service.is_running
@@ -86,7 +87,7 @@ def postgres_binary(postgresql_binary):
 def test_binaries(host, binary):
     dist = host.system_info.distribution
     bin_path = f"/usr/lib/postgresql/{MAJOR_VER}/bin/"
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         bin_path = f"/usr/pgsql-{MAJOR_VER}/bin/"
     bin_full_path = os.path.join(bin_path, binary)
     binary_file = host.file(bin_full_path)
@@ -150,7 +151,7 @@ def test_drop_extension(host, extension):
 def test_plpgsql_extension(host):
     extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $3}'")
     if MAJOR_VER in ["11"]:
-            extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $1}'")
+        extensions = host.run("psql -c 'SELECT * FROM pg_extension;' | awk 'NR>=3{print $1}'")
     assert extensions.rc == 0, extensions.stderr
     assert "plpgsql" in set(extensions.stdout.split()), extensions.stdout
 
@@ -166,6 +167,13 @@ def test_rpm_package_is_installed(host, package):
         assert pkg.version == pg_docker_versions[package]['version']
     else:
         assert pkg.version == pg_docker_versions['version']
+
+def test_pg_stat_monitor_extension_version(host):
+    result = host.run("psql -c 'CREATE EXTENSION IF NOT EXISTS pg_stat_monitor;'")
+    assert result.rc == 0, result.stderr
+    result = host.run("psql -c 'SELECT pg_stat_monitor_version();' | awk 'NR==3{print $1}'")
+    assert result.rc == 0, result.stderr
+    assert result.stdout.strip("\n") == pg_docker_versions[f"percona-pg_stat_monitor{MAJOR_VER}"]['version']
 
 @pytest.mark.parametrize("file", DOCKER_RHEL_FILES)
 def test_rpm_files(file, host):
@@ -201,6 +209,11 @@ log_files = [
 common_directories = [
     "/usr/local/percona/telemetry/history/",
     "/usr/local/percona/telemetry/pg/"
+]
+
+# Paths for directory that will contain json file
+json_files_location = [
+    "/usr/local/percona/telemetry/pg/*.json"
 ]
 
 # Paths for percona-telemetry-agent based on the OS
@@ -239,7 +252,7 @@ def test_telemetry_extension_in_conf(host):
 def get_telemetry_agent_conf_file(host):
     """Determine the percona-telemetry-agent path based on the OS."""
     dist = host.system_info.distribution
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         return redhat_percona_telemetry_agent
     else:
         return debian_percona_telemetry_agent
@@ -249,14 +262,29 @@ def test_telemetry_json_directories_exist(host):
     for directory in common_directories:
         assert host.file(directory).exists, f"Directory {directory} does not exist."
 
-def test_json_files_exist():
-    """Test if *.json files exist in the directories."""
-    json_files = []
-    for directory in common_directories:
-        json_files.extend(glob.glob(os.path.join(directory, "*.json")))
-    assert len(json_files) > 0, "No .json files found in the specified directories."
-
 def test_telemetry_agent_conf_exists(host):
     """Test if the percona-telemetry-agent conf file exists."""
     agent_path = get_telemetry_agent_conf_file(host)
     assert host.file(agent_path).exists, f"{agent_path} does not exist."
+
+def test_pg_telemetry_package_version(host):
+    dist = host.system_info.distribution
+    pg_telemetry = host.package(f"percona-pg-telemetry{MAJOR_VER}")
+    assert pg_docker_versions["percona-pg-telemetry"]['pg_telemetry_package_version'] in pg_telemetry.version
+
+def test_pg_telemetry_extension_version(host):
+    result = host.run("psql -c 'CREATE EXTENSION IF NOT EXISTS percona_pg_telemetry;'")
+    assert result.rc == 0, result.stderr
+    result = host.run("psql -c 'SELECT percona_pg_telemetry_version();' | awk 'NR==3{print $1}'")
+    assert result.rc == 0, result.stderr
+    assert result.stdout.strip("\n") == pg_docker_versions["percona-pg-telemetry"]['pg_telemetry_version']
+
+def test_pg_telemetry_file_pillar_version(host):
+    output = host.run("cat /usr/local/percona/telemetry/pg/*.json | grep -i pillar_version")
+    assert output.rc == 0, output.stderr
+    assert MAJOR_MINOR_VER in output.stdout, output.stdout
+
+def test_pg_telemetry_file_database_count(host):
+    output = host.run("cat /usr/local/percona/telemetry/pg/*.json | grep -i databases_count")
+    assert output.rc == 0, output.stderr
+    assert '2' in output.stdout, output.stdout

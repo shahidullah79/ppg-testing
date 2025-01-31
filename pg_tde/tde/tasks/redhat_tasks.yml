@@ -17,14 +17,14 @@
     command: dnf clean all -y
     when: ansible_distribution_major_version == "8"
 
-  - name: Enable ol8_codeready_builder on oracle linux 8
+  - name: Enable powertools on rocky linux 8
     become: true
-    command: dnf config-manager --set-enabled ol8_codeready_builder
+    command: dnf config-manager --set-enabled powertools
     when: ansible_distribution_major_version == "8"
 
-  - name: Enable ol9_codeready_builder on oracle linux 9
+  - name: Enable crb on rocky linux 9
     become: true
-    command: dnf config-manager --set-enabled ol9_codeready_builder
+    command: dnf config-manager --set-enabled crb
     when: ansible_distribution_major_version == "9"
 
   - name: Disable dnf module for RHEL8
@@ -32,52 +32,27 @@
     command: dnf module disable postgresql -y
     when: ansible_distribution_major_version == "8"
 
-  - name: Install pre-packages on Redhat
+  - name: Install perl-CPAN and perl-App-cpanminus on Red Hat
+    become: true
     yum:
-      name: "{{ packages }}"
-      update_cache: yes
-      state: latest
-    vars:
-      packages:
-        - make
-        - gcc
-        - autoconf
-        - json-c-devel
-        - libcurl-devel
-        - openssl-devel
-        - perl-IPC-Run
-        - perl-App-cpanminus
-        - perl-CPAN
+      name: "{{ item }}"
+      state: present
+    loop:
+      - perl-CPAN
+      - perl-App-cpanminus
+      - perl-IPC-Run
 
-  - name: Install cpanm CGI::Session
+  - name: Install perl module Text::Trim
     become: true
-    command: cpanm CGI::Session
-
-  - name: Install HTTP::Server::Simple::CGI
-    become: true
-    command: cpanm HTTP::Server::Simple::CGI
+    command: cpanm Text::Trim
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
   - name: Install Development tools
     become: true
     command: yum -y groupinstall "Development tools"
     environment:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-  - name: LLVM Version
-    command: llvm-config --version
-    ignore_errors: true
-    register: results
-
-  - debug:
-      var: results.stdout
-
-  - name: CLANG Version
-    command: clang --version
-    ignore_errors: true
-    register: results
-
-  - debug:
-      var: results.stdout
 
   - name: Enable llvm-toolset dnf module for RHEL8
     become: true
@@ -113,6 +88,132 @@
 
   - debug:
       var: results.stdout
+
+  - name: Debug 1
+    command: rpm -qi systemtap-sdt-devel
+    ignore_errors: true
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: Debug 2
+    command: yum -v search systemtap-sdt-devel
+    ignore_errors: true
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: install tools
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - clang
+      - zlib-devel
+      - readline-devel
+      - gcc
+      - lz4
+      - lz4-devel
+      - python3
+      - krb5-devel
+      - openssl-devel
+      - pam-devel
+      - libxml2-devel
+      - libxslt-devel
+      - openldap-devel
+      - libuuid-devel
+      - systemd-devel
+      - tcl-devel
+      - python3-devel
+      - libicu-devel
+      - libzstd
+      - libzstd-devel
+      - llvm
+      - llvm-toolset
+      - llvm-devel
+      - clang-devel
+      - vim
+      - git
+      - perl-ExtUtils*
+      - docbook-xsl
+      - perl-IPC-Run
+      - perl-Test-Simple
+      - prename
+      - perl-CPAN
+      - lcov
+      - libcurl-devel
+      - perl-App-cpanminus
+      - make
+      - autoconf
+      - json-c-devel
+      - python3-pip
+      - wget
+      - perl-LWP-Protocol-https
+
+  - name: Install cpanm CGI::Session
+    become: true
+    command: cpanm CGI::Session
+
+  - name: Install HTTP::Server::Simple::CGI
+    become: true
+    command: cpanm HTTP::Server::Simple::CGI
+
+  - name: Debug 3
+    command: rpm -qi systemtap-sdt-devel
+    ignore_errors: true
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: Debug 4
+    command: yum -v search systemtap-sdt-devel
+    ignore_errors: true
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: Debug 5
+    command: yum install -y systemtap-sdt-devel --allowerasing
+    ignore_errors: true
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: Install perl Text-trim
+    command: cpanm Text::Trim
+    ignore_errors: true
+    register: results
+
+  - name: install perl modules for rhel 9
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - perl-FindBin
+      - perl-Opcode
+    when: ansible_distribution_major_version == "9"
+
+  - name: LLVM Version
+    command: llvm-config --version
+    ignore_errors: true
+    register: results
+
+  - debug:
+      var: results.stdout
+
+  - name: CLANG Version
+    command: clang --version
+    ignore_errors: true
+    register: results
 
   - name: install Percona Platform for PostgreSQL rpm packages for RHEL
     yum:
@@ -250,44 +351,56 @@
     become: true
     command: yum -y install vault
 
-  - name: Clone pg_tde sources
+  - name: Clone Postgres/PSP sources with pg_tde
     git:
       repo: "{{ repo }}"
       version: "{{ version }}"
-      dest: /tmp/pg_tde
+      dest: /tmp/postgres
+      track_submodules: true
     vars:
-      repo: "{{ lookup('env', 'TDE_REPO') }}"
-      version: "{{ lookup('env', 'TDE_BRANCH') }}"
+      repo: "{{ lookup('env', 'PSP_REPO') }}"
+      version: "{{ lookup('env', 'PSP_BRANCH') }}"
     become_user: postgres
 
-  - name: configure pg_tde from sources
-    shell: ./configure
+  - name: Submodule update
+    command : git submodule update --init --recursive
     args:
-      chdir: "/tmp/pg_tde"
+      chdir: /tmp/postgres
+    become_user: postgres
 
-  - name: Build pg_tde from sources
+  - name: Configure Postgres/PSP from sources
+    command: ./configure '--enable-debug' '--enable-cassert' '--enable-tap-tests' '--with-icu' '--prefix=/opt/pgsql'
+    args:
+      chdir: /tmp/postgres
+    become_user: postgres
+    register: results
+
+  - name: Build Postgres/PSP (world) from sources
     make:
-      chdir: "/tmp/pg_tde"
-      params:
-        USE_PGXS: 1
+      chdir: "/tmp/postgres"
+      jobs: 4
+      target: world
+    become_user: postgres
+    environment:
+      TDE_MODE: 1
+    register: results
 
-  - name: Install pg_tde from sources
-    make:
-      target: install
-      chdir: "/tmp/pg_tde"
-      params:
-        USE_PGXS: 1
-    when: not use_package_install
+  - debug: var=results.stdout_lines
+  # - name: Install pg_tde from sources
+  #   make:
+  #     target: install
+  #     chdir: "/tmp/pg_tde"
+  #     params:
+  #       USE_PGXS: 1
 
-  - name: Install pg-tde RHEL RPM Package
-    yum:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    vars:
-      packages:
-        - percona-pg_tde_{{ major_version }}
-    when: use_package_install
+  # - name: Install pg-tde RHEL RPM Package
+  #   yum:
+  #     name: "{{ packages }}"
+  #     state: latest
+  #     update_cache: yes
+  #   vars:
+  #     packages:
+  #       - percona-pg_tde_{{ major_version }}
 
   - name: Add extensions to postgresql.conf for RHEL
     lineinfile:
@@ -299,3 +412,128 @@
       name: postgresql-{{ major_version }}
       state: started
       enabled: yes
+
+  - name: Remove old 005_multiple_extensions.pl to test folder
+    become_user: postgres
+    command: rm -fr /tmp/postgres/contrib/pg_tde/t/005_multiple_extensions.pl
+    register: results
+
+  - debug: var=regression.stdout_lines
+
+  - name: Copy 005_multiple_extensions.pl to test folder
+    copy:
+      src: 005_multiple_extensions.pl
+      dest: /tmp/postgres/contrib/pg_tde/t/005_multiple_extensions.pl
+      owner: postgres
+      group: postgres
+      mode: 0644
+    register: results
+
+  - debug: var=regression.stdout_lines
+
+  - name: Get ulimit on Rocky 8 ARM for postgres user
+    become_user: postgres
+    command: ulimit -a
+    register: results
+    when: ansible_distribution_major_version == "8" and ansible_architecture == 'aarch64'
+
+  - debug: var=results.stdout_lines
+
+  - name: Modify memlock, both soft and hard, limit for the user postgres
+    community.general.pam_limits:
+      domain: postgres
+      limit_type: '-'
+      limit_item: memlock
+      value: 128
+      comment: 128kb memory lock for postgres
+    when: ansible_distribution_major_version == "8" and ansible_architecture == 'aarch64'
+
+  - debug: var=results.stdout_lines
+
+  - name: Get ulimit on Rocky 8 ARM for postgres user
+    become_user: postgres
+    command: ulimit -a
+    register: results
+    when: ansible_distribution_major_version == "8" and ansible_architecture == 'aarch64'
+
+  - debug: var=results.stdout_lines
+  
+  # installcheck-world Server testsuite
+  - name: Start pg_tde tests only - installcheck
+    shell: | 
+      psql -c "CREATE SCHEMA tde;"
+      psql -c "CREATE EXTENSION IF NOT EXISTS pg_tde SCHEMA tde;"
+      psql -c "SELECT tde.pg_tde_add_global_key_provider_file('reg_file-global', '/tmp/pg_tde_test_keyring.per');"
+      psql -c "SELECT tde.pg_tde_set_server_principal_key('global-principal-key', 'reg_file-global');"
+      psql -c "ALTER SYSTEM SET pg_tde.wal_encrypt = on;"
+      psql -c "CREATE EXTENSION IF NOT EXISTS pg_tde;"
+      psql -c "ALTER SYSTEM SET search_path = postgres,public,tde;"
+      psql -c "SELECT pg_reload_conf();"
+      echo "default_table_access_method = 'tde_heap'" >> /var/lib/pgsql/17/data/postgresql.conf
+      sudo systemctl stop postgresql-17
+      sleep 5
+      sudo systemctl start postgresql-17
+      cd /tmp
+      python3 -m venv validation
+      source validation/bin/activate
+      pip install --upgrade pip
+      pip install pykmip
+      export PATH=$PATH:/tmp/validation/bin
+      wget https://raw.githubusercontent.com/OpenKMIP/PyKMIP/refs/heads/master/bin/create_certificates.py
+      python3 create_certificates.py
+      cat client_certificate_jane_doe.pem >> client_key_jane_doe.pem
+      mkdir policies
+      cd policies
+      wget https://raw.githubusercontent.com/OpenKMIP/PyKMIP/refs/heads/master/examples/policy.json
+      cd ..
+      pykmip-server -f "/tmp/postgres/contrib/pg_tde/pykmip-server.conf" -l /tmp/kmip-server.log &
+      TV=$(mktemp)
+      { exec >$TV; vault server -dev; } &
+      sleep 10
+      export ROOT_TOKEN=$(cat $TV | grep "Root Token" | cut -d ":" -f 2 | xargs echo -n)
+      echo "Root token: $ROOT_TOKEN"
+      export ROOT_TOKEN=$ROOT_TOKEN && cd /tmp/postgres/contrib/pg_tde && EXTRA_REGRESS_OPTS="--extra-setup=/tmp/postgres/ci_scripts/tde_setup.sql" make -s installcheck USE_PGXS=1 -k
+    become_user: postgres
+    args:
+      executable: /bin/bash
+      chdir: "/tmp/postgres/contrib/pg_tde"
+    environment:
+      PATH: "/opt/pgsql/bin:/opt/pgsql/lib:{{ ansible_env.PATH }}"
+      LD_LIBRARY_PATH: "/opt/pgsql/lib"
+      PG_TEST_PORT_DIR: "/tmp/pg_tde"
+      TDE_MODE: 1
+    register: regression
+
+  - debug: var=regression.stdout_lines
+
+  - stat:
+      path: /tmp/postgres/contrib/pg_tde/regression.diffs
+    register: tde_diff
+
+  - name: Get pg_tde - regression.diffs contents
+    command: cat /tmp/postgres/contrib/pg_tde/regression.diffs
+    register: command_output
+    when: tde_diff.stat.isreg is defined and tde_diff.stat.isreg == True
+
+  - name: Print to console pg_tde - regression.diffs contents
+    debug:
+      msg: "{{command_output.stdout_lines}}"
+    when: tde_diff.stat.isreg is defined and tde_diff.stat.isreg == True
+
+  # - name: Get server logfile contents if exists
+  #   command: cat /tmp/postgres/logfile
+  #   register: log_output
+  #   when: regression.rc is defined and regression.rc != 0
+
+  # - name: Print to console logfile
+  #   debug:
+  #     msg: "{{log_output.stdout_lines}}"
+  #   when: regression.rc is defined and regression.rc != 0
+
+  - debug: var=regression.rc
+    when: regression.rc is defined
+
+  - name: End play if regression has failures
+    fail:
+      msg: "regression failed"
+    when: regression.rc is defined and (regression.rc != 0 and regression.rc != 2)

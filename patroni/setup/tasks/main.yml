@@ -4,25 +4,25 @@
     major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
     cacheable: true
 
-- name: Clean dnf RHEL8
+# - name: Clean dnf RHEL8
+#   become: true
+#   command: dnf clean all -y
+#   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+
+- name: Enable crb on Rocky 9
   become: true
-  command: dnf clean all -y
+  command: dnf config-manager --set-enabled crb
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Enable ol8_codeready_builder on oracle linux 8
-  become: true
-  command: dnf config-manager --set-enabled ol8_codeready_builder
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+# - name: Disable dnf module for RHEL8
+#   become: true
+#   command: dnf module disable postgresql -y
+#   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
-- name: Disable dnf module for RHEL8
-  become: true
-  command: dnf module disable postgresql -y
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
-
-- name: Disable llvm-toolset dnf module for RHEL8
-  become: true
-  command: dnf module disable llvm-toolset -y
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+# - name: Disable llvm-toolset dnf module for RHEL8
+#   become: true
+#   command: dnf module disable llvm-toolset -y
+#   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
 - name: setup epel release
   yum:

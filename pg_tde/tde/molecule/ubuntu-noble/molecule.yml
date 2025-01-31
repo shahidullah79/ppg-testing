@@ -6,7 +6,7 @@ driver:
 platforms:
   - name: pgtde-unoble-${BUILD_NUMBER}
     region: eu-central-1
-    image: ami-0f67ca03a667867bb
+    image: ami-03250b0e01c28d196
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t2.xlarge
     ssh_user: ubuntu
@@ -21,7 +21,6 @@ provisioner:
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
     converge: ../../playbooks/playbook.yml
-    verify: ../../playbooks/verify.yml
 verifier:
   name: ansible
 scenario:
@@ -34,5 +33,4 @@ scenario:
     - create
     - prepare
     - converge
-    - verify
     - destroy

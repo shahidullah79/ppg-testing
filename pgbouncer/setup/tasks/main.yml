@@ -21,8 +21,9 @@
         - vim
         - git
         - libtool
-        - python3-pip
         - pkg-config
+        - python3
+        - python3-full
         - pandoc
         - libreadline6-dev
         - systemtap-sdt-dev
@@ -34,7 +35,10 @@
         - flex
         - libipc-run-perl
         - libevent-dev
+        - python3-pip
+        - python3.11-venv
         - python3-pytest
+        - libc-ares-dev
     retries: 60
     delay: 10
     register: result
@@ -74,7 +78,7 @@
     git:
       repo: "{{ repo }}"
       version: "{{ version }}"
-      dest: /var/lib/postgresql/pgbouncer
+      dest: /tmp/pgbouncer
       recursive: yes
       update: yes
     vars:
@@ -82,50 +86,79 @@
       version: "{{ lookup('env', 'COMPONENT_VERSION') }}"
     become_user: postgres
 
+  - name: git init
+    command: git submodule init
+    args:
+      chdir: /tmp/pgbouncer
+    become_user: postgres
+
+  - name: git init
+    command: git submodule update
+    args:
+      chdir: /tmp/pgbouncer
+    become_user: postgres
+
   - name: Autogen pgbouncer
     shell: ./autogen.sh
     args:
-      chdir: /var/lib/postgresql/pgbouncer
+      chdir: /tmp/pgbouncer
     become_user: postgres
 
   - name: Configure pgbouncer
-    shell: ./configure --prefix=/usr/local
+    shell: ./configure --prefix=/usr/local --with-cares=yes
     args:
-      chdir: /var/lib/postgresql/pgbouncer
+      chdir: /tmp/pgbouncer
     become_user: postgres
 
   - name: Make pgbouncer
     shell: make
     args:
-      chdir: /var/lib/postgresql/pgbouncer
+      chdir: /tmp/pgbouncer
     environment:
       PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
     become_user: postgres
 
-  - name: Make install pgbouncer
-    shell: make install
-    args:
-      chdir: /var/lib/postgresql/pgbouncer
-    environment:
-      PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
-    become: true
+  # - name: Make install pgbouncer
+  #   shell: make install
+  #   args:
+  #     chdir: /tmp/pgbouncer
+  #   environment:
+  #     PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
+  #   become: true
 
-  - name: Install pip requirements
-    shell: pip3 install -r requirements.txt
+  - name: pytest run
+    shell: | 
+      python3 -m venv validation
+      source validation/bin/activate
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      pytest
     args:
-      chdir: /var/lib/postgresql/pgbouncer
+      chdir: /tmp/pgbouncer
     environment:
-      PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
-    become: true
-
-  - name: Run pgbouncer tests
-    shell: pytest
-    args:
-      chdir: /var/lib/postgresql/pgbouncer
-    environment:
-      PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
+      PATH: "/tmp/pgbouncer/validation/bin:/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
     become_user: postgres
     register: results
 
   - debug:
       var: results.stdout
+
+  # - name: Install pip requirements
+  #   shell: pip3 install -r requirements.txt
+  #   args:
+  #     chdir: /tmp/pgbouncer
+  #   environment:
+  #     PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}"
+  #   become: true
+
+  # - name: Run pgbouncer tests
+  #   shell: pytest
+  #   args:
+  #     chdir: /tmp/pgbouncer
+  #   environment:
+  #     PATH: "/usr/lib/postgresql/{{ major_version }}/bin:{{ ansible_env.PATH }}:/var/lib/postgresql/.local/bin"
+  #   become_user: postgres
+  #   register: results
+
+  # - debug:
+  #     var: results.stdout
