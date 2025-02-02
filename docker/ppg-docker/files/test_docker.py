@@ -258,7 +258,7 @@ def test_telemetry_json_directories_exist(host):
 def test_json_files_exist(host):
     """Test if *.json files exist in the directories."""
     for json_files in json_files_location:
-        if not glob.glob(json_files):
+        if len(glob.glob(json_files)) == 0:
             assert False, f"Json {json_files} does not exist."
         else:
             fileList = glob.glob(json_files)
