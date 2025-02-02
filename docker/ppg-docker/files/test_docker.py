@@ -204,6 +204,11 @@ common_directories = [
     "/usr/local/percona/telemetry/pg/"
 ]
 
+# Paths for directory that will contain json file
+json_file_directories = [
+    "/usr/local/percona/telemetry/pg/"
+]
+
 # Paths for percona-telemetry-agent based on the OS
 debian_percona_telemetry_agent = "/etc/default/percona-telemetry-agent"
 redhat_percona_telemetry_agent = "/etc/sysconfig/percona-telemetry-agent"
@@ -250,12 +255,12 @@ def test_telemetry_json_directories_exist(host):
     for directory in common_directories:
         assert host.file(directory).exists, f"Directory {directory} does not exist."
 
-# def test_json_files_exist():
-#     """Test if *.json files exist in the directories."""
-#     json_files = []
-#     for directory in common_directories:
-#         json_files.extend(glob.glob(os.path.join(directory, "*.json")))
-#     assert len(json_files) > 0, "No .json files found in the specified directories."
+def test_json_files_exist():
+    """Test if *.json files exist in the directories."""
+    json_files = []
+    for directory in json_file_directories:
+        json_files.extend(glob.glob(os.path.join(directory, "*.json")))
+    assert len(json_files) > 0, "No .json files found in the specified directories."
 
 def test_telemetry_agent_conf_exists(host):
     """Test if the percona-telemetry-agent conf file exists."""
