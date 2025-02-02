@@ -255,7 +255,7 @@ def test_telemetry_json_directories_exist(host):
     for directory in common_directories:
         assert host.file(directory).exists, f"Directory {directory} does not exist."
 
-def test_json_files_exist():
+def test_json_files_exist(host):
     """Test if *.json files exist in the directories."""
     for json_file in json_files_location:
         assert host.file(json_file).exists, f"Json {json_file} does not exist."
