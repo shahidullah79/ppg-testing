@@ -258,10 +258,13 @@ def test_telemetry_json_directories_exist(host):
 def test_json_files_exist(host):
     """Test if *.json files exist in the directories."""
     for json_files in json_files_location:
-        fileList = glob.glob(json_files)
-        for json_file in fileList:
-            assert host.file(json_file).exists, f"Json {json_file} does not exist."
-            assert len(json_file) > 0, f"Json file {json_file} is empty."
+        if not glob.glob(json_files):
+            assert False, f"Json {json_files} does not exist."
+        else:
+            fileList = glob.glob(json_files)
+            for json_file in fileList:
+                assert host.file(json_file).exists, f"Json {json_file} does not exist."
+                assert len(json_file) > 0, f"Json file {json_file} is empty."
 
 def test_telemetry_agent_conf_exists(host):
     """Test if the percona-telemetry-agent conf file exists."""
