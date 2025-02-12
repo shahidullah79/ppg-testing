@@ -558,7 +558,7 @@ def test_postgis_is_installed(host, get_server_path):
 
 
 @pytest.fixture()
-def installed_extensions_list(host):
+def installed_extensions_list(host, get_psql_binary_path):
     with host.sudo("postgres"):
         cmd = f"{get_psql_binary_path} -c 'SELECT * FROM pg_available_extensions;' | awk 'NR>=3{{print $1}}'"
         result = host.check_output(cmd)
@@ -584,7 +584,7 @@ def test_postgis_extenstions_list(installed_extensions_list, host):
         assert extension in installed_extensions_list
 
 
-def test_postgis_extensions_create_drop(host):
+def test_postgis_extensions_create_drop(host, get_psql_binary_path):
     ppg_version=float(pg_versions['version'])
 
     if (pg_versions['version'].startswith("17") and ppg_version <= 17.2) or \
@@ -629,7 +629,7 @@ def test_postgis_extensions_create_drop(host):
         # assert result.rc == 0, result.stderr
 
 
-def test_postgis_extension_version(host):
+def test_postgis_extension_version(host, get_psql_binary_path):
     ppg_version=float(pg_versions['version'])
 
     if (pg_versions['version'].startswith("17") and ppg_version <= 17.2) or \
