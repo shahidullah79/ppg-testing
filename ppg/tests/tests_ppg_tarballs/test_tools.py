@@ -570,7 +570,7 @@ def test_postgis_extenstions_list(installed_extensions_list, host):
     ppg_version=float(pg_versions['version'])
 
     if (pg_versions['version'].startswith("17") and ppg_version <= 17.2) or \
-    (pg_versions['version'].startswith("16") and ppg_version <= 16.6) or \
+    (pg_versions['version'].startswith("16") and ppg_version <= 16.5) or \
     (pg_versions['version'].startswith("15") and ppg_version <= 15.10) or \
     (pg_versions['version'].startswith("14") and ppg_version <= 14.15) or \
     (pg_versions['version'].startswith("13") and ppg_version <= 13.18):
@@ -588,7 +588,7 @@ def test_postgis_extensions_create_drop(host):
     ppg_version=float(pg_versions['version'])
 
     if (pg_versions['version'].startswith("17") and ppg_version <= 17.2) or \
-    (pg_versions['version'].startswith("16") and ppg_version <= 16.6) or \
+    (pg_versions['version'].startswith("16") and ppg_version <= 16.5) or \
     (pg_versions['version'].startswith("15") and ppg_version <= 15.10) or \
     (pg_versions['version'].startswith("14") and ppg_version <= 14.15) or \
     (pg_versions['version'].startswith("13") and ppg_version <= 13.18):
@@ -633,7 +633,7 @@ def test_postgis_extension_version(host):
     ppg_version=float(pg_versions['version'])
 
     if (pg_versions['version'].startswith("17") and ppg_version <= 17.2) or \
-    (pg_versions['version'].startswith("16") and ppg_version <= 16.6) or \
+    (pg_versions['version'].startswith("16") and ppg_version <= 16.5) or \
     (pg_versions['version'].startswith("15") and ppg_version <= 15.10) or \
     (pg_versions['version'].startswith("14") and ppg_version <= 14.15) or \
     (pg_versions['version'].startswith("13") and ppg_version <= 13.18):
