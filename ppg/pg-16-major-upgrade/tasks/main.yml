@@ -15,7 +15,7 @@
   ansible.builtin.set_fact:
     pg_version_to_install: "{{ lookup('env', 'FROM_VERSION') | replace('ppg-','') }}"
 
-- name: End play on oracle linux 9
+- name: End play on rocky linux 9
   meta: end_play
   when: ansible_os_family == "RedHat" and
    ansible_distribution_major_version == "9" and

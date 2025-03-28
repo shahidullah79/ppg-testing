@@ -17,20 +17,20 @@
     command: dnf clean all -y
     when: ansible_distribution_major_version == "8"
 
-  - name: Install oracle-epel-release-el8 package
+  - name: Install epel-release package
     ansible.builtin.dnf:
-      name: oracle-epel-release-el8
+      name: epel-release
       state: present
-    when: ansible_facts['distribution'] == "OracleLinux" and ansible_facts['distribution_major_version'] == "8"
+    when: ansible_facts['distribution'] == "Rocky" and ansible_facts['distribution_major_version'] == "8"
 
-  - name: Enable ol8_codeready_builder on oracle linux 8
+  - name: Enable powertools on rocky linux 8
     become: true
-    command: dnf config-manager --set-enabled ol8_codeready_builder
+    command: dnf config-manager --set-enabled powertools
     when: ansible_distribution_major_version == "8"
 
-  - name: Enable ol9_codeready_builder on oracle linux 9
+  - name: Enable crb on rocky linux 9
     become: true
-    command: dnf config-manager --set-enabled ol9_codeready_builder
+    command: dnf config-manager --set-enabled crb
     when: ansible_distribution_major_version == "9"    
 
   - name: Disable dnf module for RHEL8

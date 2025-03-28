@@ -139,6 +139,20 @@
         state: present
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
+    - name: Enable Powertools on Rocky 8
+      become: true
+      shell: | 
+        dnf install -y dnf-plugins-core
+        dnf config-manager --set-enabled powertools
+      when: ansible_distribution_major_version == "8"
+
+    - name: Enable CRB on Rocky 9
+      become: true
+      shell: | 
+        dnf install -y dnf-plugins-core
+        dnf config-manager --set-enabled crb
+      when: ansible_distribution_major_version == "9"
+
     - name: Install additional packages RPM
       yum:
         name: "{{ packages }}"
@@ -168,7 +182,7 @@
       yum:
         name: "{{ packages }}"
         state: latest
-        enablerepo: ol8_codeready_builder
+        enablerepo: powertools
         update_cache: yes
       vars:
         packages:
@@ -187,6 +201,30 @@
           - pandoc
           - pkgconfig
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8
+
+    - name: Install additional packages RPM
+      yum:
+        name: "{{ packages }}"
+        state: latest
+        enablerepo: crb
+        update_cache: yes
+      vars:
+        packages:
+          - openssl-devel
+          - readline-devel
+          - openssl
+          - gcc
+          - gcc-c++
+          - libevent-devel
+          - perl-Pod-Checker
+          - perl-devel
+          - perl-JSON-XS
+          - perl-Test-Simple
+          - libtool
+          - make
+          - pandoc
+          - pkgconfig
+      when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 9
 
     - name: Install additional packages Debian
       apt:
@@ -222,6 +260,14 @@
         exclusive: False
       when: ansible_distribution == "OracleLinux" or
             ansible_distribution == "Amazon"
+
+    - name: Setup SSH keys for Rocky Linux or Amazon
+      ansible.posix.authorized_key:
+        user: rocky
+        key: "{{ lookup('file', 'public_keys') }}"
+        state: present
+        exclusive: False
+      when: ansible_distribution == "Rocky"
 
     - name: Setup SSH keys Debian
       ansible.posix.authorized_key:

@@ -1,12 +1,26 @@
 ---
   - name: Set Facts
     set_fact:
-      use_package_install: "{{ lookup('env', 'TDE_PACKAGE_INSTALL') }}"
       major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
       cacheable: true
 
   - name: Configure repository
     include_tasks: ../../../../tasks/enable_repo.yml
+
+  # - name: Add user postgres to sudoers
+  #   user:
+  #     name: postgres
+  #     groups: sudo
+  #     append: yes
+  #   when: ansible_os_family == "Debian"
+
+  - name: Add postgres to sudoers
+    become: true
+    lineinfile:
+        path: /etc/sudoers
+        state: present
+        line: 'postgres ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
 
   - name: Include Redhat tasks file 
     include_tasks: 

@@ -75,7 +75,7 @@ def start_stop_postgresql(host,get_server_bin_path):
 def postgresql_binary(host,get_server_bin_path):
     dist = host.system_info.distribution
     pg_bin = get_server_bin_path + '/postgres'
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         pg_bin = pg_bin
     return host.file(pg_bin)
 
@@ -108,7 +108,7 @@ def insert_data(host, get_server_bin_path, get_psql_binary_path):
     dist = host.system_info.distribution
     print(host.run("find / -name pgbench").stdout)
     pgbench_bin =os.path.join(get_server_bin_path, "pgbench")
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         pgbench_bin = os.path.join(get_server_bin_path, "pgbench")
     with host.sudo("postgres"):
         pgbench = f"{pgbench_bin} -i -s 1"
@@ -127,7 +127,7 @@ def test_psql_client_version(host):
 # @pytest.mark.parametrize("package", pg_versions['deb_packages'])
 # def test_deb_package_is_installed(host, package):
 #     dist = host.system_info.distribution
-#     if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+#     if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
 #         pytest.skip("This test only for Debian based platforms")
 #     pkg = host.package(package)
 #     assert pkg.is_installed
@@ -143,7 +143,7 @@ def test_postgres_binary(postgresql_binary):
 def test_binaries(host,get_server_bin_path, binary):
     dist = host.system_info.distribution
     bin_path = get_server_bin_path
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         bin_path = get_server_bin_path
     bin_full_path = os.path.join(bin_path, binary)
     binary_file = host.file(bin_full_path)
@@ -185,13 +185,13 @@ def test_extenstions_list(extension_list, host, extension):
         'address_standardizer-3','postgis-3','address_standardizer','postgis','address_standardizer_data_us-3']
     POSTGIS_RHEL_EXTENSIONS = ['postgis_sfcgal','address_standardizer','postgis_tiger_geocoder','postgis',
         'postgis_topology','postgis_raster','address_standardizer_data_us']
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         if extension in POSTGIS_RHEL_EXTENSIONS:
             pytest.skip("Skipping postgis extension " + extension + " for Centos or RHEL as it will fail on upgrade.")
     if dist.lower() in ['debian', 'ubuntu']:
         if extension in POSTGIS_DEB_EXTENSIONS:
             pytest.skip("Skipping postgis extension " + extension + " for debian as it will fail on upgrade.")
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         if extension in [
             'plpythonu', "plpython2u", 'jsonb_plpython2u', 'ltree_plpython2u', 'jsonb_plpythonu',
             'ltree_plpythonu', 'hstore_plpythonu', 'hstore_plpython2u']:
@@ -208,7 +208,7 @@ def test_extenstions_list(extension_list, host, extension):
 @pytest.mark.parametrize("extension", EXTENSIONS)
 def test_enable_extension(host, get_psql_binary_path , extension):
     dist = host.system_info.distribution
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         if extension in ['postgis_sfcgal','address_standardizer','postgis_tiger_geocoder','postgis',
         'postgis_topology','postgis_raster','address_standardizer_data_us']:
             pytest.skip("Skipping extension " + extension + " due to multiple dependencies. Already being checked in test_tools.py.")
@@ -247,7 +247,7 @@ def test_enable_extension(host, get_psql_binary_path , extension):
 @pytest.mark.parametrize("extension", EXTENSIONS[::-1])
 def test_drop_extension(host,get_psql_binary_path, extension):
     dist = host.system_info.distribution
-    if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         if extension in ['postgis_sfcgal','address_standardizer','postgis_tiger_geocoder','postgis',
         'postgis_topology','postgis_raster','address_standardizer_data_us']:
             pytest.skip("Skipping extension " + extension + " due to multiple dependencies. Already being checked in test_tools.py.")
@@ -295,7 +295,7 @@ def test_plpgsql_extension(host,get_psql_binary_path):
 @pytest.mark.parametrize("file", DEB_FILES)
 def test_deb_files(host, file):
     os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", "rhel", "ol"]:
+    if os.lower() in ["redhat", "centos", "rhel", "rocky"]:
         pytest.skip("This test only for Debian based platforms")
     with host.sudo("postgres"):
         f = host.file(f"{DATA_DIR}/{file}")
@@ -320,10 +320,10 @@ def test_rpm_files(file, host):
 @pytest.mark.parametrize("language", LANGUAGES)
 def test_language(host,get_psql_binary_path, language):
     deb_dists = ['debian', 'ubuntu']
-    rpm_dists = ["redhat", "centos", "rhel", "ol"]
+    rpm_dists = ["redhat", "centos", "rhel", "rocky"]
     dist = host.system_info.distribution
     with host.sudo("postgres"):
-        # if dist.lower() in ["redhat", "centos", "rhel", "ol"]:
+        # if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
         #     if "python3" in language:
         #         pytest.skip("Skipping python3 language for Centos or RHEL")
         if dist.lower() in rpm_dists and language in ['plpythonu', "plpython2u"] and settings.MAJOR_VER in ["12", "13" , "14", "15", "16","17"]:
