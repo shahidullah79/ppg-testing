@@ -23,12 +23,22 @@
   - name: Enable powertools on rocky linux 8
     become: true
     command: dnf config-manager --set-enabled powertools
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
+    when: ansible_os_family == "RedHat" and ansible_distribution == "Rocky" and ansible_distribution_major_version == "8"
+  
+  - name: Enable powertools on Oracle linux 8
+    become: true
+    command: dnf config-manager --set-enabled ol8_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "8"
 
   - name: Enable powertools on rocky linux 9
     become: true
     command: dnf config-manager --set-enabled crb
-    when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "9"
+    when: ansible_os_family == "RedHat" and ansible_distribution == "Rocky" and ansible_distribution_major_version == "9"
+  
+  - name: Enable powertools on Oracle linux 9
+    become: true
+    command: dnf config-manager --set-enabled ol9_codeready_builder
+    when: ansible_os_family == "RedHat" and ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
 
   - name: Disable dnf postgresql for RHEL8
     become: true
