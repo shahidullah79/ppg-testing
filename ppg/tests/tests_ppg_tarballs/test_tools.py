@@ -448,7 +448,7 @@ def test_pgbadger_binary_version(host):
     # Failing on RHEL 9 so commenting it out, needs manual verification
     # NEEDS MAUNAL VERIFICATION
     os_name = host.system_info.distribution
-    if os_name.lower() in ["redhat", "centos", "rhel", "rocky"]and host.system_info.release.startswith("9"):
+    if os_name.lower() in ["redhat", "centos", "rhel", "rocky", "ol"]and host.system_info.release.startswith("9"):
         pytest.skip("This test only for Debian based platforms")
     with host.sudo():
         pgbadger_dir = os.path.join(INSTALL_PATH, 'percona-pgbadger')

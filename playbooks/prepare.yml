@@ -139,19 +139,55 @@
         state: present
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 7
 
+    - name: Install epel-release package
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+
     - name: Enable Powertools on Rocky 8
       become: true
       shell: | 
         dnf install -y dnf-plugins-core
         dnf config-manager --set-enabled powertools
-      when: ansible_distribution_major_version == "8"
+      when: ansible_distribution == "Rocky" and ansible_distribution_major_version == "8"
 
     - name: Enable CRB on Rocky 9
       become: true
       shell: | 
         dnf install -y dnf-plugins-core
         dnf config-manager --set-enabled crb
-      when: ansible_distribution_major_version == "9"
+      when: ansible_distribution == "Rocky" and ansible_distribution_major_version == "9"
+
+    - name: Enable ol8_codeready_builder on Oracle Linux 8
+      become: true
+      shell: | 
+        dnf install -y dnf-plugins-core
+        dnf config-manager --set-enabled ol8_codeready_builder
+      when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "8"
+
+    - name: Enable ol9_codeready_builder on Oracle Linux 9
+      become: true
+      shell: | 
+        dnf install -y dnf-plugins-core
+        dnf config-manager --set-enabled ol9_codeready_builder
+      when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
+
+    - name: Update Oracle Linux 8 and 9 to latest
+      become: true
+      shell: | 
+        sudo dnf update -y 
+      when: ansible_distribution == "OracleLinux"
+
+    - name: Setup oracle linux 9 for ssh
+      become: true
+      shell: | 
+        setenforce 0
+        firewall-cmd --permanent --add-service=ssh
+        firewall-cmd --reload
+        systemctl enable sshd
+        systemctl start sshd
+      when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
 
     - name: Install additional packages RPM
       yum:
@@ -182,7 +218,6 @@
       yum:
         name: "{{ packages }}"
         state: latest
-        enablerepo: powertools
         update_cache: yes
       vars:
         packages:
@@ -206,7 +241,6 @@
       yum:
         name: "{{ packages }}"
         state: latest
-        enablerepo: crb
         update_cache: yes
       vars:
         packages:
@@ -258,8 +292,7 @@
         key: "{{ lookup('file', 'public_keys') }}"
         state: present
         exclusive: False
-      when: ansible_distribution == "OracleLinux" or
-            ansible_distribution == "Amazon"
+      when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version|int == 8
 
     - name: Setup SSH keys for Rocky Linux or Amazon
       ansible.posix.authorized_key:

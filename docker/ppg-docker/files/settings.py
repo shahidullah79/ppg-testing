@@ -135,7 +135,7 @@ pg_stat_monitor = {
     "14.18": {"version": "2.1.1"},
     "15.13": {"version": "2.1.1"},
     "16.9": {"version": "2.1.1"},
-    "17.5": {"version": "2.1.1"},
+    "17.5": {"version": "2.2.0"},
 }
 
 set_user = {
@@ -240,7 +240,7 @@ pg_telemetry = {
             "14.18": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.1"},
             "15.13": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.1"},
             "16.9": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.1"},
-            "17.5": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.1"},
+            "17.5": {"pg_telemetry_version": "1.1","pg_telemetry_package_version": "1.1.2"},
 }
 
 DOCKER_LIST_EXTENSIONS = ["hstore",
@@ -1218,7 +1218,7 @@ ppg_versions = {
         },
         "17.5": {
             "version": "17.5",
-            "percona-version": "17.5.1",
+            "percona-version": "17.5.2",
             "percona-postgresql-common": "277",
             "percona-postgresql-client-common": "277",
             "libpq_version": "170005",

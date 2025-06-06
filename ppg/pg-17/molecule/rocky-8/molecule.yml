@@ -4,9 +4,9 @@ dependency:
 driver:
   name: ec2
 platforms:
-  - name: rocky9-${BUILD_NUMBER}-${JOB_NAME}
+  - name: rocky8-${BUILD_NUMBER}-${JOB_NAME}
     region: eu-central-1
-    image: ami-041dc33d5b0f85045
+    image: ami-03ca52fa7cdd00b6a
     vpc_subnet_id: subnet-085deaca8c1c59a4f
     instance_type: t3.large
     ssh_user: rocky
@@ -20,15 +20,25 @@ provisioner:
     create: ../../../../playbooks/create.yml
     destroy: ../../../../playbooks/destroy.yml
     prepare: ../../../../playbooks/prepare.yml
+    cleanup: ../../playbooks/cleanup-rpm.yml
     converge: ../../playbooks/playbook.yml
 verifier:
-  name: ansible
+  name: testinfra
+  directory: ../../../tests/tests_ppg
+  options:
+    verbose: true
+    s: true
+    junitxml: report.xml
 scenario:
   destroy_sequence:
     - destroy
+  cleanup_sequence:
+    - cleanup
   test_sequence:
     - destroy
     - create
     - prepare
     - converge
+    - verify
+    - cleanup
     - destroy

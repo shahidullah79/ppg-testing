@@ -52,7 +52,7 @@ def pgaudit(host):
         log_file = "/var/log/postgresql/postgresql-{}-main.log".format(settings.MAJOR_VER)
         if dist.lower() in ["debian", "ubuntu"]:
             log_file = "/var/log/postgresql/postgresql-{}-main.log".format(settings.MAJOR_VER)
-        elif dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        elif dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             log_files = "ls /var/lib/pgsql/{}/data/log/".format(settings.MAJOR_VER)
             file_name = host.check_output(log_files).strip("\n")
             log_file = "".join(["/var/lib/pgsql/{}/data/log/".format(settings.MAJOR_VER), file_name])
@@ -65,7 +65,7 @@ def pgaudit(host):
         assert result.strip("\n") == "DROP EXTENSION"
     if dist.lower() in ["debian", "ubuntu"]:
         cmd = "sudo systemctl restart postgresql"
-    elif dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    elif dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         cmd = "sudo systemctl restart postgresql-{}".format(MAJOR_VER)
     result = host.run(cmd)
     assert result.rc == 0
@@ -123,7 +123,7 @@ def pgbackrest_delete_data(host):
     dist = host.system_info.distribution
     data_dir = f"/var/lib/postgresql/{MAJOR_VER}/main/*"
     service_name = "postgresql"
-    if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         data_dir = f"/var/lib/pgsql/{MAJOR_VER}/data/*"
         service_name = f"postgresql-{MAJOR_VER}"
     with host.sudo("root"):
@@ -147,7 +147,7 @@ def pgbackrest_restore(pgbackrest_delete_data, host):
 def pgrepack(host):
     dist = host.system_info.distribution
     cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack"
-    if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack "
     return host.check_output(cmd)
 
@@ -156,7 +156,7 @@ def pg_repack_functional(host):
     dist = host.system_info.distribution
     pgbench_bin = "pgbench"
     pg_repack_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack"
-    if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
         pg_repack_bin = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack"
     with host.sudo("postgres"):
@@ -165,7 +165,7 @@ def pg_repack_functional(host):
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
         cmd = f"{pg_repack_bin} -t pgbench_accounts -j 4"
-        if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             cmd = f"{pg_repack_bin} -t pgbench_accounts -j 4"
         pg_repack_result = host.run(cmd)
     yield pg_repack_result
@@ -175,7 +175,7 @@ def pg_repack_dry_run(host, operating_system):
     dist = host.system_info.distribution
     pgbench_bin = "pgbench"
     pg_repack_bin = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack"
-    if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         pgbench_bin = f"/usr/pgsql-{pg_versions['version'].split('.')[0]}/bin/pgbench"
         pg_repack_bin = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack"
     with host.sudo("postgres"):
@@ -184,7 +184,7 @@ def pg_repack_dry_run(host, operating_system):
         select = "psql -c 'SELECT COUNT(*) FROM pgbench_accounts;' | awk 'NR==3{print $3}'"
         assert host.run(select).rc == 0
         cmd = f"{pg_repack_bin} --dry-run -d postgres"
-        if operating_system.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        if operating_system.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             cmd = f"{pg_repack_bin} --dry-run -d postgres"
 
         pg_repack_result = host.run(cmd)
@@ -194,7 +194,7 @@ def pg_repack_dry_run(host, operating_system):
 def pg_repack_client_version(host, operating_system):
     with host.sudo("postgres"):
         cmd = f"/usr/lib/postgresql/{MAJOR_VER}/bin/pg_repack --version"
-        if operating_system.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        if operating_system.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             cmd = f"/usr/pgsql-{MAJOR_VER}/bin/pg_repack --version"
         return host.run(cmd)
 
@@ -211,7 +211,7 @@ def test_pgaudit_package(host):
     with host.sudo():
         os = host.system_info.distribution
         pkgn = ""
-        if os.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        if os.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             pkgn = f"percona-pgaudit{MAJOR_VER}"
             # pkgn = "percona-pgaudit14_12"
         elif os in ["debian", "ubuntu"]:
@@ -235,7 +235,7 @@ def test_pgrepack_package(host):
 
         os = host.system_info.distribution
         pkgn = ""
-        if os.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        if os.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             pkgn = pg_versions['pgrepack_package_rpm']
         elif os in ["debian", "ubuntu"]:
             pkgn = pg_versions['pgrepack_package_deb']
@@ -284,7 +284,7 @@ def test_pgbackrest_package(host):
     with host.sudo():
         os = host.system_info.distribution
         pkgn = ""
-        if os.lower() in ["redhat", "centos", "rocky", "rhel"]:
+        if os.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
             pkgn = "percona-pgbackrest"
         elif os in ["debian", "ubuntu"]:
             pkgn = "percona-pgbackrest"
@@ -316,7 +316,7 @@ def test_pgbackrest_full_backup(pgbackrest_full_backup):
 
 def test_pgbackrest_restore(host):
     os = host.system_info.distribution
-    if os.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    if os.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         service_name = "postgresql-{}".format(MAJOR_VER)
     else:
         service_name = "postgresql"
@@ -334,7 +334,7 @@ def test_patroni_package(host):
 
         os = host.system_info.distribution
         pkgn = ""
-        if os.lower() in ["ubuntu", "redhat", "centos", "rocky", "rhel"]:
+        if os.lower() in ["ubuntu", "redhat", "centos", "rocky", "ol", "rhel"]:
             pkgn = "percona-patroni"
         elif os == "debian":
             pkgn = "percona-patroni"
@@ -434,7 +434,7 @@ def test_postgis_extenstions_list(installed_extensions_list, host):
         'address_standardizer-3','postgis-3','address_standardizer','postgis','address_standardizer_data_us-3']
     POSTGIS_RHEL_EXTENSIONS = ['postgis_sfcgal','address_standardizer','postgis_tiger_geocoder','postgis',
         'postgis_topology','postgis_raster','address_standardizer_data_us']
-    if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
+    if dist.lower() in ["redhat", "centos", "rhel", "rocky", "ol"]:
         for extension in POSTGIS_RHEL_EXTENSIONS:
             print(extension)
             assert extension in installed_extensions_list
@@ -523,7 +523,7 @@ def test_pgsql2shp_binary_version(host):
 def test_postgis_binary_presence(host):
     dist = host.system_info.distribution
     with host.sudo("postgres"):
-        if dist.lower() in ["redhat", "centos", "rhel", "rocky"]:
+        if dist.lower() in ["redhat", "centos", "rhel", "rocky", "ol"]:
             binary_file = host.file(f"/usr/pgsql-{MAJOR_VER}/bin/pgtopo_export")
             assert binary_file.exists
             assert binary_file.is_file
@@ -592,7 +592,7 @@ def test_binary_version(host, binary):
 
 def test_etcd(host):
     # dist = host.system_info.distribution
-    # if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    # if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
     #     if "8" in host.system_info.release:
     etcd_package = host.package("etcd")
     assert etcd_package.is_installed
@@ -602,7 +602,7 @@ def test_etcd(host):
 
 def test_python_etcd(host):
     dist = host.system_info.distribution
-    if dist.lower() in ["redhat", "centos", "rocky", "rhel"]:
+    if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel"]:
         if "8" in host.system_info.release:
             package = host.package("python3-etcd")
             assert package.is_installed
@@ -640,7 +640,7 @@ def test_pgpool_package_version(host):
 
 def test_pgpool_binary_version(host):
     dist = host.system_info.distribution
-    if dist.lower() in ["redhat", "centos", "rocky", "rhel",'ubuntu']:
+    if dist.lower() in ["redhat", "centos", "rocky", "ol", "rhel",'ubuntu']:
         result = host.run(f"pgpool --version 2>&1 | grep pgpool | cut -d' ' -f3")
         assert result.rc == 0, result.stderr
         assert pg_versions["pgpool"]['binary_version'] in result.stdout.strip("\n"), result.stdout

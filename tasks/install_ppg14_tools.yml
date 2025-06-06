@@ -326,10 +326,10 @@
       state: present
     when: ansible_facts['distribution'] == "Rocky" and ansible_facts['distribution_major_version'] == "8"
 
-  - name: Enable codeready_builder on rocky linux 8
-    become: true
-    command: dnf config-manager --set-enabled powertools
-    when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
+  # - name: Enable codeready_builder on rocky linux 8
+  #   become: true
+  #   command: dnf config-manager --set-enabled powertools
+  #   when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
 #==========================================
 
