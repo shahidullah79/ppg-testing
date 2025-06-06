@@ -2,6 +2,7 @@
 - name: Set Facts
   set_fact:
     major_version: "{{ lookup('env', 'VERSION').split('.')[0].split('-')[1] }}"
+    pg_version_to_install: "{{ lookup('env', 'VERSION') | replace('ppg-','') }}"
     cacheable: true
 
 # - name: Clean dnf RHEL8
@@ -42,7 +43,7 @@
     packages:
     - percona-postgresql-client-common
     - percona-postgresql-common
-    - percona-postgresql-server-dev-all
+    - percona-postgresql-common-dev
     - percona-postgresql{{ major_version }}
     - percona-postgresql{{ major_version }}-contrib
     - percona-postgresql{{ major_version }}-devel
