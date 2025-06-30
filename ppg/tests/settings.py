@@ -3305,7 +3305,7 @@ def get_settings(distro_type):
         },
         "ppg-17.5": {
             "version": "17.5",
-            "percona-version": "17.5.1",
+            "percona-version": "17.5.2",
             "deb_pkg_ver": ppg_versions["ppg-17.5"]["deb_pkg_ver"],
             "deb_packages": ppg_versions["ppg-17.5"]["deb_packages"],
             "percona-postgresql-common": "277",
@@ -3337,11 +3337,11 @@ def get_settings(distro_type):
             "extensions": ppg_versions["ppg-17.5"]["extensions"],
             "languages": ppg_versions["ppg-17.5"]["languages"],
             "binaries": ppg_versions["ppg-17.5"]["binaries"],
-            "PGSM_version": "2.1.1",
-            "PGSM_package_version": "2.1.1",
+            "PGSM_version": "2.2.0",
+            "PGSM_package_version": "2.2.0",
             "postgis_version": "3.3.8",
             "postgis_package_version": "3.3.8",
             "pg_telemetry_version": "1.1",
-            "pg_telemetry_package_version": "1.1.1",
+            "pg_telemetry_package_version": "1.1.2",
         },
     }
